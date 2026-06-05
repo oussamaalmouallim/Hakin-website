@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H Mode — Boutique de vêtements · Casablanca</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Geist+Mono:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ═══════════════════════════ LOADER ═══════════════════════════ -->
+  <div class="loader" id="loader">
+    <div class="loader-logo">
+      <span class="loader-h">H</span>
+      <span class="loader-mode">MODE</span>
+    </div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
+  </div>
+
+  <!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <span class="logo-main">H Mode</span>
+        <span class="logo-sub">Boutique</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#categories">Catégories</a></li>
+        <li><a href="#brands">Marques</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="burger" id="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">✕</button>
+    <ul>
+      <li><a href="#collection" class="mob-link">Collection</a></li>
+      <li><a href="#categories" class="mob-link">Catégories</a></li>
+      <li><a href="#brands" class="mob-link">Marques</a></li>
+      <li><a href="#contact" class="mob-link">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <!-- Replace src with your hero image: assets/heroes/hero-1.jpg -->
+      <div class="hero-bg-placeholder">
+        <div class="hero-bg-grid"></div>
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-left">
+        <p class="hero-eyebrow reveal">Casablanca · Maroc · Depuis 2010</p>
+        <h1 class="hero-title reveal delay-1">
+          L'élégance<br>au <em>meilleur</em><br>prix
+        </h1>
+        <p class="hero-desc reveal delay-2">
+          Vêtements premium pour hommes et femmes.<br>
+          Les plus grandes marques, une qualité irréprochable,<br>
+          livrés à votre porte.
+        </p>
+        <div class="hero-cta reveal delay-3">
+          <a href="#categories" class="btn-dark">Voir la collection</a>
+          <a href="#contact" class="btn-outline">Nous contacter</a>
+        </div>
+        <div class="hero-badges reveal delay-4">
+          <div class="badge"><span class="badge-icon">✦</span> Qualité garantie</div>
+          <div class="badge"><span class="badge-icon">✦</span> Marques authentiques</div>
+          <div class="badge"><span class="badge-icon">✦</span> Livraison rapide</div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-card floating" id="heroCard">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/DIOR-T.jpg" alt="Dior T-shirt">
+          <div class="hero-card-tag">Dior T</div>
+        </div>
+        <div class="hero-card-mini floating-slow">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/PRADA-T.jpg" alt="Prada T-shirt">
+          <div class="mini-label">Prada</div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number" data-target="500">0</span><span>+</span>
+            <span class="stat-label">Références</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-number" data-target="20">0</span><span>+</span>
+            <span class="stat-label">Marques</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-number" data-target="100">0</span><span>%</span>
+            <span class="stat-label">Authentique</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll-hint">
+      <span>Défiler</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ TICKER ═══════════════════════════ -->
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="tickerTrack">
+      <!-- duplicated for seamless loop -->
+      <span>T-Shirts Premium</span><span class="dot">·</span>
+      <span>Pantalons & Jeans</span><span class="dot">·</span>
+      <span>Sneakers Exclusives</span><span class="dot">·</span>
+      <span>Gucci · Tommy · Lacoste</span><span class="dot">·</span>
+      <span>Qualité Irréprochable</span><span class="dot">·</span>
+      <span>Livraison Casablanca</span><span class="dot">·</span>
+      <span>Nike · Adidas · Balenciaga</span><span class="dot">·</span>
+      <span>Nouvelles Arrivées</span><span class="dot">·</span>
+      <span>T-Shirts Premium</span><span class="dot">·</span>
+      <span>Pantalons & Jeans</span><span class="dot">·</span>
+      <span>Sneakers Exclusives</span><span class="dot">·</span>
+      <span>Gucci · Tommy · Lacoste</span><span class="dot">·</span>
+      <span>Qualité Irréprochable</span><span class="dot">·</span>
+      <span>Livraison Casablanca</span><span class="dot">·</span>
+      <span>Nike · Adidas · Balenciaga</span><span class="dot">·</span>
+      <span>Nouvelles Arrivées</span><span class="dot">·</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ TRUST STRIP ═══════════════════════════ -->
+  <section class="trust-strip">
+    <div class="container">
+      <div class="trust-grid">
+        <div class="trust-item scroll-reveal">
+          <div class="trust-icon">🏆</div>
+          <div>
+            <strong>Marques 100% Authentiques</strong>
+            <p>Gucci, Tommy, Lacoste, Nike et bien plus — originaux garantis</p>
+          </div>
+        </div>
+        <div class="trust-item scroll-reveal delay-1">
+          <div class="trust-icon">✨</div>
+          <div>
+            <strong>Qualité Supérieure</strong>
+            <p>Chaque pièce sélectionnée pour sa coupe, sa matière et sa durabilité</p>
+          </div>
+        </div>
+        <div class="trust-item scroll-reveal delay-2">
+          <div class="trust-icon">🚀</div>
+          <div>
+            <strong>Livraison Rapide</strong>
+            <p>Commandez via WhatsApp, livraison express à Casablanca</p>
+          </div>
+        </div>
+        <div class="trust-item scroll-reveal delay-3">
+          <div class="trust-icon">💬</div>
+          <div>
+            <strong>Service Client 7j/7</strong>
+            <p>Hakim répond personnellement à toutes vos questions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ CATEGORIES ═══════════════════════════ -->
+  <section class="categories" id="categories">
+    <div class="container">
+      <div class="section-head scroll-reveal">
+        <p class="section-label">Nos Catégories</p>
+        <h2 class="section-title">Tout ce dont<br>vous avez <em>besoin</em></h2>
+      </div>
+    </div>
+
+    <div class="cat-grid">
+
+      <!-- T-SHIRTS -->
+      <div class="cat-block scroll-reveal" data-cat="tshirts">
+        <div class="cat-visual">
+          <!--
+            PHOTOS T-SHIRTS — remplacez les src :
+            assets/tshirts/tshirt-1.jpg
+            assets/tshirts/tshirt-2.jpg
+            assets/tshirts/tshirt-3.jpg
+          -->
+          <div class="cat-imgs">
+            <div class="cat-img-wrap main">
+              <img src="assets/tshirts/DIOR-TSHIRT_files/T2.jpg" alt="T-shirt T2">
+            </div>
+            <div class="cat-img-wrap sec">
+              <img src="assets/tshirts/DIOR-TSHIRT_files/T3.jpg" alt="T-shirt T3">
+            </div>
+            <div class="cat-img-wrap thi">
+              <img src="assets/tshirts/DIOR-TSHIRT_files/T4.jpg" alt="T-shirt T4">
+            </div>
+          </div>
+          <div class="cat-label-tag">T-Shirts</div>
+        </div>
+        <div class="cat-info">
+          <h3>T-Shirts & Hauts</h3>
+          <p>Du basique au premium — oversize, slim, col V, col rond. Les meilleures coupes des grandes maisons.</p>
+          <ul class="cat-features">
+            <li>✦ Coton premium GSM élevé</li>
+            <li>✦ Toutes tailles XS → 3XL</li>
+            <li>✦ Gucci, Tommy, Lacoste, Nike…</li>
+          </ul>
+          <a href="#contact" class="btn-dark sm">Commander</a>
+        </div>
+      </div>
+
+      <!-- PANTS -->
+      <div class="cat-block reverse scroll-reveal" data-cat="pants">
+        <div class="cat-visual">
+          <!--
+            PHOTOS PANTS — remplacez les src :
+            assets/pants/pants-1.jpg
+            assets/pants/pants-2.jpg
+            assets/pants/pants-3.jpg
+          -->
+          <div class="cat-imgs">
+            <div class="cat-img-wrap main">
+              <div class="img-placeholder" style="background:#d8d0c8">
+                <span>👖</span>
+                <small>pants-1.jpg</small>
+              </div>
+            </div>
+            <div class="cat-img-wrap sec">
+              <div class="img-placeholder" style="background:#ccc5bc">
+                <span>👖</span>
+                <small>pants-2.jpg</small>
+              </div>
+            </div>
+            <div class="cat-img-wrap thi">
+              <div class="img-placeholder" style="background:#c4bdb4">
+                <span>👖</span>
+                <small>pants-3.jpg</small>
+              </div>
+            </div>
+          </div>
+          <div class="cat-label-tag">Pantalons</div>
+        </div>
+        <div class="cat-info">
+          <h3>Pantalons & Jeans</h3>
+          <p>Jeans coupe droite, slim, cargo, jogging — pour chaque occasion et chaque style de vie.</p>
+          <ul class="cat-features">
+            <li>✦ Denim de qualité supérieure</li>
+            <li>✦ Coupes modernes & classiques</li>
+            <li>✦ Ralph Lauren, Levi's, G-Star…</li>
+          </ul>
+          <a href="#contact" class="btn-dark sm">Commander</a>
+        </div>
+      </div>
+
+      <!-- SNEAKERS -->
+      <div class="cat-block scroll-reveal" data-cat="sneakers">
+        <div class="cat-visual">
+          <!--
+            PHOTOS SNEAKERS — remplacez les src :
+            assets/sneakers/sneakers-1.jpg
+            assets/sneakers/sneakers-2.jpg
+            assets/sneakers/sneakers-3.jpg
+          -->
+          <div class="cat-imgs">
+            <div class="cat-img-wrap main">
+              <div class="img-placeholder" style="background:#e4e0d8">
+                <span>👟</span>
+                <small>sneakers-1.jpg</small>
+              </div>
+            </div>
+            <div class="cat-img-wrap sec">
+              <div class="img-placeholder" style="background:#d8d4cc">
+                <span>👟</span>
+                <small>sneakers-2.jpg</small>
+              </div>
+            </div>
+            <div class="cat-img-wrap thi">
+              <div class="img-placeholder" style="background:#ccc8c0">
+                <span>👟</span>
+                <small>sneakers-3.jpg</small>
+              </div>
+            </div>
+          </div>
+          <div class="cat-label-tag">Sneakers</div>
+        </div>
+        <div class="cat-info">
+          <h3>Sneakers & Chaussures</h3>
+          <p>Les modèles iconiques aux pieds des plus grands — confort maximal, style assuré.</p>
+          <ul class="cat-features">
+            <li>✦ Nike, Adidas, New Balance</li>
+            <li>✦ Éditions limitées disponibles</li>
+            <li>✦ Pointures 38 → 47</li>
+          </ul>
+          <a href="#contact" class="btn-dark sm">Commander</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ FEATURED T-SHIRTS ═══════════════════════════ -->
+  <section class="featured-collection">
+    <div class="container">
+      <div class="section-head scroll-reveal">
+        <p class="section-label">Collection Demo</p>
+        <h2 class="section-title">T-shirts Dior, Prada et modèles exclusifs</h2>
+        <p class="section-desc">Découvrez les visuels des pièces Dior-T, PRADA-T et les variantes T1 à T5 dans une présentation soignée.</p>
+      </div>
+      <div class="featured-grid scroll-reveal">
+        <article class="featured-item">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/DIOR-T.jpg" alt="Dior T-shirt">
+          <h4>Dior-T</h4>
+        </article>
+        <article class="featured-item">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/PRADA-T.jpg" alt="Prada T-shirt">
+          <h4>Prada</h4>
+        </article>
+        <article class="featured-item">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/T2.jpg" alt="T-shirt T2">
+          <h4>T2</h4>
+        </article>
+        <article class="featured-item">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/T3.jpg" alt="T-shirt T3">
+          <h4>T3</h4>
+        </article>
+        <article class="featured-item">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/T4.jpg" alt="T-shirt T4">
+          <h4>T4</h4>
+        </article>
+        <article class="featured-item">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/T5.jpg" alt="T-shirt T5">
+          <h4>T5</h4>
+        </article>
+        <article class="featured-item">
+          <img src="assets/tshirts/DIOR-TSHIRT_files/T6.jpg" alt="T-shirt T6">
+          <h4>T6</h4>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ BRANDS ═══════════════════════════ -->
+  <section class="brands-section" id="brands">
+    <div class="container">
+      <div class="section-head scroll-reveal">
+        <p class="section-label">Nos Marques</p>
+        <h2 class="section-title">Les plus <em>grandes</em><br>maisons du monde</h2>
+        <p class="section-desc">Nous sélectionnons uniquement des pièces authentiques des marques les plus reconnues.</p>
+      </div>
+      <div class="brands-grid scroll-reveal">
+        <div class="brand-card"><span>Gucci</span></div>
+        <div class="brand-card"><span>Tommy Hilfiger</span></div>
+        <div class="brand-card"><span>Lacoste</span></div>
+        <div class="brand-card"><span>Nike</span></div>
+        <div class="brand-card"><span>Adidas</span></div>
+        <div class="brand-card"><span>Ralph Lauren</span></div>
+        <div class="brand-card"><span>Balenciaga</span></div>
+        <div class="brand-card"><span>Levi's</span></div>
+        <div class="brand-card"><span>Calvin Klein</span></div>
+        <div class="brand-card"><span>Hugo Boss</span></div>
+        <div class="brand-card"><span>New Balance</span></div>
+        <div class="brand-card plus"><span>& Bien Plus</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ TESTIMONIALS ═══════════════════════════ -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-head scroll-reveal">
+        <p class="section-label">Ils nous font confiance</p>
+        <h2 class="section-title">Ce que disent<br>nos <em>clients</em></h2>
+      </div>
+      <div class="testi-grid">
+        <div class="testi-card scroll-reveal">
+          <div class="stars">★★★★★</div>
+          <p>"Qualité incroyable, j'ai commandé un t-shirt Gucci et il est parfaitement authentique. Hakim est sérieux et rapide !"</p>
+          <div class="testi-author">
+            <div class="testi-avatar">YB</div>
+            <div>
+              <strong>Youssef B.</strong>
+              <span>Casablanca</span>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card scroll-reveal delay-1">
+          <div class="stars">★★★★★</div>
+          <p>"Mes sneakers Nike sont arrivées le lendemain, en parfait état. Le service client est au top. Je recommande à 100%."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">SL</div>
+            <div>
+              <strong>Sara L.</strong>
+              <span>Casablanca</span>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card scroll-reveal delay-2">
+          <div class="stars">★★★★★</div>
+          <p>"J'ai trouvé des jeans Ralph Lauren introuvables ailleurs au Maroc. Les prix sont justes et la qualité est là."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">KM</div>
+            <div>
+              <strong>Karim M.</strong>
+              <span>Casablanca</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ CONTACT ═══════════════════════════ -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-left scroll-reveal">
+          <p class="section-label">Contactez-nous</p>
+          <h2 class="section-title">Parlons de<br>votre <em>style</em></h2>
+          <p class="section-desc">Vous cherchez une pièce spécifique ? Vous avez une question sur la taille ou la disponibilité ? Hakim répond personnellement.</p>
+
+          <div class="contact-details">
+            <a class="contact-item whatsapp" href="https://wa.me/212625490034" target="_blank">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </div>
+              <div>
+                <strong>WhatsApp / Téléphone</strong>
+                <span>+212 625 490 034</span>
+              </div>
+            </a>
+
+            <a class="contact-item instagram" href="https://www.instagram.com/" target="_blank">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              </div>
+              <div>
+                <strong>Instagram</strong>
+                <span>@hakim_almouallim</span>
+              </div>
+            </a>
+
+            <a class="contact-item facebook" href="https://www.facebook.com/" target="_blank">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              </div>
+              <div>
+                <strong>Facebook</strong>
+                <span>Hakim Al Mouallim</span>
+              </div>
+            </a>
+
+            <div class="contact-item location">
+              <div class="contact-item-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+              </div>
+              <div>
+                <strong>Adresse</strong>
+                <!-- Replace with your real address -->
+                <span>Casablanca, Maroc<br><small style="opacity:0.6">(Adresse complète à ajouter)</small></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-right scroll-reveal delay-1">
+          <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+            <h3>Envoyez un message</h3>
+            <div class="form-group">
+              <label>Votre nom</label>
+              <input type="text" placeholder="Ahmed El Fassi" required>
+            </div>
+            <div class="form-group">
+              <label>Téléphone / WhatsApp</label>
+              <input type="tel" placeholder="+212 6XX XXX XXX" required>
+            </div>
+            <div class="form-group">
+              <label>Ce que vous cherchez</label>
+              <select>
+                <option value="">Sélectionner une catégorie</option>
+                <option>T-Shirts</option>
+                <option>Pantalons & Jeans</option>
+                <option>Sneakers</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea placeholder="Je cherche un t-shirt Gucci taille L, disponible ?"></textarea>
+            </div>
+            <button type="submit" class="btn-dark full">
+              <span>Envoyer le message</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+            <p class="form-note">Ou contactez directement via WhatsApp au <a href="https://wa.me/212625490034">+212 625 490 034</a></p>
+          </form>
+
+          <div class="form-success" id="formSuccess" style="display:none">
+            <div class="success-icon">✓</div>
+            <h3>Message envoyé !</h3>
+            <p>Hakim vous répondra dans les plus brefs délais.</p>
+            <a href="https://wa.me/212625490034" class="btn-dark sm">Continuer sur WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+          <div class="footer-brand">
+          <div class="footer-logo">H Mode</div>
+          <p>Boutique de vêtements · Casablanca, Maroc</p>
+          <p>Vêtements premium — marques authentiques</p>
+        </div>
+        <div class="footer-links">
+          <strong>Navigation</strong>
+          <a href="#collection">Collection</a>
+          <a href="#categories">Catégories</a>
+          <a href="#brands">Marques</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-social-col">
+          <strong>Suivez-nous</strong>
+          <a href="https://wa.me/212625490034" target="_blank" class="social-link wa">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+          <a href="https://www.instagram.com/" target="_blank" class="social-link ig">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            Instagram
+          </a>
+          <a href="https://www.facebook.com/" target="_blank" class="social-link fb">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 H Mode — Tous droits réservés</span>
+        <span>Casablanca, Maroc 🇲🇦</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp button -->
+  <a href="https://wa.me/212625490034" class="float-wa" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

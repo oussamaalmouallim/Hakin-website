@@ -1,0 +1,274 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>E-commerce · Master Plan</title><style>
+:root{
+ --bg:#f5f1eb;--paper:#fffdf9;--ink:#1e211f;--muted:#77736c;
+ --line:#e5dfd5;--accent:#8b6f47;--accent2:#d8c4a4;--dark:#252724;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);
+font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.65}
+.container{max-width:1180px;margin:auto;padding:48px 28px 80px}
+.hero{background:linear-gradient(135deg,#262825,#3b3933);color:#fff;border-radius:28px;padding:48px;
+box-shadow:0 18px 50px #00000014;margin-bottom:28px}
+.kicker{letter-spacing:.16em;text-transform:uppercase;font-size:12px;color:#d9c5a5;font-weight:700}
+h1{font-family:Georgia,serif;font-size:46px;line-height:1.08;margin:12px 0}
+.hero p{max-width:780px;color:#ddd;margin:16px 0 0;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 25px #00000008}
+.card .num{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.12em}
+.card h3{margin:6px 0 8px;font-family:Georgia,serif}
+.section{margin-top:34px}.section-title{display:flex;align-items:end;gap:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.section-title span{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.12em}
+h2{font-family:Georgia,serif;font-size:30px;margin:0}
+h3{font-size:18px;margin-top:24px}
+table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;background:var(--paper);
+border:1px solid var(--line);border-radius:16px;margin:16px 0;box-shadow:0 7px 24px #00000007}
+th{background:#eee8de;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#615c53}
+th,td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}.tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#eee7dc;
+color:#6e5738;font-size:12px;font-weight:700;margin:3px}.callout{border-left:4px solid var(--accent);background:#eee8de;
+padding:18px 20px;border-radius:0 14px 14px 0;margin:18px 0}
+ul{padding-left:22px}.pillbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.footer{margin-top:45px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.hero{padding:32px}h1{font-size:36px}.container{padding:25px 16px 60px}}
+/* --- ajouts : bloc source-par-source --- */
+.source-block{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px 28px;margin:18px 0;box-shadow:0 7px 24px #00000007}
+.source-block h4{font-family:Georgia,serif;font-size:19px;margin:0 0 10px 0}
+.source-block p{margin:0 0 10px 0}
+.src{display:inline-block;font-size:11.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:10px}
+.data-pill{display:inline-block;background:#f1ece1;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:4px 6px 4px 0;font-size:13.5px}
+.data-pill b{color:var(--accent)}
+.mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:16px 0}
+.chapter-divider{margin-top:56px;padding-top:10px;border-top:2px solid var(--accent2)}
+</style></head><body>
+<div class="container">
+<header class="hero">
+<div class="kicker">ECOMMERCE · MASTER PLAN</div>
+<h1>E-commerce · Master Plan</h1>
+<p>La plateforme, le business model et la stratégie de sélection produit pour construire un e-commerce marocain data-driven.</p>
+<div class="pillbar"><span class="tag">Benchmarking</span><span class="tag">Data</span><span class="tag">Strategy</span><span class="tag">Scale</span></div>
+</header>
+<div class="grid"><div class="card"><div class="num">01 / 01</div><h3>Vision</h3><p>Une plateforme e-commerce marocaine pilotée par la donnée, la sélection produit et une exécution digitale forte.</p></div><div class="card"><div class="num">01 / 02</div><h3>Positionnement</h3><p>Pas un catalogue géant : une sélection de produits intéressants en demande, qualité, prix, marge et potentiel marketing.</p></div><div class="card"><div class="num">01 / 03</div><h3>Avantage terrain</h3><p>Électronique + accès aux fournisseurs de Casablanca + expertise mode + compétences IT et marketing.</p></div><div class="card"><div class="num">01 / 04</div><h3>3 univers</h3><p>Électronique · Électroménager · Mode & accessoires, avec possibilité d'élargir après validation des premiers produits.</p></div><div class="card"><div class="num">01 / 05</div><h3>Acquisition</h3><p>Instagram, Facebook, Meta Ads, contenu produit, retargeting, offres et tests rapides.</p></div><div class="card"><div class="num">01 / 06</div><h3>Moteur de décision</h3><p>Le scraper fournit les signaux marché ; le sourcing terrain valide la qualité et le coût ; les ventes valident réellement le produit.</p></div></div>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 07</span><h2>Architecture du projet</h2></div>
+<div class="callout"><strong>Principe :</strong> séparer clairement le storefront client, le back-office, les données produits, les commandes et le système de Market Intelligence.</div>
+<table><tr><th>Bloc</th><th>Rôle</th><th>Priorité</th></tr>
+<tr><td>Storefront</td><td>Catalogue, recherche, produit, panier, checkout</td><td>Élevée</td></tr>
+<tr><td>Back-office</td><td>Produits, stock, commandes, prix, promotions</td><td>Élevée</td></tr>
+<tr><td>Analytics</td><td>Ventes, marge, conversion, campagnes</td><td>Élevée</td></tr>
+<tr><td>Market Intelligence</td><td>Détection et scoring des opportunités</td><td>Élevée</td></tr></table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 08</span><h2>Catégories & catalogue</h2></div>
+<table><tr><th>Univers</th><th>Sous-catégories à tester</th><th>Angle</th></tr>
+<tr><td>Électronique</td><td>Chargeurs, câbles, écouteurs, accessoires, périphériques</td><td>Qualité / rapport prix</td></tr>
+<tr><td>Électroménager</td><td>Petits appareils, maison, loisirs</td><td>Utilité / prix / démonstration</td></tr>
+<tr><td>Mode homme</td><td>T-shirts, ensembles, pantalons, vestes, pièces tendance</td><td>Style / qualité / collection</td></tr>
+<tr><td>Sacs & accessoires</td><td>Sacs banane, sacs, portefeuilles, accessoires</td><td>Tendance / cadeau / usage</td></tr></table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 09</span><h2>Benchmark concurrentiel</h2></div>
+<table><tr><th>Canal</th><th>À observer</th><th>Question clé</th></tr>
+<tr><td>Marketplace</td><td>Prix, volume, offres</td><td>Qu'est-ce qui revient souvent ?</td></tr>
+<tr><td>Avito</td><td>Annonces, prix, vendeurs</td><td>Quels prix sont réellement affichés ?</td></tr>
+<tr><td>Jumia</td><td>Catalogue, promotions, avis</td><td>Quels produits sont structurés pour le e-commerce ?</td></tr>
+<tr><td>Instagram</td><td>Reels, boutiques, créateurs</td><td>Quels produits génèrent du contenu ?</td></tr>
+<tr><td>Facebook</td><td>Pages, Marketplace, publicité</td><td>Quelles offres attirent l'attention ?</td></tr></table>
+<div class="callout">Le détail de cette analyse, source par source, avec les données réellement observées et leur origine, est développé dans les chapitres 13 à 19 ci-dessous.</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 10</span><h2>Stratégie commerciale</h2></div>
+<div class="grid">
+<div class="card"><h3>Test rapide</h3><p>Petite quantité → contenu → publicité → mesure → décision.</p></div>
+<div class="card"><h3>Produit gagnant</h3><p>Réassort, meilleure créa, retargeting, bundle et montée en budget.</p></div>
+<div class="card"><h3>Produit faible</h3><p>Identifier la cause : produit, prix, créa, audience ou livraison.</p></div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 11</span><h2>KPI de pilotage</h2></div>
+<table><tr><th>KPI</th><th>Pourquoi</th></tr>
+<tr><td>Taux de conversion</td><td>Mesure l'efficacité du site.</td></tr>
+<tr><td>Panier moyen</td><td>Mesure la valeur d'une commande.</td></tr>
+<tr><td>CPA / CAC</td><td>Mesure le coût d'acquisition.</td></tr>
+<tr><td>ROAS</td><td>Mesure la performance publicitaire.</td></tr>
+<tr><td>Marge nette par commande</td><td>Mesure la vraie rentabilité.</td></tr>
+<tr><td>Taux de retour / annulation</td><td>Mesure la qualité opérationnelle.</td></tr></table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 12</span><h2>Roadmap</h2></div>
+<table><tr><th>Phase</th><th>Livrable</th></tr>
+<tr><td>01</td><td>Benchmark marché + concurrents + sources</td></tr>
+<tr><td>02</td><td>Scraper / Market Intelligence</td></tr>
+<tr><td>03</td><td>Sourcing + validation des premiers produits</td></tr>
+<tr><td>04</td><td>MVP e-commerce</td></tr>
+<tr><td>05</td><td>Premières campagnes et ventes</td></tr>
+<tr><td>06</td><td>Automatisation + scale</td></tr></table>
+</section>
+
+<div class="chapter-divider"></div>
+<div class="callout"><strong>À partir d'ici :</strong> analyse détaillée source par source — ce qui se vend, à quel prix, comment les vendeurs travaillent, et ce que le scraper peut réellement en tirer. Chaque donnée est accompagnée de sa source. Marché marocain uniquement.</div>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 13</span><h2>Facebook Marketplace & Facebook Pages</h2></div>
+
+<div class="source-block">
+<h4>Comment la plateforme fonctionne au Maroc</h4>
+<p>Marketplace est disponible au Maroc depuis son extension à l'Algérie, l'Égypte et le Maroc ; les utilisateurs filtrent par localisation, prix et catégorie (dont électroménager et vêtements), et communiquent via Messenger. Aucun paiement ni livraison n'est géré par la plateforme — tout se négocie de gré à gré entre vendeur et acheteur.</p>
+<div class="data-pill">Catégories natives : <b>électronique · maison & jardin · vêtements & accessoires</b></div>
+<div class="data-pill">Paiement/livraison : <b>hors plateforme</b>, négociés via Messenger</div>
+<div class="data-pill">Aide à la tarification intégrée : Facebook suggère un prix en comparant des annonces similaires</div>
+<div class="src">Sources : algerie-eco.com (lancement Marketplace Maroc/Algérie/Égypte) ; about.fb.com ; blogdumoderateur.com</div>
+</div>
+
+<div class="source-block">
+<h4>Ce que ça implique pour notre positionnement</h4>
+<p>Marketplace fonctionne comme une vitrine C2C informelle, avec négociation directe — c'est un bon indicateur de demande locale brute mais pas un modèle d'expérience d'achat à copier (pas de paiement sécurisé, pas de logistique structurée). Les Pages Facebook, elles, servent surtout de vitrine + relais publicitaire (Meta Ads) plutôt que de canal de vente direct au Maroc.</p>
+</div>
+
+<div class="callout">Pour le scraper : Facebook est la source la plus fermée des trois plateformes cibles (contenu chargé en JavaScript, connexion souvent requise) — signal utile mais coûteux à automatiser, à traiter en dernier et en mode "best-effort" plutôt qu'en dépendance critique du rapport.</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 14</span><h2>Avito.ma — analyse détaillée par catégorie</h2></div>
+<p>Avito reste la plus grande plateforme de petites annonces du Maroc, avec plus de 6 millions de visiteurs par mois dès 2017 et une croissance continue depuis (30 à 50 000 nouvelles annonces par jour selon les chiffres historiques de la plateforme et de son concurrent Bikhir, fusionnés en 2014). C'est la source la plus riche pour observer des prix réels affichés par des vendeurs marocains.</p>
+
+<h3>Électronique — écouteurs sans fil</h3>
+<div class="source-block">
+<p><b>489 offres</b> actives sur la recherche "écouteurs sans fils". Fourchette de prix observée : de <b>50 DH</b> (écouteurs Bluetooth F9 génériques, Casablanca) à <b>1 000 DH</b> (Samsung Galaxy Buds3 FE, Philips Sport). La grande majorité des annonces se situe entre <b>80 et 250 DH</b> — des produits génériques ou de marques secondaires (XMAY, Moi, Oraimo), rarement de vraies marques premium à prix plein.</p>
+<div class="data-pill">Bas de gamme générique : <b>50-130 DH</b></div>
+<div class="data-pill">Milieu de gamme (Jlab, montres connectées + écouteurs) : <b>200-690 DH</b></div>
+<div class="data-pill">Haut de gamme (Samsung, Philips) : <b>1 000 DH</b></div>
+<div class="src">Source : avito.ma/sp/misc/ecouteurs-sans-fils (relevé direct des annonces)</div>
+</div>
+
+<h3>Électronique — chargeurs</h3>
+<div class="source-block">
+<p><b>134 offres</b> sur "chargeur rapide type c" et près de <b>393</b> sur "chargeur usb c rapide". Les vendeurs marocains travaillent quasi exclusivement avec des marques génériques ou intermédiaires assumées comme telles : <b>Essager, YOO FACE, Oraimo, Goui</b> — peu d'annonces réclament l'appellation "Apple original", la plupart précisent "compatible" ou vendent le générique pour ce qu'il est, avec des mentions de garantie ("annonce 100% sérieuse", "garantie de notre boutique").</p>
+<div class="data-pill">Chargeurs génériques 20-65W : <b>fourchette large, boutiques structurées avec catalogue</b></div>
+<div class="data-pill">Chargeurs marque premium reconditionnés (HP 65-110W) : <b>300-690 DH</b></div>
+<div class="src">Source : avito.ma/sp/misc/chargeur-rapide-type-c et chargeur-usb-c-rapide</div>
+</div>
+
+<h3>Mode homme — t-shirts</h3>
+<div class="source-block">
+<p><b>119 offres</b> sur "shirt homme" et <b>1 773</b> sur "shirt". Trois segments nets : le t-shirt basique en gros (<b>20-25 DH/unité</b>, ex. "T-shirt 100% coton toutes les tailles 20dhs l'unité"), le t-shirt personnalisé/streetwear/oversize (<b>70-300 DH</b>, ex. boutique "H&H Signature" spécialisée dans le t-shirt personnalisé), et le vintage/"original" de marque à forte valeur perçue (<b>399-500 DH</b>, maillots de foot vintage, pièces de marque revendiquées authentiques).</p>
+<div class="data-pill">Gros / basique : <b>20-25 DH</b></div>
+<div class="data-pill">Personnalisé / streetwear / oversize : <b>70-300 DH</b></div>
+<div class="data-pill">Vintage / "original" revendiqué : <b>399-500 DH</b></div>
+<div class="src">Source : avito.ma/sp/misc/shirt-homme et shirt</div>
+</div>
+
+<h3>Sacs & accessoires</h3>
+<div class="source-block">
+<p><b>8 489 offres</b> sur "sacoche". Point notable et important pour notre positionnement : une part très visible des annonces de sacs à main utilise des noms de grandes marques accompagnés du mot "authentique" (Gucci, Louis Vuitton, Burberry, Coach, Michael Kors, Furla, Guess) — c'est exactement le segment de marché où le risque de contrefaçon et de bannissement publicitaire, déjà identifié dans nos échanges précédents, est le plus concentré. Les annonces qui ne jouent pas sur un nom de marque restent génériques ("beau sac à main pour femme", "sac pour femmes neuf") avec des prix visibles autour de <b>100 DH</b>.</p>
+<div class="data-pill">Sac générique sans marque revendiquée : <b>~100 DH</b></div>
+<div class="data-pill">Sac de sport / boxe (segment différent) : <b>550-750 DH</b> selon taille</div>
+<div class="src">Source : avito.ma/sp/misc/sacoche</div>
+</div>
+<div class="callout">Conséquence pour le sourcing avec Hakim : le segment "sac à main femme" sur Avito est structurellement dominé par des annonces de marques revendiquées — notre offre doit rester volontairement en dehors de ce segment (pas de logo, pas de nom de marque, pas de design distinctif copié), quitte à se positionner sur la fourchette basse-moyenne (100-300 DH) plutôt que d'entrer en concurrence directe sur ce terrain.</div>
+
+<h3>Électroménager</h3>
+<div class="source-block">
+<p><b>5 076 offres</b> sur "vente électroménager". Exemple d'annonce réelle relevée : <i>"Machine à laver et Four"</i> à Hay Hassani, Casablanca — machine à laver Haier 7kg + four à gaz inox, les deux pour <b>2 300 DH</b>. Les annonces électroménager sur Avito sont très majoritairement de l'occasion entre particuliers (déménagement, renouvellement) plutôt que du neuf en boutique, avec du petit électroménager vendu en lot ("plusieurs petits appareils électroménagers en bon état").</p>
+<div class="data-pill">Lot occasion (machine à laver + four) : <b>2 300 DH</b></div>
+<div class="data-pill">Réfrigérateur seul occasion récente : <b>~2 300 DH</b></div>
+<div class="src">Source : avito.ma/sp/misc/vente-electromenager ; annonce #58390709, Hay Hassani, Casablanca</div>
+</div>
+
+<div class="callout"><b>Pour le scraper :</b> Avito est la source la plus exploitable des trois — volume élevé, pas de rendu JavaScript lourd, catégories déjà segmentées par le site lui-même (Grand Électroménager, etc.), et les prix affichés sont directement lisibles sur les pages de résultats sans avoir à ouvrir chaque annonce.</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 15</span><h2>Jumia Maroc — stratégie prix et catalogue</h2></div>
+
+<div class="source-block">
+<h4>Le virage stratégique le plus important pour nous</h4>
+<p>Jumia a explicitement changé de modèle : avant 2022, la plateforme misait sur les grandes marques internationales et les articles de luxe, mais la rentabilité par unité n'était pas suffisante pour croître. Le groupe s'est réorienté vers un catalogue davantage composé de produits génériques sourcés directement en Chine, pour pouvoir aligner ses prix sur des acteurs comme Temu, notamment sur les catégories accessoires et mode — tout en gardant un avantage logistique local (livraison en 24h) que les plateformes purement chinoises ne peuvent pas offrir sur les produits volumineux.</p>
+<div class="src">Source : techcabal.com, "Modèle commercial de Jumia fabriqué en Chine", déc. 2025</div>
+</div>
+<div class="callout">C'est une validation externe forte de notre positionnement : le plus gros acteur e-commerce du Maroc a lui-même constaté que le tout-marque-de-luxe ne marchait pas à l'échelle, et a bâti sa croissance récente sur du générique qualité assumé plutôt que sur des marques.</div>
+
+<div class="source-block">
+<h4>Stratégie prix</h4>
+<p>Jumia s'engage sur des deals "Meilleur prix garanti" avec remboursement de 10 fois la différence si un prix inférieur est trouvé chez des enseignes de référence (Marjane, Carrefour, Electroplanet, FNAC, Virgin Megastore, Biougnach...). Le catalogue dépasse le million de produits. Les temps forts commerciaux (Black Friday, Jumia Anniversary) durent volontairement plusieurs semaines plutôt qu'un seul jour, avec des centaines de produits en promotion réparties entre mode et high-tech.</p>
+<div class="data-pill">Catalogue : <b>1M+ produits</b></div>
+<div class="data-pill">Black Friday : <b>~1 mois</b>, 340+ produits en promo (édition citée)</div>
+<div class="data-pill">Engagement prix : remboursement <b>10x la différence</b> si moins cher ailleurs</div>
+<div class="src">Sources : aujourdhui.ma ("Jumia lance les deals Meilleur prix garanti" ; "Jumia célèbre le Black Friday pendant près d'un mois") ; medias24.com</div>
+</div>
+
+<div class="callout"><b>Pour le scraper :</b> Jumia est la source la plus simple à collecter (pages catégories HTML classiques, pas de JS lourd, tri par popularité disponible) — à construire en premier dans la roadmap technique, comme déjà prévu dans le cahier des charges du scraper.</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 16</span><h2>Instagram — mode & créateurs marocains</h2></div>
+
+<div class="source-block">
+<h4>La montée du streetwear "made in Morocco"</h4>
+<p>Une nouvelle génération de créateurs marocains construit une identité de mode urbaine locale, qui prend de plus en plus de place à côté des marques de luxe et de fast-fashion internationales dans les rues et soirées des grandes villes marocaines. Il y a cinq ans, trouver une marque de streetwear 100% marocaine était presque impossible ; ce n'est plus le cas aujourd'hui.</p>
+<div class="src">Source : TelQuel, "Mode : quand le streetwear marocain prend la rue d'assaut", août 2024</div>
+</div>
+
+<div class="source-block">
+<h4>Repère historique de pricing local (marque marocaine indépendante)</h4>
+<p>Cas ancien mais instructif d'une marque de t-shirts marocaine ayant grandi via des "corners" (présentoirs) dans des points de vente partenaires plutôt qu'un magasin en propre : environ <b>200 DH</b> pour un t-shirt au prix plein, <b>150 DH</b> en solde — cohérent avec la fourchette "personnalisé/streetwear" observée aujourd'hui sur Avito (70-300 DH).</p>
+<div class="src">Source : L'Economiste, via bladi.net, "Les T-shirts décalés font fureur" (marque Gazal) — référence historique, à traiter comme repère de pricing plutôt que comme donnée actuelle</div>
+</div>
+
+<div class="callout"><b>Pour le scraper :</b> Instagram est la source la plus fermée pour une collecte automatisée directe (API limitée, contenu très dynamique). Le signal le plus réaliste à exploiter n'est pas le scraping direct des posts, mais une veille structurée : identifier une liste de comptes de référence (boutiques mode homme, streetwear marocain) et suivre manuellement ou via une recherche Google ciblée ce qu'ils mettent en avant — cohérent avec ce qui était déjà noté dans le cahier des charges du scraper (Instagram en phase 2, traité en veille plutôt qu'en collecte automatisée lourde).</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 17</span><h2>Google — recherche & tendances</h2></div>
+<div class="source-block">
+<p>Le volume de recherche Google par mot-clé produit (ex. "écouteurs bluetooth pas cher Maroc", "chargeur type c rapide") reste le signal le plus fiable pour confirmer qu'une demande identifiée sur Avito ou Jumia est bien une tendance de recherche réelle, et pas seulement un pic d'offre ponctuel. Comme déjà détaillé dans le cahier des charges du scraper, l'outil technique pour cela (API Google Custom Search) est fermé aux nouveaux clients et sera arrêté au 1er janvier 2027 — l'usage prévu pour ce projet reste donc du complément ponctuel, pas une dépendance structurelle.</p>
+<div class="src">Référence croisée : cahier des charges scraper Python, section 03 (API & outils gratuits)</div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 18</span><h2>Autres marketplaces marocaines & sources internationales</h2></div>
+
+<div class="mini-grid">
+<div class="source-block">
+<h4>MarocAnnonces.com</h4>
+<p>Le tout premier site de petites annonces en ligne du Maroc, lancé en 2000. Historiquement fort (60 000 visiteurs/jour, plus de 22 millions de pages vues/mois rapportés en 2012) mais désormais largement distancé par Avito : son trafic web est passé à environ <b>19,6 millions de visites sur l'année 2020</b>, en tendance baissière depuis 2018 — contre plusieurs millions de visiteurs <i>par mois</i> pour Avito sur la même période.</p>
+<div class="src">Sources : wamda.com (profil MarocAnnonces, 2012) ; statista.com (trafic 2017-2020)</div>
+</div>
+<div class="source-block">
+<h4>Avito vs MarocAnnonces — rapport de force</h4>
+<p>Dès 2014, Avito comptait déjà 3,2 millions de visiteurs uniques mensuels et environ 16 milliards de MAD de transactions estimées (2% du PIB marocain de l'époque), contre 3 000 annonces/jour pour MarocAnnonces qui refusait tout financement externe. Le marché des petites annonces marocain s'est depuis largement consolidé autour d'Avito.</p>
+<div class="src">Source : wamda.com, "Qui va gagner la guerre des petites annonces au Maroc ?", 2013-2014</div>
+</div>
+</div>
+
+<div class="source-block">
+<h4>Sourcing international — référence de coût (AliExpress)</h4>
+<p>À titre de repère de coût d'achat (et non de canal de revente), des écouteurs sans fil génériques se trouvent sur AliExpress dans une fourchette d'environ <b>7 à 25 €</b> (soit environ <b>75 à 280 DH</b> selon le taux de change et hors droits de douane), livraison Chine incluse. Comparé aux prix de revente observés sur Avito pour des produits équivalents (50-250 DH pour le générique, jusqu'à 690-1000 DH pour du milieu/haut de gamme), la marge potentielle sur l'électronique générique existe mais reste à valider précisément une fois les frais réels d'import et de douane connus.</p>
+<div class="src">Sources : journaldugeek.com, clubic.com (relevés de prix AliExpress, écouteurs Redmi Airdots 2 et Lenovo LP5)</div>
+</div>
+
+<div class="callout"><b>Pour le scraper :</b> MarocAnnonces reste une source secondaire utile en complément d'Avito (volume plus faible, mais gratuite et simple à scraper en HTML classique) — à ajouter en "bonus" comme déjà noté dans le cahier des charges technique, sans en faire une priorité de développement.</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 19</span><h2>Synthèse — ce que chaque source apporte réellement au scraper</h2></div>
+
+<table><tr><th>Source</th><th>Qualité du signal</th><th>Ce qu'on peut réellement en tirer</th><th>Effort de collecte</th></tr>
+<tr><td>Avito.ma</td><td>Élevée</td><td>Prix réels, volume d'annonces par mot-clé, positionnement des vendeurs (générique vs marque revendiquée)</td><td>Moyen</td></tr>
+<tr><td>Jumia Maroc</td><td>Élevée</td><td>Prix de référence "marché structuré", produits mis en avant lors des temps forts commerciaux</td><td>Faible</td></tr>
+<tr><td>MarocAnnonces</td><td>Moyenne</td><td>Signal complémentaire à Avito, volume plus faible</td><td>Faible</td></tr>
+<tr><td>Facebook Marketplace</td><td>Moyenne (accès difficile)</td><td>Demande locale brute, mais peu structuré et coûteux à automatiser</td><td>Élevé</td></tr>
+<tr><td>Instagram</td><td>Qualitative</td><td>Tendances de style, ce qui génère du contenu — veille plutôt que scraping</td><td>Élevé</td></tr>
+<tr><td>Google (recherche/tendances)</td><td>Confirmatoire</td><td>Valide qu'une tendance vue ailleurs est une vraie recherche, pas un artefact d'offre</td><td>Faible (mais accès limité dans le temps)</td></tr>
+<tr><td>AliExpress</td><td>Référence de coût</td><td>Base de calcul de marge, pas une source de tendance marché marocain</td><td>Ponctuel, manuel</td></tr>
+</table>
+
+<div class="callout">Conclusion opérationnelle : Avito et Jumia doivent porter l'essentiel du rapport hebdomadaire automatisé du scraper (fort volume, accès simple, prix directement lisibles). MarocAnnonces vient en complément à faible coût. Facebook et Instagram restent en veille qualitative plutôt qu'en collecte automatisée lourde, cohérent avec le cahier des charges technique déjà écrit. Google sert à confirmer, pas à découvrir.</div>
+</section>
+
+<div class="footer">Document de travail · Version 1.1 · Source-par-source ajoutée · À enrichir pendant le benchmarking</div></div></body></html>

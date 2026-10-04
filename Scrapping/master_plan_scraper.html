@@ -1,0 +1,103 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Market Intelligence · Scraper</title><style>
+:root{
+ --bg:#f5f1eb;--paper:#fffdf9;--ink:#1e211f;--muted:#77736c;
+ --line:#e5dfd5;--accent:#8b6f47;--accent2:#d8c4a4;--dark:#252724;
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);
+font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.65}
+.container{max-width:1180px;margin:auto;padding:48px 28px 80px}
+.hero{background:linear-gradient(135deg,#262825,#3b3933);color:#fff;border-radius:28px;padding:48px;
+box-shadow:0 18px 50px #00000014;margin-bottom:28px}
+.kicker{letter-spacing:.16em;text-transform:uppercase;font-size:12px;color:#d9c5a5;font-weight:700}
+h1{font-family:Georgia,serif;font-size:46px;line-height:1.08;margin:12px 0}
+.hero p{max-width:780px;color:#ddd;margin:16px 0 0;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 25px #00000008}
+.card .num{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.12em}
+.card h3{margin:6px 0 8px;font-family:Georgia,serif}
+.section{margin-top:34px}.section-title{display:flex;align-items:end;gap:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.section-title span{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.12em}
+h2{font-family:Georgia,serif;font-size:30px;margin:0}
+h3{font-size:18px;margin-top:24px}
+table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;background:var(--paper);
+border:1px solid var(--line);border-radius:16px;margin:16px 0;box-shadow:0 7px 24px #00000007}
+th{background:#eee8de;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#615c53}
+th,td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}.tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#eee7dc;
+color:#6e5738;font-size:12px;font-weight:700;margin:3px}.callout{border-left:4px solid var(--accent);background:#eee8de;
+padding:18px 20px;border-radius:0 14px 14px 0;margin:18px 0}
+ul{padding-left:22px}.pillbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.footer{margin-top:45px;text-align:center;color:var(--muted);font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.hero{padding:32px}h1{font-size:36px}.container{padding:25px 16px 60px}}
+</style></head><body>
+<div class="container">
+<header class="hero">
+<div class="kicker">ECOMMERCE · MASTER PLAN</div>
+<h1>Market Intelligence · Scraper</h1>
+<p>Le système de veille qui transforme le web en intelligence commerciale exploitable pour le sourcing et les ventes.</p>
+<div class="pillbar"><span class="tag">Benchmarking</span><span class="tag">Data</span><span class="tag">Strategy</span><span class="tag">Scale</span></div>
+</header>
+<div class="grid"><div class="card"><div class="num">01 / 01</div><h3>Mission</h3><p>Transformer les signaux publics du marché en décisions : quoi vendre, à quel prix, avec quelle concurrence et quel potentiel.</p></div><div class="card"><div class="num">01 / 02</div><h3>Architecture</h3><p>Trois pistes : n8n + Google Search, Python spécialisé, ou architecture hybride.</p></div><div class="card"><div class="num">01 / 03</div><h3>Sortie business</h3><p>Le résultat final n'est pas seulement une liste d'annonces : c'est un rapport de produits et d'opportunités.</p></div><div class="card"><div class="num">01 / 04</div><h3>Données</h3><p>Produit, catégorie, prix, source, URL, date, disponibilité, avis lorsque disponibles, historique et scores.</p></div><div class="card"><div class="num">01 / 05</div><h3>Scoring</h3><p>Demande + évolution + concurrence + prix + marge estimée + potentiel marketing + risques.</p></div><div class="card"><div class="num">01 / 06</div><h3>Rapports</h3><p>Rapport quotidien pour les changements et rapport hebdomadaire pour les décisions.</p></div></div>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 07</span><h2>Sources à benchmarker</h2></div>
+<table><tr><th>Source</th><th>Données potentielles</th><th>À vérifier</th></tr>
+<tr><td>Facebook Marketplace</td><td>Annonces, prix, produits</td><td>Accès, conditions et stabilité</td></tr>
+<tr><td>Avito</td><td>Annonces, catégories, prix</td><td>Structure et fréquence</td></tr>
+<tr><td>Jumia</td><td>Produits, prix, promotions, avis</td><td>Pages et données disponibles</td></tr>
+<tr><td>Google Search</td><td>Découverte de vendeurs et produits</td><td>API, quotas, pertinence</td></tr>
+<tr><td>Instagram / Facebook Pages</td><td>Signaux commerciaux publics</td><td>Accès et limites</td></tr></table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 08</span><h2>Comparatif des architectures</h2></div>
+<table><tr><th>Option</th><th>Force</th><th>Faiblesse</th><th>Usage</th></tr>
+<tr><td>n8n</td><td>Rapide, automatisation</td><td>Logique complexe moins confortable</td><td>Prototype / orchestration</td></tr>
+<tr><td>Python</td><td>Contrôle, traitement, scoring</td><td>Plus de développement</td><td>Core data</td></tr>
+<tr><td>Hybride</td><td>Combine les deux</td><td>Architecture plus riche</td><td>Version évolutive</td></tr></table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 09</span><h2>Pipeline</h2></div>
+<div class="callout"><strong>Collecte → Nettoyage → Normalisation → Déduplication → Analyse → Scoring → Rapport → Historique</strong></div>
+<table><tr><th>Étape</th><th>Résultat</th></tr>
+<tr><td>Collecte</td><td>Données brutes par source</td></tr>
+<tr><td>Nettoyage</td><td>Suppression des données inutiles</td></tr>
+<tr><td>Normalisation</td><td>Mêmes produits regroupés</td></tr>
+<tr><td>Scoring</td><td>Opportunités classées</td></tr></table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 10</span><h2>Structure Excel / dashboard</h2></div>
+<table><tr><th>Onglet</th><th>Contenu</th></tr>
+<tr><td>Produits</td><td>Catalogue normalisé</td></tr>
+<tr><td>Prix</td><td>Historique et fourchettes</td></tr>
+<tr><td>Tendances</td><td>Produits en hausse / baisse</td></tr>
+<tr><td>Opportunités</td><td>Top produits à tester</td></tr>
+<tr><td>Sources</td><td>État et qualité des collectes</td></tr></table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 11</span><h2>Dashboard</h2></div>
+<div class="grid"><div class="card"><h3>Market Pulse</h3><p>Produits qui montent, baissent ou apparaissent.</p></div>
+<div class="card"><h3>Price Radar</h3><p>Prix minimum, moyen et maximum par produit.</p></div>
+<div class="card"><h3>Opportunity</h3><p>Classement des produits selon le score.</p></div></div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 12</span><h2>Règles de robustesse</h2></div>
+<ul><li>Logs par source</li><li>Gestion des erreurs</li><li>Retries contrôlés</li><li>Historique des collectes</li><li>Déduplication</li><li>Monitoring</li><li>Respect des conditions d'utilisation et des limites d'accès</li></ul>
+</section>
+
+<section class="section">
+<div class="section-title"><span>CHAPTER 13</span><h2>Roadmap technique</h2></div>
+<table><tr><th>Phase</th><th>Objectif</th></tr>
+<tr><td>01</td><td>Benchmark des sources</td></tr>
+<tr><td>02</td><td>Prototype Google Search / n8n</td></tr>
+<tr><td>03</td><td>Prototype Python</td></tr>
+<tr><td>04</td><td>Comparaison et choix architecture</td></tr>
+<tr><td>05</td><td>Multi-sources + normalisation</td></tr>
+<tr><td>06</td><td>Scoring + Excel + dashboard</td></tr>
+<tr><td>07</td><td>Automatisation et monitoring</td></tr></table>
+</section>
+<div class="footer">Document de travail · Version 1.0 · À enrichir pendant le benchmarking</div></div></body></html>

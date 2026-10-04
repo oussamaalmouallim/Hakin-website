@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap — Première vente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ECE6D8; --paper-card:#F7F2E6; --ink:#1E2430; --ink-soft:#565F70; --line:#D9D2BD;
+    --emerald:#1F3F66; --emerald-soft:#DCE5EE; --brick:#2E4E70; --brick-soft:#DFE7EF; --brass:#B4881E; --white:#FFFDF7;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans', sans-serif; line-height:1.55; }
+  h1,h2,h3,.display{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; color:var(--ink); }
+  code,.mono{ font-family:'IBM Plex Mono', monospace; }
+  .layout{display:flex; min-height:100vh;}
+
+  nav.tabs{ width:246px; flex-shrink:0; background:var(--brick); color:#E5EDF4; position:sticky; top:0; height:100vh; overflow-y:auto; padding:28px 0; }
+  nav.tabs .brand{ padding:0 22px 22px 22px; border-bottom:1px solid rgba(255,255,255,0.18); margin-bottom:10px; }
+  nav.tabs .brand .tag{ font-size:11px; letter-spacing:0.06em; color:#BED2E5; }
+  nav.tabs .brand .name{ font-family:'Fraunces', serif; font-size:20px; font-weight:600; color:#fff; margin-top:4px; }
+  nav.tabs button{ display:flex; gap:10px; align-items:baseline; width:100%; text-align:left; background:none; border:none; color:#DEE8F0; font-family:'IBM Plex Sans'; font-size:13.5px; padding:9px 22px; cursor:pointer; border-left:3px solid transparent; }
+  nav.tabs button .num{ font-family:'Fraunces', serif; font-size:13px; color:#9FBCDA; min-width:20px; }
+  nav.tabs button:hover{ background:rgba(255,255,255,0.08); }
+  nav.tabs button.active{ background:rgba(255,255,255,0.1); border-left:3px solid var(--brass); color:#fff; }
+  nav.tabs button.active .num{ color:var(--brass); }
+
+  main{ flex:1; max-width:950px; padding:56px 64px 120px 64px; }
+  section{ display:none; }
+  section.active{ display:block; }
+
+  .kicker{ font-size:13px; color:var(--ink-soft); margin-bottom:6px; }
+  h1.title{ font-size:34px; margin:0 0 14px 0; }
+  p.lede{ font-size:16.5px; color:var(--ink-soft); max-width:64ch; margin-bottom:8px; }
+  h2.sec-title{ font-size:26px; margin:0 0 6px 0; }
+  .sec-sub{ color:var(--ink-soft); margin:0 0 26px 0; max-width:62ch; }
+  .divider{ height:1px; background:var(--line); margin:36px 0; }
+
+  .card{ background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:20px 22px; margin-bottom:14px; }
+  .card h3{ font-size:17px; margin:0 0 8px 0; }
+  .card p{ margin:0; color:var(--ink-soft); font-size:14.5px; }
+  .card ul{ margin:8px 0 0 0; padding-left:18px; color:var(--ink-soft); font-size:14px; }
+  .card li{ margin-bottom:5px; }
+
+  .warn{ border-left:4px solid var(--brick); }
+  .warn h3{ color:var(--brick); }
+  .go{ border-left:4px solid var(--brass); }
+
+  table{ width:100%; border-collapse:collapse; margin:16px 0 8px 0; font-size:13.8px; }
+  th{ text-align:left; font-weight:600; font-size:12px; color:var(--ink-soft); border-bottom:1px solid var(--ink); padding:7px 10px 7px 0; }
+  td{ padding:10px 10px 10px 0; border-bottom:1px solid var(--line); vertical-align:top; }
+  tr:last-child td{ border-bottom:none; }
+  .pill{ display:inline-block; font-size:11.5px; padding:2px 8px; border-radius:20px; background:var(--emerald-soft); color:var(--emerald); font-weight:600; white-space:nowrap; }
+  .pill.brick{ background:var(--brick-soft); color:var(--brick); }
+  .pill.brass{ background:#F3E9CB; color:#8A6710; }
+  code.inline{ background:var(--paper-card); border:1px solid var(--line); border-radius:3px; padding:1px 6px; font-size:12.5px; }
+
+  .day-flow{ margin:18px 0; }
+  .day-step{ display:grid; grid-template-columns:64px 1fr; gap:16px; padding:16px 0; border-top:1px solid var(--line); }
+  .day-step:first-child{ border-top:none; }
+  .day-step .daytag{ font-family:'Fraunces', serif; font-size:14px; color:var(--brick); font-weight:600; padding-top:2px; }
+  .day-step h4{ margin:0 0 6px 0; font-size:15.5px; font-weight:600; }
+  .day-step p{ margin:0 0 6px 0; color:var(--ink-soft); font-size:14px; }
+  .day-step ul{ margin:6px 0 0 0; padding-left:18px; color:var(--ink-soft); font-size:13.8px; }
+  .day-step li{ margin-bottom:4px; }
+
+  .hakim-tag{ display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:3px; background:#F3E9CB; color:#8A6710; margin-left:6px; }
+  .you-tag{ display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:3px; background:var(--emerald-soft); color:var(--emerald); margin-left:6px; }
+
+  .checklist{ list-style:none; padding:0; margin:16px 0; }
+  .checklist li{ display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line); font-size:14.5px; color:var(--ink-soft); }
+  .checklist li:first-child{ border-top:none; }
+  .checklist .box{ width:18px; height:18px; border:2px solid var(--brick); border-radius:3px; flex-shrink:0; margin-top:1px; }
+
+  .footnote{ margin-top:46px; padding-top:16px; border-top:1px solid var(--line); font-size:12.3px; color:var(--ink-soft); }
+
+  @media (max-width: 860px){
+    .layout{flex-direction:column;}
+    nav.tabs{ width:100%; height:auto; position:sticky; top:0; z-index:10; display:flex; overflow-x:auto; padding:14px 10px; }
+    nav.tabs .brand{ display:none; }
+    nav.tabs button{ white-space:nowrap; border-left:none; border-bottom:3px solid transparent; padding:8px 14px; }
+    nav.tabs button.active{ border-left:none; border-bottom:3px solid var(--brass); }
+    main{ padding:30px 18px 90px 18px; }
+    .day-step{ grid-template-columns:1fr; gap:6px; }
+    h1.title{ font-size:26px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <nav class="tabs" id="tabnav">
+    <div class="brand"><div class="tag">ROADMAP D'EXÉCUTION</div><div class="name">Première publication<br>&amp; première vente</div></div>
+    <button data-target="r0" class="active"><span class="num">00</span> Décision produit pilote</button>
+    <button data-target="r1"><span class="num">01</span> J1-2 · Brief &amp; sourcing</button>
+    <button data-target="r2"><span class="num">02</span> J2-4 · Achat &amp; réception</button>
+    <button data-target="r3"><span class="num">03</span> J3-5 · Prix &amp; marge</button>
+    <button data-target="r4"><span class="num">04</span> J4-6 · Vitrine minimale</button>
+    <button data-target="r5"><span class="num">05</span> J5-7 · Paiement &amp; livraison</button>
+    <button data-target="r6"><span class="num">06</span> J6-8 · Contenu &amp; publication</button>
+    <button data-target="r7"><span class="num">07</span> J7-10 · Premières Meta Ads</button>
+    <button data-target="r8"><span class="num">08</span> Gérer la 1ère vente</button>
+    <button data-target="r9"><span class="num">09</span> Après la vente</button>
+    <button data-target="r10"><span class="num">10</span> Rôle de Hakim</button>
+    <button data-target="r11"><span class="num">11</span> Checklist finale</button>
+  </nav>
+
+  <main>
+
+    <section id="r0" class="active">
+      <div class="kicker">Roadmap — de zéro à la première vente</div>
+      <h1 class="title">10 jours, un produit, une vente</h1>
+      <p class="lede">Pas la plateforme complète, pas le scraper d'abord — l'objectif ici est la première vente réelle, le plus vite possible, pour valider la demande avec de l'argent réel plutôt qu'avec des hypothèses.</p>
+
+      <div class="card go">
+        <h3>Le changement de séquence important</h3>
+        <p>Le plan plateforme prévoyait : scraper → sourcing → MVP plateforme → premières ventes. Pour aller vite vers une vraie vente, on inverse : on vend d'abord à la main (Instagram + WhatsApp), sans plateforme, sur UN seul produit. La plateforme et le scraper continuent de se construire en parallèle, mais ils ne sont plus sur le chemin critique de la première vente.</p>
+      </div>
+
+      <div class="card">
+        <h3>Quel produit pilote choisir ?</h3>
+        <p>Recommandation basée sur le benchmark déjà fait : un accessoire électronique générique à forte demande confirmée sur Avito (écouteurs sans fil ou chargeur rapide Type-C). Raisons :</p>
+        <ul>
+          <li>Sourcing rapide — pas besoin de déplacement chez un grossiste textile, juste une commande fournisseur</li>
+          <li>Demande déjà confirmée sur Avito (489 annonces "écouteurs sans fils", fourchette 50-1000 DH)</li>
+          <li>Toi seul peux juger la qualité technique — ton avantage réel</li>
+          <li>Petit, facile et peu coûteux à livrer</li>
+        </ul>
+        <p style="margin-top:10px;">Le sourcing mode avec Hakim démarre <strong>en parallèle</strong> cette même semaine (section 01 et 10), pour être prêt comme deuxième produit dans 1 à 2 semaines — pas sur le chemin critique du premier produit électronique.</p>
+      </div>
+
+      <div class="card warn">
+        <h3>Une hypothèse que je fais ici</h3>
+        <p>Je pars du principe que tu choisis l'électronique comme produit pilote pour la rapidité. Si tu préfères que le tout premier produit vendu soit une pièce mode sourcée par Hakim, la même structure de roadmap s'applique — seuls les jours 1 à 4 (sourcing) changent, tout le reste (prix, vitrine, paiement, publication, ads) reste identique.</p>
+      </div>
+    </section>
+
+    <section id="r1">
+      <div class="kicker">Section 01</div>
+      <h2 class="sec-title">Jour 1-2 — Brief produit &amp; lancement du sourcing</h2>
+      <p class="sec-sub">Deux pistes en parallèle dès aujourd'hui : le produit pilote électronique, et le repérage mode avec Hakim.</p>
+
+      <div class="day-flow">
+        <div class="day-step">
+          <div class="daytag">J1</div>
+          <div>
+            <h4>Choisir le produit exact <span class="you-tag">TOI</span></h4>
+            <p>Pas "des écouteurs" en général — un modèle précis. Regarde sur Avito les annonces les plus récentes et les plus nombreuses dans la fourchette 100-250 DH pour repérer quel type précis revient le plus (forme, autonomie annoncée, présence d'un boîtier de charge).</p>
+            <ul><li>Fixe un objectif simple : 1 référence, pas une gamme</li><li>Note la fourchette de prix de vente déjà pratiquée par les autres vendeurs</li></ul>
+          </div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">J1</div>
+          <div>
+            <h4>Identifier 2-3 fournisseurs possibles <span class="you-tag">TOI</span></h4>
+            <p>Deux options à comparer en parallèle : un fournisseur en ligne (type AliExpress, délai plus long mais prix unitaire bas en gros) ou un grossiste local d'accessoires électroniques (souvent présents en centre-ville à Casablanca, quantité plus faible possible mais réception immédiate — utile pour un premier test sans attendre 2-3 semaines de livraison).</p>
+          </div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">J1-2</div>
+          <div>
+            <h4>Brief Hakim <span class="hakim-tag">HAKIM</span></h4>
+            <p>Donne-lui un brief court et précis plutôt que "trouve des vêtements sympas" :</p>
+            <ul>
+              <li>2 à 3 pièces maximum pour ce premier tour (pas une collection)</li>
+              <li>Cible : t-shirt/pièce streetwear qualité, dans la fourchette 70-300 DH observée sur Avito pour ce segment</li>
+              <li>Consigne explicite : aucune pièce avec logo ou design copiant une marque connue — tissu et coupe qualité, mais sans référence de marque</li>
+              <li>Il ramène des photos + prix d'achat en gros pour chaque pièce candidate, pas encore d'achat ferme</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="r2">
+      <div class="kicker">Section 02</div>
+      <h2 class="sec-title">Jour 2-4 — Achat &amp; réception</h2>
+      <p class="sec-sub">On passe de "candidat" à "produit en main".</p>
+
+      <div class="day-flow">
+        <div class="day-step">
+          <div class="daytag">J2-3</div>
+          <div>
+            <h4>Commande du produit pilote (petite quantité) <span class="you-tag">TOI</span></h4>
+            <p>Volontairement petit volume pour ce premier tour (quelques unités, pas un stock complet) — l'objectif est de valider la vente, pas de stocker.</p>
+          </div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">J3-4</div>
+          <div>
+            <h4>Décision finale sur la pièce mode <span class="you-tag">TOI</span> <span class="hakim-tag">HAKIM</span></h4>
+            <p>Avec les photos et prix ramenés par Hakim, tu tranches avec ton œil "j'habille bien, je sais ce qui se vend" — choisis 1 seule pièce pour ce premier tour, pas les 2-3. Hakim retourne l'acheter en petite quantité une fois la pièce choisie.</p>
+          </div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">J3-4</div>
+          <div>
+            <h4>Contrôle qualité à réception <span class="you-tag">TOI</span></h4>
+            <p>Vérifie concrètement ce que tu vendrais toi-même : le chargeur/écouteur fonctionne-t-il comme annoncé, la couture du vêtement tient-elle. C'est le seul filtre qualité à ce stade — pas de process compliqué, juste ton jugement direct sur l'unité en main.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="r3">
+      <div class="kicker">Section 03</div>
+      <h2 class="sec-title">Jour 3-5 — Prix &amp; marge</h2>
+      <p class="sec-sub">Se positionner par rapport à ce qui existe déjà, pas dans le vide.</p>
+
+      <table>
+        <thead><tr><th>Produit</th><th>Repère prix marché (Avito)</th><th>Repère coût d'achat</th><th>Prix de vente suggéré</th></tr></thead>
+        <tbody>
+          <tr><td>Écouteurs sans fil génériques qualité</td><td>80-250 DH (segment générique/milieu)</td><td>~75-140 DH selon le fournisseur (à confirmer avec le devis réel, frais de port/douane inclus)</td><td>150-200 DH</td></tr>
+          <tr><td>Chargeur rapide Type-C générique</td><td>Large fourchette, boutiques structurées</td><td>À obtenir via devis fournisseur direct</td><td>À fixer après devis</td></tr>
+          <tr><td>T-shirt/pièce streetwear (Hakim)</td><td>70-300 DH selon qualité perçue</td><td>Prix de gros Qri3a ramené par Hakim</td><td>Viser le tiers médian de la fourchette pour un premier test (ni le plus bas ni le plus cher)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="card warn">
+        <h3>Sois honnête sur la marge tant que le devis réel n'est pas confirmé</h3>
+        <p>Les chiffres ci-dessus sont des repères tirés du benchmark, pas une marge garantie — le vrai coût dépend des frais de port, de la douane et du taux de change au moment de la commande. Ne fixe le prix de vente final qu'une fois le coût d'achat réel confirmé par le fournisseur, pas sur une estimation.</p>
+      </div>
+    </section>
+
+    <section id="r4">
+      <div class="kicker">Section 04</div>
+      <h2 class="sec-title">Jour 4-6 — Vitrine minimale (pas la plateforme)</h2>
+      <p class="sec-sub">Le strict nécessaire pour pouvoir vendre cette semaine.</p>
+
+      <div class="card">
+        <h3>Ce qu'il faut, et rien de plus</h3>
+        <ul>
+          <li><strong>Un compte Instagram Business</strong> (ou celui existant si tu en as un) avec une bio claire : ce que tu vends, à qui, comment commander</li>
+          <li><strong>WhatsApp Business</strong> pour recevoir les commandes et confirmer prix/livraison directement — c'est comme ça que la majorité des ventes se concluent réellement au Maroc sur ce type de produit, Marketplace et Instagram y compris</li>
+          <li>3 à 5 photos nettes du produit en main (pas besoin de studio — lumière naturelle, fond neutre)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Ce qui peut attendre</h3>
+        <p>Le site e-commerce complet, le scraper automatisé, le catalogue multi-produits — tout ça continue de se construire en parallèle (dossiers déjà faits), mais rien de tout ça n'est nécessaire pour obtenir une première vente cette semaine.</p>
+      </div>
+    </section>
+
+    <section id="r5">
+      <div class="kicker">Section 05</div>
+      <h2 class="sec-title">Jour 5-7 — Paiement &amp; livraison</h2>
+      <p class="sec-sub">Simple et fiable plutôt que sophistiqué.</p>
+
+      <div class="card">
+        <h3>Paiement à la livraison (COD)</h3>
+        <p>C'est le mode de paiement de confiance dominant au Maroc pour ce type d'achat en ligne — à proposer par défaut pour ce premier test, sans complexité de paiement en ligne à intégrer.</p>
+      </div>
+      <div class="card">
+        <h3>Livraison</h3>
+        <p>Pour un premier test à faible volume : remise en main propre pour les commandes à Casablanca (comme la majorité des vendeurs Avito/Marketplace observés dans le benchmark), et un service de livraison coursier/messagerie pour les autres villes le temps de valider le produit — pas besoin de contrat logistique complet dès ce premier tour.</p>
+      </div>
+    </section>
+
+    <section id="r6">
+      <div class="kicker">Section 06</div>
+      <h2 class="sec-title">Jour 6-8 — Contenu &amp; publication</h2>
+      <p class="sec-sub">Le premier post compte plus que dix posts parfaits plus tard.</p>
+
+      <div class="day-flow">
+        <div class="day-step">
+          <div class="daytag">J6</div>
+          <div><h4>1 Reel produit <span class="you-tag">TOI</span></h4><p>Toi qui présentes/testes le produit — ta crédibilité technique (électronique) ou ton style (mode) est l'argument le plus fort, plus que n'importe quelle description écrite.</p></div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">J7</div>
+          <div><h4>Post carrousel avec prix affiché <span class="you-tag">TOI</span></h4><p>Prix visible directement dans le post (comme la majorité des annonces Avito qui affichent le prix sans "consulter le prix") — ça filtre les vraies intentions d'achat et évite les échanges DM à rallonge.</p></div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">J8</div>
+          <div><h4>Partage dans ton réseau proche <span class="you-tag">TOI</span></h4><p>Avant même la pub payante — ton entourage, groupes WhatsApp, story avec lien "commander en DM". La toute première vente vient souvent de là, pas de la publicité.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="r7">
+      <div class="kicker">Section 07</div>
+      <h2 class="sec-title">Jour 7-10 — Premières Meta Ads</h2>
+      <p class="sec-sub">Un test, pas une campagne.</p>
+
+      <div class="card">
+        <h3>Budget de test</h3>
+        <p>Petit budget quotidien sur quelques jours, ciblé sur Casablanca et grandes villes, plutôt qu'un gros budget national d'un coup — l'objectif est d'apprendre si l'annonce convertit, pas encore de scaler.</p>
+      </div>
+      <div class="card">
+        <h3>Créa</h3>
+        <p>Réutilise le Reel du jour 6 comme publicité plutôt que de créer un visuel pub séparé — le format "présentation authentique par le vendeur" performe généralement mieux qu'une image produit posée pour ce type d'achat impulsif/prix accessible.</p>
+      </div>
+    </section>
+
+    <section id="r8">
+      <div class="kicker">Section 08</div>
+      <h2 class="sec-title">Gérer la première vente</h2>
+      <p class="sec-sub">Ce qui se passe concrètement quand quelqu'un commande.</p>
+
+      <div class="day-flow">
+        <div class="day-step">
+          <div class="daytag">→</div>
+          <div><h4>Réception de la commande (DM ou WhatsApp)</h4><p>Confirme produit, prix, ville et mode de livraison dans le même échange — pas d'aller-retour inutile.</p></div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">→</div>
+          <div><h4>Confirmation avant expédition</h4><p>Un message de confirmation juste avant l'envoi/la remise réduit le risque de refus à la livraison — un point de friction connu du COD au Maroc.</p></div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">→</div>
+          <div><h4>Livraison &amp; encaissement</h4><p>Remise en main propre ou coursier selon la ville, encaissement à la livraison.</p></div>
+        </div>
+        <div class="day-step">
+          <div class="daytag">→</div>
+          <div><h4>Demande d'avis</h4><p>Un message simple après livraison pour demander un retour ou une photo — la toute première preuve sociale, à réutiliser dans le prochain post.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="r9">
+      <div class="kicker">Section 09</div>
+      <h2 class="sec-title">Après la première vente</h2>
+      <p class="sec-sub">Ce que ça déclenche.</p>
+
+      <div class="card go">
+        <h3>Si ça a marché</h3>
+        <p>Réassort du même produit, deuxième pièce mode avec Hakim, montée progressive du budget Meta Ads sur ce qui a converti — et c'est le moment de commencer à automatiser (scraper, plateforme) puisque tu as enfin un vrai signal de vente à comparer aux prédictions du scraper.</p>
+      </div>
+      <div class="card warn">
+        <h3>Si ça n'a pas marché</h3>
+        <p>Identifie la cause avant de tout changer : produit (qualité/attrait), prix (trop haut par rapport au repère Avito), créa (le Reel ne donne pas envie), ou audience (mauvais ciblage) — change une seule variable à la fois pour le prochain test plutôt que de tout recommencer de zéro.</p>
+      </div>
+    </section>
+
+    <section id="r10">
+      <div class="kicker">Section 10</div>
+      <h2 class="sec-title">Rôle de Hakim — récapitulatif</h2>
+      <p class="sec-sub">Ce qui lui revient concrètement dans ces 10 jours.</p>
+
+      <table>
+        <thead><tr><th>Quand</th><th>Action de Hakim</th></tr></thead>
+        <tbody>
+          <tr><td>J1-2</td><td>Repère 2-3 pièces candidates chez ses contacts grossistes à Qri3a, ramène photos + prix d'achat en gros — aucun achat ferme à ce stade</td></tr>
+          <tr><td>J3-4</td><td>Une fois la pièce choisie avec toi, retourne l'acheter en petite quantité (pas de stock complet pour ce premier test)</td></tr>
+          <tr><td>J6-8</td><td>Peut apparaître dans le contenu si la pièce lui va bien — sa crédibilité terrain (il connaît la qualité du tissu) est un bon argument de vente à mettre en avant</td></tr>
+          <tr><td>Après 1ère vente</td><td>Si le produit électronique a été le pilote, la pièce mode devient le 2ème produit à publier — même séquence (contenu → prix affiché → partage réseau → petit budget Ads)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="r11">
+      <div class="kicker">Section 11</div>
+      <h2 class="sec-title">Checklist finale — prêt à publier</h2>
+      <p class="sec-sub">À cocher avant le tout premier post.</p>
+
+      <ul class="checklist">
+        <li><span class="box"></span> Un seul produit choisi, en main, contrôlé qualité</li>
+        <li><span class="box"></span> Prix de vente fixé à partir du repère Avito et du coût d'achat réel confirmé</li>
+        <li><span class="box"></span> Compte Instagram Business + WhatsApp Business prêts</li>
+        <li><span class="box"></span> 3-5 photos nettes du produit</li>
+        <li><span class="box"></span> Mode de paiement (COD) et mode de livraison décidés</li>
+        <li><span class="box"></span> Premier Reel tourné</li>
+        <li><span class="box"></span> Pièce mode Hakim identifiée pour le deuxième tour</li>
+      </ul>
+
+      <div class="footnote">Roadmap d'exécution — complète le dossier stratégie, le cahier des charges scraper, et le master plan e-commerce déjà produits. Objectif unique de ce document : la première vente réelle, le plus vite possible.</div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('nav.tabs button');
+  const sections = document.querySelectorAll('main section');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.target).classList.add('active');
+      document.querySelector('main').scrollTo(0,0);
+      window.scrollTo(0,0);
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>E-commerce · Master Plan · Market Intelligence Maroc</title>
+<style>
+:root{
+ --bg:#f5f1eb;--paper:#fffdf9;--ink:#1e211f;--muted:#77736c;
+ --line:#e5dfd5;--accent:#8b6f47;--accent2:#d8c4a4;--dark:#252724;
+ --green:#58735f;--red:#8a4e48;--blue:#4e6577;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.65}
+.container{max-width:1240px;margin:auto;padding:42px 26px 80px}
+.hero{background:linear-gradient(135deg,#262825,#3b3933);color:#fff;border-radius:28px;padding:46px;box-shadow:0 18px 50px #00000014;margin-bottom:28px}
+.kicker{letter-spacing:.16em;text-transform:uppercase;font-size:12px;color:#d9c5a5;font-weight:700}
+h1{font-family:Georgia,serif;font-size:45px;line-height:1.08;margin:12px 0}
+.hero p{max-width:900px;color:#ddd;margin:16px 0 0;font-size:17px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 25px #00000008}
+.card .num{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.12em}
+.card h3{margin:6px 0 8px;font-family:Georgia,serif}
+.section{margin-top:36px}
+.section-title{display:flex;align-items:end;gap:14px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.section-title span{font-size:12px;color:var(--accent);font-weight:800;letter-spacing:.12em}
+h2{font-family:Georgia,serif;font-size:30px;margin:0}
+h3{font-size:18px;margin-top:24px}
+table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;background:var(--paper);border:1px solid var(--line);border-radius:16px;margin:16px 0;box-shadow:0 7px 24px #00000007}
+th{background:#eee8de;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#615c53}
+th,td{padding:13px 15px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tag{display:inline-block;padding:5px 10px;border-radius:999px;background:#eee7dc;color:#6e5738;font-size:12px;font-weight:700;margin:3px}
+.status{display:inline-block;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.status.ok{background:#e4eee6;color:var(--green)}
+.status.partial{background:#eee8dc;color:#78603b}
+.status.pending{background:#f0e2e0;color:var(--red)}
+.callout{border-left:4px solid var(--accent);background:#eee8de;padding:18px 20px;border-radius:0 14px 14px 0;margin:18px 0}
+.source{font-size:12px;color:var(--muted)}
+.source a{color:#705a3d}
+.evidence{background:#f8f4ed;border:1px solid var(--line);padding:15px 17px;border-radius:14px;margin:12px 0}
+.evidence strong{color:var(--dark)}
+.small{font-size:13px;color:var(--muted)}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
+.pillbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.footer{margin-top:45px;text-align:center;color:var(--muted);font-size:12px}
+ol,ul{padding-left:22px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.hero{padding:32px}h1{font-size:36px}.container{padding:25px 16px 60px}table{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="hero">
+<div class="kicker">ECOMMERCE · MASTER PLAN · MARKET INTELLIGENCE MAROC</div>
+<h1>Construire l'e-commerce à partir des données réelles du marché marocain</h1>
+<p>
+Ce document transforme le benchmark initial en plan de recherche exploitable :
+sources marocaines et internationales réellement accessibles, données effectivement observées,
+prix affichés, signaux de demande, méthodes de vente, stratégie concurrentielle et limites du scraping.
+Aucune donnée non vérifiée n'est présentée comme un fait.
+</p>
+<div class="pillbar">
+<span class="tag">Maroc uniquement pour la décision commerciale</span>
+<span class="tag">Source obligatoire</span>
+<span class="tag">Prix observé ≠ prix vendu</span>
+<span class="tag">Scraping + validation terrain</span>
+<span class="tag">Snapshot septembre 2026</span>
+</div>
+</header>
+
+<section class="section">
+<div class="section-title"><span>00 / RÈGLE DE RECHERCHE</span><h2>Ne jamais confondre signal, observation et vente réelle</h2></div>
+<div class="callout">
+<strong>Règle centrale :</strong> le scraper ne doit pas prétendre savoir combien un produit se vend réellement
+si la source ne publie pas cette information. Il collecte des <strong>signaux observables</strong> :
+prix, fréquence d'apparition, disponibilité, avis, notes, promotions, nombre de ventes affiché quand la plateforme le fournit,
+engagement public, présence multi-canaux, évolution dans le temps, etc.
+</div>
+<table>
+<tr><th>Niveau</th><th>Ce que cela signifie</th><th>Exemple</th></tr>
+<tr><td><span class="status ok">A — donnée directe</span></td><td>Valeur explicitement publiée par la source.</td><td>Jumia affiche 249 DH pour les Anker Soundcore A20i.</td></tr>
+<tr><td><span class="status ok">B — signal comportemental</span></td><td>La plateforme publie un indicateur lié à l'intérêt.</td><td>SHEIN affiche « 999K+ vendus récemment » pour un produit.</td></tr>
+<tr><td><span class="status partial">C — proxy</span></td><td>Le signal indique une visibilité ou une demande potentielle, pas des ventes.</td><td>Nombre d'avis, classement « plus demandés », présence répétée.</td></tr>
+<tr><td><span class="status pending">D — hypothèse</span></td><td>À tester par sourcing, publicité ou vente réelle.</td><td>« Ce produit devrait être rentable au Maroc ».</td></tr>
+</table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>01 / MARCHÉ MAROCAIN</span><h2>Ce que les études permettent réellement d'affirmer</h2></div>
+
+<div class="grid">
+<div class="card"><div class="num">ÉTUDE 01</div><h3>Ipsos · Spotlight Maroc</h3>
+<p><strong>7 personnes sur 10 au Maroc font des achats en ligne</strong>, selon l'étude publiée le 27 novembre 2024. L'étude indique aussi que les détaillants exclusivement en ligne et les pages de médias sociaux figurent parmi les canaux d'achat en ligne les plus populaires.</p>
+<p class="source">Source : <a href="https://www.ipsos.com/fr-ma/spotlightmaroc-comportement-et-attitudes-dachat-en-ligne" target="_blank">Ipsos · Spotlight*Maroc</a></p>
+</div>
+
+<div class="card"><div class="num">ÉTUDE 02</div><h3>ANRT · TIC 2023–2024</h3>
+<p>L'ANRT rapporte <strong>453 000 utilisateurs additionnels du commerce en ligne en 2023 par rapport à 2022</strong>. La note indique une progression à la fois en milieu urbain et rural et précise que les fréquences d'achat sont restées relativement stables.</p>
+<p class="source">Source : <a href="https://www.anrt.ma/sites/default/files/2024-10/Enqu%C3%AAte%20usage%20des%20TIC%20-%202023-2024.pdf" target="_blank">ANRT · Enquête usage des TIC 2023–2024</a></p>
+</div>
+
+<div class="card"><div class="num">ÉTUDE 03</div><h3>DataReportal · Digital 2025</h3>
+<p>Les outils publicitaires de Meta indiquaient au début de 2025 une audience potentielle de <strong>21,3 M sur Facebook</strong> et <strong>13,1 M sur Instagram</strong> au Maroc. Ces chiffres sont des audiences publicitaires et non des utilisateurs actifs certifiés ; Meta a révisé ses méthodes de reporting.</p>
+<p class="source">Source : <a href="https://datareportal.com/reports/digital-2025-morocco" target="_blank">DataReportal · Digital 2025 Morocco</a></p>
+</div>
+</div>
+
+<div class="evidence">
+<strong>Implication pour le projet :</strong> le marché justifie un moteur combinant marketplaces + social commerce + recherche web,
+mais aucune étude générale ne permet à elle seule de dire « quel produit est le meilleur ».
+La sélection doit donc être alimentée par les observations source par source puis validée par les ventes propres.
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>02 / SOURCE 01</span><h2>Jumia Maroc</h2></div>
+<p><span class="status ok">Données produit observées</span> <span class="status ok">Prix observés</span> <span class="status ok">Avis / notes visibles</span> <span class="status ok">Signaux de demande visibles</span></p>
+
+<h3>Ce que le snapshot permet d'observer</h3>
+<table>
+<tr><th>Famille</th><th>Exemples réellement affichés</th><th>Prix observé</th><th>Autres signaux</th></tr>
+<tr><td>Écouteurs</td><td>Anker Soundcore A20i</td><td>249 DH</td><td>28 h, Bluetooth 5.3, promotion affichée dans la page de résultats.</td></tr>
+<tr><td>Écouteurs</td><td>Itel BudsNeo Pro</td><td>119 DH</td><td>Promotion affichée.</td></tr>
+<tr><td>Écouteurs</td><td>Haylou X1 Plus</td><td>109 DH</td><td>Promotion affichée.</td></tr>
+<tr><td>Écouteurs</td><td>Produits génériques TWS</td><td>72–199 DH dans l'échantillon observé</td><td>Promotions et positionnement prix visibles.</td></tr>
+<tr><td>Petit électroménager</td><td>Taurus Robot Mixeur Plongeant 750 Easy</td><td>169 DH</td><td>58 % de remise affichée.</td></tr>
+<tr><td>Petit électroménager</td><td>Solac Pack mixeur + blender</td><td>599 DH</td><td>33 % de remise affichée.</td></tr>
+<tr><td>Petit électroménager</td><td>Moulinex EasyChef DD4518</td><td>369 DH</td><td>Garantie 2 ans mentionnée.</td></tr>
+<tr><td>Accessoires</td><td>Sac banane de sport réglable</td><td>119 DH</td><td>Présence dans une page catégorie.</td></tr>
+</table>
+<p class="source">
+Sources : <a href="https://www.jumia.ma/catalog/productspecifications/sku/GE232BN0X9WO8NAFAMZ/" target="_blank">Jumia · écouteurs</a> ·
+<a href="https://www.jumia.ma/catalog/productspecifications/sku/MA214FD0AOA5MNAFAMZ/" target="_blank">Jumia · mixeurs</a> ·
+<a href="https://www.jumia.ma/sac/" target="_blank">Jumia · sacs</a>.
+Snapshot des pages indexées par le moteur de recherche ; les prix et promotions doivent être re-capturés avant toute décision.
+</p>
+
+<h3>Ce que le scraper doit extraire</h3>
+<table>
+<tr><th>Champ</th><th>Utilité business</th></tr>
+<tr><td>Produit / marque / modèle / SKU</td><td>Déduplication et rapprochement entre vendeurs.</td></tr>
+<tr><td>Prix actuel / prix barré / remise</td><td>Positionnement et historique promotionnel.</td></tr>
+<tr><td>Note / nombre d'avis</td><td>Proxy de preuve sociale ; jamais assimilé aux ventes.</td></tr>
+<tr><td>Disponibilité / stock affiché</td><td>Signal opérationnel ; à conserver avec date/heure.</td></tr>
+<tr><td>Catégorie / sous-catégorie</td><td>Détection des familles récurrentes.</td></tr>
+<tr><td>Vendeur</td><td>Identifier les vendeurs multi-produits et comparer leurs prix.</td></tr>
+<tr><td>Badge / classement / « plus demandés » si visible</td><td>Signal de popularité fourni par la plateforme.</td></tr>
+<tr><td>Image / URL / date de collecte</td><td>Traçabilité et comparaison temporelle.</td></tr>
+</table>
+
+<h3>Stratégies observables</h3>
+<ul>
+<li>Promotions avec prix initial + prix actuel.</li>
+<li>Large amplitude de prix dans une même famille, permettant une analyse du segment entrée de gamme / milieu de gamme.</li>
+<li>Présence de marques connues à côté de produits génériques.</li>
+<li>Pages de catégorie permettant de suivre les produits récurrents.</li>
+</ul>
+<p><strong>À ne pas déduire :</strong> un prix bas ou une remise élevée ne prouve pas qu'un produit se vend beaucoup.</p>
+</section>
+
+<section class="section">
+<div class="section-title"><span>03 / SOURCE 02</span><h2>Avito Maroc</h2></div>
+<p><span class="status pending">Collecte produit à réaliser</span></p>
+<div class="callout">
+Le snapshot de recherche utilisé pour ce Master Plan n'a pas fourni une série suffisamment fiable de fiches Avito individuelles pour publier des prix comme « données marché ».
+<strong>Aucune valeur Avito n'est donc inventée ici.</strong>
+</div>
+<h3>Ce que le collecteur devra chercher</h3>
+<table>
+<tr><th>Signal</th><th>Pourquoi il est important au Maroc</th></tr>
+<tr><td>Prix demandé</td><td>Permet d'observer le marché de l'offre C2C/professionnelle.</td></tr>
+<tr><td>Ville / zone</td><td>Permet de distinguer Casablanca, Rabat, Marrakech, Tanger, etc.</td></tr>
+<tr><td>État : neuf / occasion</td><td>Indispensable pour éviter de comparer des offres non comparables.</td></tr>
+<tr><td>Date de publication / mise à jour</td><td>Mesure la vitesse de renouvellement des annonces.</td></tr>
+<tr><td>Nombre d'annonces similaires</td><td>Proxy de concurrence sur une recherche donnée.</td></tr>
+<tr><td>Vendeur / profil quand public</td><td>Identifier les vendeurs professionnels ou multi-annonces.</td></tr>
+<tr><td>Images / titre / description</td><td>Analyse des arguments de vente et du packaging de l'offre.</td></tr>
+</table>
+<h3>Étude à mener</h3>
+<ol>
+<li>Créer un panier fixe de 30–50 requêtes produit marocaines.</li>
+<li>Capturer les 3 premières pages par requête.</li>
+<li>Répéter la collecte à intervalles fixes.</li>
+<li>Calculer médiane, minimum, maximum et nombre d'annonces actives — séparément pour neuf et occasion.</li>
+<li>Mesurer les annonces qui disparaissent puis vérifier, si possible, si la disparition signifie vente ou simplement retrait.</li>
+</ol>
+<p class="small">Important : une annonce supprimée n'est pas automatiquement une vente. Ce signal doit rester « disparition d'annonce ».</p>
+</section>
+
+<section class="section">
+<div class="section-title"><span>04 / SOURCE 03</span><h2>Facebook Marketplace</h2></div>
+<p><span class="status partial">Signaux structurels vérifiés</span> <span class="status pending">Échantillon de prix à collecter</span></p>
+<p>Meta confirme que Facebook permet de vendre via <strong>Marketplace, groupes d'achat/vente et Pages</strong>. Meta documente également les évaluations des vendeurs ; celles-ci deviennent publiques à partir de 5 évaluations, selon son centre d'aide.</p>
+<p class="source">Sources : <a href="https://www.facebook.com/help/550954179351183/" target="_blank">Meta · Ways to sell on Facebook</a> · <a href="https://www.facebook.com/help/915385548593204/How%20do%20ratings%20work%20on%20Facebook%20Marketplace/" target="_blank">Meta · Marketplace ratings</a></p>
+
+<h3>Données à extraire</h3>
+<table>
+<tr><th>Champ</th><th>Interprétation</th></tr>
+<tr><td>Titre / catégorie / prix</td><td>Offre et positionnement.</td></tr>
+<tr><td>Localisation</td><td>Analyse par ville et proximité.</td></tr>
+<tr><td>État / description</td><td>Neuf vs occasion, caractéristiques et argumentaire.</td></tr>
+<tr><td>Profil / note vendeur quand publique</td><td>Signal de réputation.</td></tr>
+<tr><td>Photos</td><td>Style de présentation et qualité créative.</td></tr>
+<tr><td>Date observée</td><td>Suivi de l'offre dans le temps.</td></tr>
+</table>
+<div class="callout">
+<strong>Limite :</strong> Facebook Marketplace est fortement dépendant de la session, de la localisation et de l'interface.
+Le projet doit donc prévoir un collecteur navigateur séparé du scraper HTTP classique, uniquement pour les données publiquement accessibles et dans le respect des règles de la plateforme.
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>05 / SOURCE 04</span><h2>Instagram · pages et comptes vendeurs</h2></div>
+<p><span class="status ok">Importance du canal documentée</span> <span class="status pending">Base vendeur à construire</span></p>
+<p>Ipsos identifie les pages de médias sociaux parmi les canaux d'achat en ligne les plus populaires au Maroc. DataReportal rapporte une audience publicitaire Instagram de 13,1 M au début de 2025, avec les réserves méthodologiques de Meta signalées dans le rapport.</p>
+
+<h3>Ce que le scraper peut réellement exploiter sur du contenu public</h3>
+<table>
+<tr><th>Signal</th><th>Valeur</th></tr>
+<tr><td>Nom du compte / bio</td><td>Identifier le positionnement et les catégories.</td></tr>
+<tr><td>Posts / Reels / fréquence</td><td>Mesurer l'activité commerciale publique.</td></tr>
+<tr><td>Produit visible</td><td>Créer un catalogue observé.</td></tr>
+<tr><td>Prix écrit dans le post / bio / visuel</td><td>Construire un historique de prix si le prix est explicitement public.</td></tr>
+<tr><td>Likes / commentaires / vues lorsqu'affichés</td><td>Engagement public ; proxy, pas chiffre de vente.</td></tr>
+<tr><td>CTA : WhatsApp, DM, site</td><td>Comprendre le parcours de vente.</td></tr>
+<tr><td>Promotions / bundles</td><td>Identifier les techniques commerciales publiques.</td></tr>
+</table>
+
+<h3>Stratégies à mesurer — sans les présenter comme déjà prouvées</h3>
+<ul>
+<li>Publication régulière de contenus produit.</li>
+<li>Démonstration produit en vidéo.</li>
+<li>Prix ou offre directement dans le contenu.</li>
+<li>Redirection vers DM / WhatsApp / site.</li>
+<li>Bundles, codes promotionnels ou offres limitées lorsqu'ils sont publiquement visibles.</li>
+</ul>
+<p class="source">Sources : <a href="https://www.ipsos.com/fr-ma/spotlightmaroc-comportement-et-attitudes-dachat-en-ligne" target="_blank">Ipsos</a> · <a href="https://datareportal.com/reports/digital-2025-morocco" target="_blank">DataReportal</a>.</p>
+</section>
+
+<section class="section">
+<div class="section-title"><span>06 / SOURCE 05</span><h2>Facebook Pages</h2></div>
+<p><span class="status ok">Canal de vente confirmé par Meta</span> <span class="status pending">Collecte vendeur à réaliser</span></p>
+<p>Meta documente la vente via les Pages Facebook, en plus de Marketplace et des groupes d'achat/vente.</p>
+<h3>Collecte recommandée</h3>
+<table>
+<tr><th>Donnée</th><th>Objectif</th></tr>
+<tr><td>Nom de page / catégorie</td><td>Cartographier les acteurs.</td></tr>
+<tr><td>Produits et prix publics</td><td>Benchmark prix.</td></tr>
+<tr><td>Posts commerciaux</td><td>Analyser fréquence et offres.</td></tr>
+<tr><td>Réactions / commentaires / partage visibles</td><td>Engagement public.</td></tr>
+<tr><td>CTA et coordonnées commerciales publiques</td><td>Comprendre le funnel.</td></tr>
+<tr><td>Promotions et bundles</td><td>Détecter les mécanismes d'offre.</td></tr>
+</table>
+<p class="source">Source structurelle : <a href="https://www.facebook.com/help/550954179351183/" target="_blank">Meta · Ways to sell on Facebook</a>.</p>
+</section>
+
+<section class="section">
+<div class="section-title"><span>07 / SOURCE 06</span><h2>Google Search · Google Images · Shopping</h2></div>
+<p><span class="status ok">Source de découverte très utile</span></p>
+<p>Google documente que les résultats produit peuvent afficher <strong>prix, disponibilité, évaluations, informations de livraison et autres données produit</strong> lorsque les pages utilisent les données structurées appropriées. Google indique aussi que ses expériences peuvent afficher des produits populaires et plusieurs vendeurs.</p>
+<p class="source">Sources : <a href="https://developers.google.com/search/docs/appearance/structured-data/product?hl=fr" target="_blank">Google Search Central · Product</a> · <a href="https://developers.google.com/search/docs/appearance/structured-data/merchant-listing?hl=fr" target="_blank">Google · Merchant listings</a>.</p>
+
+<h3>Rôle dans notre système</h3>
+<table>
+<tr><th>Signal Google</th><th>Usage</th></tr>
+<tr><td>Prix affiché dans résultat produit</td><td>Comparer plusieurs vendeurs rapidement.</td></tr>
+<tr><td>Disponibilité</td><td>Signal stock.</td></tr>
+<tr><td>Évaluation / avis</td><td>Proxy de preuve sociale.</td></tr>
+<tr><td>Produit populaire / résultats récurrents</td><td>Signal de visibilité, pas preuve de ventes.</td></tr>
+<tr><td>Domaines qui reviennent</td><td>Découvrir des vendeurs marocains inconnus du benchmark initial.</td></tr>
+<tr><td>Requêtes associées / variantes de mots-clés</td><td>Construire des clusters de demande.</td></tr>
+</table>
+<div class="callout">
+<strong>Google doit servir de couche de découverte :</strong> il ne remplace pas les données de Jumia, Avito, Instagram ou des boutiques locales.
+Le système doit conserver l'URL et la date de capture afin de savoir exactement d'où vient chaque signal.
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>08 / SOURCE 07</span><h2>Marjane Mall</h2></div>
+<p><span class="status ok">Données produit observées</span></p>
+<p>Le site Marjane Mall affiche des catégories couvrant notamment beauté, électroménager, maison, TV/son, informatique, téléphonie, mode, sport, bébé/jouets, auto-moto et bricolage. La page d'accueil observée expose également une section « Meilleures ventes ».</p>
+
+<table>
+<tr><th>Produit observé</th><th>Prix observé</th><th>Signal affiché</th></tr>
+<tr><td>Xiaomi Power Bank 20000mAh 22.5W</td><td>249 DH</td><td>Prix précédent 459 DH, -46 %, 3 avis.</td></tr>
+<tr><td>Bureau simple GENERIC</td><td>328,22 DH</td><td>Prix précédent 499 DH, -34 %, 3 avis.</td></tr>
+<tr><td>Taurus Robot Mixeur Plongeant Robot 750 Easy Plus Inox</td><td>279 DH</td><td>Prix précédent 499 DH, -44 %, 2 avis.</td></tr>
+</table>
+<p class="source">Source : <a href="https://www.marjanemall.ma/" target="_blank">Marjane Mall · page d'accueil</a>. Snapshot observé pendant la recherche.</p>
+
+<h3>Ce que cela apporte au moteur</h3>
+<ul>
+<li>Référence locale de prix pour les mêmes familles que Jumia.</li>
+<li>Détection des promotions et prix barrés.</li>
+<li>Comparaison des prix entre marketplaces.</li>
+<li>Détection des produits présents dans plusieurs circuits de distribution.</li>
+<li>Point de contrôle pour éviter de choisir un produit uniquement parce qu'un vendeur social le propose cher.</li>
+</ul>
+</section>
+
+<section class="section">
+<div class="section-title"><span>09 / SOURCE 08</span><h2>Electroplanet Maroc</h2></div>
+<p><span class="status ok">Données produit observées</span></p>
+<p>Electroplanet fournit un benchmark marocain particulièrement utile pour l'électronique, les smartphones et le petit électroménager.</p>
+<table>
+<tr><th>Produit observé</th><th>Prix affiché</th><th>Informations complémentaires</th></tr>
+<tr><td>ZTE Smartphone A54</td><td>1 390 DH</td><td>Page produit avec marque et référence.</td></tr>
+<tr><td>Honor X8 6G/128G</td><td>2 499 DH</td><td>Garantie 1 an indiquée.</td></tr>
+<tr><td>Infinix Note 40</td><td>2 799 DH</td><td>Page produit détaillée.</td></tr>
+<tr><td>Samsung A35 8+256GB</td><td>4 749 DH</td><td>1 avis affiché ; garantie 1 an.</td></tr>
+<tr><td>JBL T110</td><td>119 DH en promotion</td><td>Prix normal 139 DH affiché.</td></tr>
+<tr><td>Moulinex QuickChef</td><td>599 DH en promotion</td><td>Prix normal 749 DH, -20 %.</td></tr>
+<tr><td>Jata mixeur plongeant</td><td>349 DH en promotion</td><td>Prix normal 599 DH, -41 %.</td></tr>
+</table>
+<p class="source">
+Sources : <a href="https://www.electroplanet.ma/telephone" target="_blank">Electroplanet · téléphone</a> ·
+<a href="https://www.electroplanet.ma/telephone" target="_blank">Electroplanet · catalogue</a> ·
+<a href="https://www.electroplanet.ma/petit-electromenager/preparation-culinaire/mixeur-plongeant" target="_blank">Electroplanet · mixeur plongeant</a>.
+</p>
+<div class="callout">
+<strong>Utilité :</strong> Electroplanet ne représente pas le vendeur social ou le C2C.
+Il sert de référence de prix et de positionnement pour des produits structurés, avec marque, garantie et caractéristiques.
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>10 / SOURCE 09</span><h2>Sources internationales · Temu et SHEIN</h2></div>
+<p>Ces sources ne doivent pas être utilisées comme preuve directe de la demande marocaine. Elles servent principalement à repérer des produits, des variantes, des angles créatifs et des niveaux de prix internationaux avant validation du coût d'importation, de la disponibilité et du prix réellement acceptable au Maroc.</p>
+
+<h3>Temu</h3>
+<p>La page Temu destinée au marché marocain met notamment en avant les alertes de baisse de prix, les alertes de faible stock, les coupons/offres et le suivi des commandes.</p>
+<p class="source">Source : <a href="https://www.temu.com/ma/c/--o4-204.html" target="_blank">Temu · Morocco</a>.</p>
+
+<h3>SHEIN</h3>
+<p>La version Maroc de SHEIN expose des catégories mode/maison, des prix en DH et, sur certaines fiches, des signaux comme « vendus récemment », abonnés ou appréciations.</p>
+<table>
+<tr><th>Observation</th><th>Donnée visible</th></tr>
+<tr><td>Robe SHEIN Clasi</td><td>256 DH ; 50+ « J'aime » sur la page « Best Selling Dresses ».</td></tr>
+<tr><td>Robe SHEIN Belle</td><td>445 DH ; 430+ « J'aime ».</td></tr>
+<tr><td>Amorya robe</td><td>703 DH ; 1,3k+ « bonne qualité ».</td></tr>
+<tr><td>Ensemble RosyDaze</td><td>522 DH ; 999K+ vendus récemment ; 99K+ clients fidèles ; 171K abonnés.</td></tr>
+<tr><td>Lunettes StyleSpecs</td><td>109 DH ; 25K+ vendus récemment ; 403 abonnés.</td></tr>
+</table>
+<p class="source">Sources : <a href="https://m.shein.com/ma/hotsale/Best-Selling-Dresses-sc-00301542.html?lang=ma" target="_blank">SHEIN Maroc · Best Selling Dresses</a> ·
+<a href="https://m.shein.com/ma/Women-Co-ords-c-2040.html?lang=ma" target="_blank">SHEIN Maroc · Ensembles</a> ·
+<a href="https://m.shein.com/ma/shein-c-1765.html?lang=ma" target="_blank">SHEIN Maroc · Accessoires</a>.</p>
+
+<div class="callout">
+<strong>Règle de transfert :</strong> « 999K+ vendus récemment » chez SHEIN signifie un signal de ventes affiché par SHEIN sur son environnement.
+Il ne signifie pas « 999K ventes au Maroc ». Le produit doit ensuite être testé contre Jumia/Marjane/Avito/social et contre le sourcing réel.
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>11 / SYNTHÈSE</span><h2>Ce que chaque source apporte au scraper</h2></div>
+<table>
+<tr><th>Source</th><th>Ce qu'on peut mesurer</th><th>Ce qu'on ne doit pas prétendre mesurer</th><th>Rôle</th></tr>
+<tr><td>Jumia</td><td>Prix, promos, produits, catégories, avis, vendeurs, disponibilité et signaux de classement lorsqu'ils sont visibles.</td><td>Ventes exactes si non publiées.</td><td>Benchmark marketplace principal.</td></tr>
+<tr><td>Avito</td><td>Annonces, prix, ville, état, vendeur, ancienneté si accessible.</td><td>Vente réelle après disparition.</td><td>Offre locale / C2C / revendeurs.</td></tr>
+<tr><td>Facebook Marketplace</td><td>Prix, localisation, photos, profil/notation publique quand disponible.</td><td>Volume réel de transactions.</td><td>Offre locale et social commerce.</td></tr>
+<tr><td>Instagram</td><td>Produits visibles, prix publics, contenu, engagement public, fréquence, CTA.</td><td>Ventes privées par DM/WhatsApp.</td><td>Social commerce / créatif.</td></tr>
+<tr><td>Facebook Pages</td><td>Produits, posts, offres, engagement public, CTA.</td><td>Commandes privées.</td><td>Social commerce / vendeurs.</td></tr>
+<tr><td>Google</td><td>Découverte de vendeurs, prix, disponibilité, avis et signaux produit indexés.</td><td>Demande réelle sans méthodologie dédiée.</td><td>Découverte / comparaison.</td></tr>
+<tr><td>Marjane Mall</td><td>Prix, promotions, catégories, meilleures ventes, avis.</td><td>Ventes exactes.</td><td>Benchmark retail marocain.</td></tr>
+<tr><td>Electroplanet</td><td>Prix, marques, références, caractéristiques, promotions, avis, garantie.</td><td>Ventes exactes.</td><td>Benchmark électronique / électroménager.</td></tr>
+<tr><td>SHEIN / Temu</td><td>Produits, prix, tendances, signaux de vente affichés par la plateforme.</td><td>Demande marocaine directe.</td><td>Détection de tendances / sourcing à valider.</td></tr>
+</table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>12 / MOTEUR DE DONNÉES</span><h2>Schéma minimal du Market Intelligence</h2></div>
+<table>
+<tr><th>Table</th><th>Champs principaux</th></tr>
+<tr><td>sources</td><td>source_id, nom, domaine, type, pays, méthode_collecte, statut, conditions_observées</td></tr>
+<tr><td>products_raw</td><td>source_id, url, titre, marque, modèle, catégorie, prix, prix_avant, remise, devise, disponibilité, vendeur, date_collecte</td></tr>
+<tr><td>engagement</td><td>source_id, product_id, likes, commentaires, vues, avis, note, ventes_affichées, clients_fidèles_affichés</td></tr>
+<tr><td>seller</td><td>seller_id, source_id, nom_public, localisation_public, nombre_annonces, note_public, liens_publics</td></tr>
+<tr><td>price_history</td><td>product_id, timestamp, prix, prix_avant, disponibilité</td></tr>
+<tr><td>cross_source_match</td><td>product_id, source_a, source_b, confidence, matching_method</td></tr>
+<tr><td>evidence</td><td>record_id, source_url, capture_date, field, value, evidence_type, confidence</td></tr>
+</table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>13 / SCORE</span><h2>Scoring d'opportunité — uniquement après collecte</h2></div>
+<p>Le score ne doit pas être calculé à partir de valeurs inventées. Chaque composant doit être alimenté par des observations historisées.</p>
+<table>
+<tr><th>Signal</th><th>Exemple de mesure</th><th>Source possible</th></tr>
+<tr><td>Présence multi-source</td><td>Nombre de sources où le produit apparaît.</td><td>Jumia, Marjane, Google, social, Avito.</td></tr>
+<tr><td>Stabilité / dynamique du prix</td><td>Variation sur 7/14/30 jours.</td><td>Historique scraper.</td></tr>
+<tr><td>Preuve sociale</td><td>Avis, note, engagement public.</td><td>Jumia, Marjane, Instagram, Facebook.</td></tr>
+<tr><td>Signal de vente explicite</td><td>Nombre vendu lorsqu'affiché.</td><td>Plateformes qui publient ce signal.</td></tr>
+<tr><td>Concurrence</td><td>Nombre de vendeurs / annonces comparables.</td><td>Marketplace + Google.</td></tr>
+<tr><td>Potentiel de marge</td><td>Prix de vente marché − coût sourcing − logistique − acquisition − retours.</td><td>Marché + sourcing terrain + données internes.</td></tr>
+<tr><td>Risque opérationnel</td><td>Fragilité, taille, garantie, retour, contrefaçon, SAV.</td><td>Validation terrain.</td></tr>
+</table>
+<div class="callout">
+<strong>Important :</strong> un produit avec beaucoup d'engagement n'est pas automatiquement rentable.
+Le score final doit intégrer le coût réel d'achat au Maroc, la livraison, les retours/annulations et le coût d'acquisition.
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>14 / PROTOCOLE DE BENCHMARK</span><h2>Étude source par source</h2></div>
+<ol>
+<li><strong>Définir le panier de recherche marocain :</strong> 30 à 50 requêtes fixes réparties entre électronique, électroménager, mode et accessoires.</li>
+<li><strong>Collecter :</strong> prix, produit, vendeur, disponibilité, preuve sociale et URL.</li>
+<li><strong>Horodater :</strong> chaque observation doit conserver sa date et son heure.</li>
+<li><strong>Dédupliquer :</strong> reconnaître les variantes d'un même produit.</li>
+<li><strong>Comparer :</strong> même produit / même modèle entre Jumia, Marjane, Electroplanet, social et autres sources.</li>
+<li><strong>Mesurer la répétition :</strong> un produit présent une seule fois n'est pas traité comme une tendance.</li>
+<li><strong>Mesurer la dynamique :</strong> prix, disponibilité et apparition sur plusieurs snapshots.</li>
+<li><strong>Valider terrain :</strong> fournisseur réel, qualité, MOQ, coût d'achat, délai et possibilité de réassort.</li>
+<li><strong>Tester commercialement :</strong> petite quantité, contenu, publicité, conversion et marge.</li>
+<li><strong>Réinjecter les ventes :</strong> les données propres de l'entreprise deviennent le signal le plus important pour la décision finale.</li>
+</ol>
+</section>
+
+<section class="section">
+<div class="section-title"><span>15 / SOURCING TERRAIN</span><h2>Le scraper ne remplace pas le terrain marocain</h2></div>
+<div class="grid">
+<div class="card"><h3>Casablanca</h3><p>Utiliser les fournisseurs et grossistes réellement accessibles pour vérifier prix d'achat, qualité, disponibilité et réassort.</p></div>
+<div class="card"><h3>Produit</h3><p>Commander ou inspecter un échantillon avant de considérer le produit comme validé.</p></div>
+<div class="card"><h3>Économie réelle</h3><p>Calculer coût produit + livraison + emballage + acquisition + retours/annulations + SAV avant de conclure.</p></div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-title"><span>16 / INTERNATIONAL</span><h2>Comment utiliser l'international sans fausser l'étude Maroc</h2></div>
+<table>
+<tr><th>Source internationale</th><th>Utilisation autorisée dans le projet</th></tr>
+<tr><td>SHEIN</td><td>Détecter tendances, variantes, couleurs, angles créatifs et signaux de ventes affichés ; validation locale obligatoire.</td></tr>
+<tr><td>Temu</td><td>Détecter produits low-cost, promotions, alertes de prix/stock ; ne pas considérer le prix Temu comme coût rendu Maroc.</td></tr>
+<tr><td>Autres marketplaces internationales</td><td>Idées produit et benchmark amont uniquement jusqu'à vérification du coût d'importation et de la disponibilité locale.</td></tr>
+</table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>17 / LIMITES</span><h2>Ce que le système ne doit jamais inventer</h2></div>
+<ul>
+<li>Nombre de ventes d'un vendeur lorsque la source ne le publie pas.</li>
+<li>Chiffre d'affaires d'un compte Instagram ou Facebook.</li>
+<li>Marge réelle d'un concurrent.</li>
+<li>Nombre de commandes générées par une publicité concurrente.</li>
+<li>Produit « gagnant » uniquement parce qu'il apparaît souvent.</li>
+<li>Vente réelle après suppression d'une annonce.</li>
+<li>Prix fournisseur à partir du seul prix public concurrent.</li>
+<li>Demande marocaine à partir d'un signal SHEIN/Temu international.</li>
+</ul>
+</section>
+
+<section class="section">
+<div class="section-title"><span>18 / ROADMAP RECHERCHE</span><h2>Ordre d'exécution recommandé</h2></div>
+<table>
+<tr><th>Phase</th><th>Travail</th><th>Sortie</th></tr>
+<tr><td>01</td><td>Jumia + Marjane Mall + Electroplanet</td><td>Base de prix et catalogue marocain structuré.</td></tr>
+<tr><td>02</td><td>Avito</td><td>Base d'offres locales / C2C / revendeurs.</td></tr>
+<tr><td>03</td><td>Facebook Marketplace + Pages</td><td>Base social commerce locale.</td></tr>
+<tr><td>04</td><td>Instagram public</td><td>Base vendeurs + contenu + prix + engagement.</td></tr>
+<tr><td>05</td><td>Google</td><td>Découverte de vendeurs et triangulation.</td></tr>
+<tr><td>06</td><td>SHEIN + Temu + international</td><td>Détection de tendances amont.</td></tr>
+<tr><td>07</td><td>Cross-source matching</td><td>Produit unique avec historique multi-sources.</td></tr>
+<tr><td>08</td><td>Sourcing terrain</td><td>Coût réel + qualité + disponibilité.</td></tr>
+<tr><td>09</td><td>Test commercial</td><td>Ventes réelles, conversion, marge, retours.</td></tr>
+<tr><td>10</td><td>Scoring V2</td><td>Priorisation basée sur données propres + marché.</td></tr>
+</table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>19 / SOURCES PRINCIPALES</span><h2>Registre des études et données utilisées</h2></div>
+<table>
+<tr><th>Source</th><th>Type</th><th>Utilisation dans ce document</th></tr>
+<tr><td><a href="https://www.ipsos.com/fr-ma/spotlightmaroc-comportement-et-attitudes-dachat-en-ligne" target="_blank">Ipsos · Spotlight*Maroc</a></td><td>Étude Maroc · 27/11/2024</td><td>Comportement d'achat en ligne et canaux.</td></tr>
+<tr><td><a href="https://www.anrt.ma/sites/default/files/2024-10/Enqu%C3%AAte%20usage%20des%20TIC%20-%202023-2024.pdf" target="_blank">ANRT · Enquête TIC 2023–2024</a></td><td>Source institutionnelle</td><td>Évolution des achats en ligne.</td></tr>
+<tr><td><a href="https://datareportal.com/reports/digital-2025-morocco" target="_blank">DataReportal · Digital 2025 Morocco</a></td><td>Digital / Meta audience data</td><td>Ordres de grandeur des audiences Facebook/Instagram.</td></tr>
+<tr><td><a href="https://www.euromonitor.com/retail-e-commerce-in-morocco/report" target="_blank">Euromonitor · Retail E-Commerce in Morocco</a></td><td>Étude marché</td><td>Paysage concurrentiel ; Jumia indiqué leader avec 24 % en 2025 dans le résumé public.</td></tr>
+<tr><td><a href="https://www.jumia.ma/" target="_blank">Jumia Maroc</a></td><td>Marketplace</td><td>Prix, produits, promotions, catégories, avis et signaux publics.</td></tr>
+<tr><td><a href="https://www.marjanemall.ma/" target="_blank">Marjane Mall</a></td><td>Marketplace / retail</td><td>Prix et promotions marocains.</td></tr>
+<tr><td><a href="https://www.electroplanet.ma/" target="_blank">Electroplanet</a></td><td>Retail marocain</td><td>Prix, marques, caractéristiques, garanties et promotions.</td></tr>
+<tr><td><a href="https://www.facebook.com/help/550954179351183/" target="_blank">Meta · Ways to sell on Facebook</a></td><td>Documentation plateforme</td><td>Marketplace, groupes et Pages.</td></tr>
+<tr><td><a href="https://developers.google.com/search/docs/appearance/structured-data/product?hl=fr" target="_blank">Google Search Central</a></td><td>Documentation technique</td><td>Prix, disponibilité, avis et données produit visibles dans Search.</td></tr>
+<tr><td><a href="https://m.shein.com/ma/" target="_blank">SHEIN Maroc</a></td><td>Marketplace international localisé</td><td>Tendances, prix et signaux de ventes affichés.</td></tr>
+<tr><td><a href="https://www.temu.com/ma/" target="_blank">Temu Maroc</a></td><td>Marketplace international localisé</td><td>Détection de tendances et mécanique promotionnelle.</td></tr>
+</table>
+</section>
+
+<section class="section">
+<div class="section-title"><span>20 / ÉTAT DU DOCUMENT</span><h2>Version de travail</h2></div>
+<div class="callout">
+<strong>Version :</strong> 2.0 — enrichissement Market Intelligence Maroc.<br>
+<strong>Date du travail :</strong> septembre 2026.<br>
+<strong>Principe :</strong> chaque donnée chiffrée du benchmark doit rester accompagnée de sa source et de sa date d'observation.<br>
+<strong>Prochaine étape :</strong> compléter les collectes Avito, Facebook Marketplace, Facebook Pages et Instagram avec un protocole reproductible, puis construire la base historique multi-sources.
+</div>
+</section>
+
+<div class="footer">
+Document de travail · E-commerce Master Plan · Market Intelligence Maroc · Données externes à revalider avant décision commerciale
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Netlify construit la nouvelle boutique (ui/, Vite) au lieu de servir l'ancien site statique de la racine.
+[build]
+  base = "ui"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Routes de l'application (React Router) : toute URL renvoie index.html (doublon de ui/public/_redirects, par sécurité).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

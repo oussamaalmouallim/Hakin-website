@@ -28,6 +28,7 @@
 - Captures du navigateur intégré : prises en cours d'animation (contenu pâle) ; panneau masqué = animations en pause.
 - Panier persistant : clé `hmode-panier`, `version: 1` (une autre version vide le panier).
 - L'ancien site (`index.html`, `css/`, `js/`, `assets/`) reste en place jusqu'à la mise en ligne : ne pas le supprimer.
+- `npx lightswind add …` réécrit `ui/tailwind.config.js` (plugin `lightswind/plugin` non installé → page blanche) : sauvegarder la config avant, la restaurer après, puis ré-habiller le composant (licence MIT en tête).
 
 ## Contexte
 - Architecture : utiliser la Skill `codebase-overview`

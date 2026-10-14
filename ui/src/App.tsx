@@ -8,7 +8,7 @@ import { useCompte } from './state/compte'
 import { EnTete } from './components/EnTete'
 import { MenuMobile, MiniPanier, Recherche, useFermerSurNavigation } from './components/Panneaux'
 import { PiedDePage } from './components/PiedDePage'
-import { BandeauDemo, BoutonWhatsAppFlottant, ChargeurMarque, RemiseEnHaut } from './components/Ambiance'
+import { BandeauDemo, BoutonWhatsAppFlottant, ChargeurMarque } from './components/Ambiance'
 import { PageAccueil } from './features/accueil/PageAccueil'
 import { PageBoutique } from './features/catalogue/PageBoutique'
 import { PageCollection, PageCollections } from './features/catalogue/PageCollections'
@@ -45,12 +45,12 @@ export default function App() {
     <>
       <a href="#contenu" className="label sr-only z-[110] bg-encre px-4 py-3 text-nacre focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Aller au contenu</a>
       <ChargeurMarque />
-      <RemiseEnHaut />
       <EnTete />
       <MenuMobile />
       <Recherche />
       <MiniPanier />
-      <AnimatePresence mode="wait">
+      {/* Remise en haut une fois l'ancienne page sortie : pas de saut visible pendant la transition. */}
+      <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })}>
         <motion.main id="contenu" key={location.pathname} {...transitionPage} className="min-h-[70vh]">
           <Routes location={location}>
             <Route path="/" element={<PageAccueil />} />

@@ -149,7 +149,7 @@ export function PageCompte() {
       <EnTetePage surtitre="Mon compte" titre={nom ? `Bonjour, ${nom.split(' ')[0]}` : 'Mon compte'} texte="Vos informations restent sur cet appareil et pré-remplissent vos commandes."
         ariane={[{ libelle: 'Accueil', vers: '/' }, { libelle: 'Mon compte' }]} />
       <div className="conteneur grid gap-12 lg:grid-cols-[220px_1fr] lg:gap-20">
-        <nav aria-label="Sections du compte" className="defilement-masque -mx-4 flex gap-6 overflow-x-auto border-b border-ligne px-4 lg:mx-0 lg:flex-col lg:gap-1 lg:border-0 lg:px-0">
+        <nav aria-label="Sections du compte" className="defilement-masque -mx-4 flex gap-6 overflow-x-auto overscroll-x-contain border-b border-ligne px-4 lg:mx-0 lg:flex-col lg:gap-1 lg:border-0 lg:px-0">
           {ONGLETS.map(({ vers, l, Icone, fin }) => (
             <NavLink key={vers} to={vers} end={fin} className={({ isActive }) => cn('label flex shrink-0 items-center gap-3 border-b-2 py-3 transition-colors lg:border-b-0 lg:border-l-2 lg:pl-4',
               isActive ? 'border-encre text-encre' : 'border-transparent text-gris hover:text-encre')}>

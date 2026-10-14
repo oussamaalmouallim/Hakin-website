@@ -31,7 +31,7 @@ function Galerie({ produit }: { produit: Produit }) {
     <div>
       {/* Mobile : glisser */}
       <div className="relative lg:hidden">
-        <div ref={piste} onScroll={surDefilement} className="defilement-masque flex snap-x snap-mandatory overflow-x-auto">
+        <div ref={piste} onScroll={surDefilement} className="defilement-masque flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain">
           {produit.images.map((img, i) => (
             <button key={img.src} type="button" onClick={() => setZoom(i)} className="w-full shrink-0 snap-center p-2" aria-label={`Agrandir : ${img.alt}`}>
               <Cadre className="aspect-[4/5]">
@@ -206,7 +206,7 @@ export function PageProduit() {
       </section>
 
       {/* Barre d'achat collante (mobile), rendue dans <body> : un ancêtre transformé (transition de page) casserait position: fixed */}
-      {createPortal(<div className={cn('fixed inset-x-0 bottom-[var(--demo-h)] z-40 border-t border-ligne bg-nacre/95 px-4 py-3 backdrop-blur transition-transform duration-500 ease-maison lg:hidden', barreVisible ? 'translate-y-0' : 'translate-y-full')}
+      {createPortal(<div className={cn('fixed inset-x-0 bottom-[var(--demo-h)] z-40 border-t border-ligne bg-nacre/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur transition-transform duration-500 ease-maison lg:hidden', barreVisible ? 'translate-y-0' : 'translate-y-full')}
         {...(!barreVisible && { inert: '', 'aria-hidden': true })}>
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1"><p className="truncate font-display text-[17px]">{produit.nom}</p><Prix prixDH={produit.prixDH} /></div>

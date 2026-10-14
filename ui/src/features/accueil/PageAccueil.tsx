@@ -5,7 +5,6 @@ import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Banknote, Crown, Messag
 import { BoutonExterne, BoutonLien, IconeFacebook, IconeInstagram, ImageProduit, Monogramme, Revelation } from '@/design-system'
 import { CarteProduit } from '@/components/CarteProduit'
 import { SeasonCard } from '@/components/lightswind/seasonal-hover-cards'
-import { BandeauDefilant } from '@/components/Ambiance'
 import { boutique, collections, produits, produitsDeCollection } from '@/lib/catalogue'
 import { lienWhatsApp } from '@/lib/whatsapp'
 import { ScrollReveal } from '@/components/lightswind/scroll-reveal'
@@ -13,7 +12,7 @@ import { MarqueeMenu } from '@/components/lightswind/marquee-menu'
 import { LoopingWords } from '@/components/lightswind/looping-words'
 import { CountUp } from '@/components/lightswind/count-up'
 import { ShinyText } from '@/components/lightswind/shiny-text'
-import { conteneurCascade, elementApparition, EASE_MAISON } from '@/lib/animations'
+import { conteneurCascade, elementApparition, EASE_MAISON, useMedia } from '@/lib/animations'
 import { useAnimationsActives } from '@/state/animations'
 
 function Heros() {
@@ -22,17 +21,19 @@ function Heros() {
   const yImage = useTransform(scrollYProgress, [0, 1], ['0%', '12%'])
   const opaciteTexte = useTransform(scrollYProgress, [0, 0.6], [1, 0])
   const actives = useAnimationsActives()
+  // Parallaxe et fondu liés au défilement : écran large seulement (en mobile, la barre d'adresse fait varier la hauteur).
+  const parallaxe = useMedia('(min-width: 640px)') && actives
   return (
     <section ref={ref} className="relative flex flex-col overflow-hidden bg-gradient-to-b from-sable-200 via-sable-100 to-nacre sm:block sm:min-h-[100svh]">
       {/* Arche de lumière (rappel de la maquette) */}
       <div aria-hidden className="absolute -right-[20%] top-[-20%] h-[120%] w-[90%] rounded-t-full bg-gradient-to-b from-neige/45 to-transparent blur-2xl sm:-right-[10%] sm:w-[60%]" />
-      <motion.div style={{ y: yImage }} className="relative order-2 mx-auto h-[62svh] w-[88%] sm:absolute sm:bottom-0 sm:right-0 sm:order-none sm:mx-0 sm:h-[88%] sm:w-[46%] lg:w-[38%]">
+      <motion.div style={parallaxe ? { y: yImage } : undefined} className="relative order-2 mx-auto h-[62svh] w-[88%] sm:absolute sm:bottom-0 sm:right-0 sm:order-none sm:mx-0 sm:h-[88%] sm:w-[46%] lg:w-[38%]">
         <motion.img src="/images/campagne/hero-modele-640.webp" alt="Homme en costume de lin écru, lunettes de soleil, adossé à un mur de pierre claire"
           {...{ fetchpriority: 'high' }} className="masque-heros h-full w-full object-cover object-top"
           initial={actives ? { opacity: 0, scale: 1.06 } : false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: EASE_MAISON }} />
       </motion.div>
 
-      <motion.div style={{ opacity: opaciteTexte }} variants={conteneurCascade} initial={actives ? 'cache' : false} animate="visible"
+      <motion.div style={parallaxe ? { opacity: opaciteTexte } : undefined} variants={conteneurCascade} initial={actives ? 'cache' : false} animate="visible"
         className="conteneur relative z-10 order-1 grid pb-12 pt-28 sm:min-h-[100svh] sm:grid-rows-[1fr_auto] sm:pb-10 lg:grid-cols-[1fr_auto_1fr] lg:grid-rows-1 lg:items-center lg:pb-0">
         <motion.div variants={elementApparition} className="hidden lg:block">
           <p className="font-display text-[22px] uppercase italic leading-snug tracking-[0.18em] text-encre/80">Plus qu'un style,<br />une attitude.</p>
@@ -87,7 +88,7 @@ function Collections() {
 
 function Manifeste() {
   return (
-    <section className="conteneur py-24 text-center lg:py-40">
+    <section className="conteneur pb-24 pt-16 text-center sm:pt-20 lg:pb-36 lg:pt-24">
       <p className="label mb-10 text-bronze">Notre regard</p>
       <ScrollReveal className="mx-auto max-w-5xl text-[clamp(1.9rem,4.4vw,3.6rem)] leading-[1.15] equilibre">
         Les signatures des grandes maisons, choisies avec soin et conseillées personnellement, pour un style qui vous ressemble.
@@ -149,7 +150,7 @@ function Selection() {
         </Revelation>
       </div>
       <div ref={piste} onScroll={mesurer} role="region" aria-label="Pièces choisies, défilement horizontal" tabIndex={0}
-        className="defilement-masque mx-auto flex max-w-site snap-x snap-mandatory scroll-px-4 gap-5 overflow-x-auto px-4 pb-6 pt-2 sm:scroll-px-6 sm:px-6 lg:scroll-px-10 lg:px-10 [&>*]:snap-start">
+        className="defilement-masque mx-auto flex max-w-site snap-x snap-mandatory scroll-px-4 gap-5 overflow-x-auto overscroll-x-contain px-4 pb-6 pt-2 sm:scroll-px-6 sm:px-6 lg:scroll-px-10 lg:px-10 [&>*]:snap-start">
         {vedettes.map((p, i) => (
           <Revelation key={p.slug} delai={i * 0.08} className="w-[56vw] shrink-0 sm:w-[32vw] lg:w-[20vw] xl:w-[17vw]"><CarteProduit produit={p} /></Revelation>
         ))}
@@ -170,12 +171,12 @@ function Editorial() {
   ]
   return (
     <section className="conteneur grid items-center gap-16 py-24 lg:grid-cols-2 lg:gap-24 lg:py-36">
-      <Revelation className="mx-auto w-full max-w-md px-2">
+      <Revelation className="mx-auto w-full max-w-md">
         {/* Écrin : les maisons de la sélection défilent une à une */}
-        <div className="relative flex aspect-[4/5] flex-col items-center justify-center rounded-[6px] bg-encre px-6 text-center shadow-flottant">
+        <div className="relative flex aspect-[4/5] flex-col items-center justify-center rounded-[6px] bg-encre px-4 text-center shadow-flottant sm:px-6">
           <Monogramme className="h-10" />
           <p className="label mt-8 text-or">La sélection</p>
-          <LoopingWords words={liste.map(m => m.nom)} fond="#0E0E0D" classeMot="text-nacre" className="mt-4 text-[clamp(1.9rem,5vw,2.75rem)]" />
+          <LoopingWords words={liste.map(m => m.nom)} fond="#0E0E0D" classeMot="text-nacre" className="mt-4 text-[clamp(1.4rem,6.4vw,2.75rem)]" />
           <p className="filet-etoile mt-6 text-or" aria-hidden>✦</p>
           <p className="mt-4 font-display text-[18px] italic text-nacre/70">{boutique.ville.split(',')[0]}</p>
         </div>
@@ -292,7 +293,6 @@ export function PageAccueil() {
   return (
     <>
       <Heros />
-      <BandeauDefilant elements={['Maisons iconiques', 'Riviera Casablanca', 'Commande sur WhatsApp', boutique.paiement, boutique.ville]} />
       <Manifeste />
       <Collections />
       <Maisons />

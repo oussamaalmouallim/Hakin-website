@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 // Charte H MODE : prolonge le site actuel (crème, noir, or, Cormorant) et la maquette Template/hero.png (sable, bronze).
 export default {
+  // Survols (hover:, group-hover:) seulement sur pointeur fin : pas d'état « collé » après un toucher en mobile.
+  future: { hoverOnlyWhenSupported: true },
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     screens: { xs: '375px', sm: '640px', md: '768px', lg: '1024px', xl: '1280px', '2xl': '1536px' },

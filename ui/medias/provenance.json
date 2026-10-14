@@ -1,0 +1,478 @@
+{
+  "t-shirt-dior-logo": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "DIOR-T.jpg"
+    ]
+  },
+  "t-shirt-prada-graffiti": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "PRADA-T.jpg"
+    ]
+  },
+  "t-shirt-givenchy-4g": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T10.jpg"
+    ]
+  },
+  "t-shirt-balenciaga-bb": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T11.jpg"
+    ]
+  },
+  "t-shirt-amiri-logo": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T8.jpg"
+    ]
+  },
+  "t-shirt-casablanca-vague": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T2.jpg"
+    ]
+  },
+  "t-shirt-amore-hotel": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T3.jpg"
+    ]
+  },
+  "t-shirt-casablanca-tennis-club": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T4.jpg",
+      "T5.jpg"
+    ]
+  },
+  "t-shirt-casa-airlines": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T6.jpg",
+      "T7.jpg"
+    ]
+  },
+  "t-shirt-casa-way": {
+    "origine": "photos boutique (ancien site)",
+    "fichiers": [
+      "T9.jpg"
+    ]
+  },
+  "jean-slim-cinq-poches-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/jean-slim-a-5-poches",
+    "fichiers": [
+      "01_kiabi_jean-slim-a-5-poches_kiabi-ma_d5af72e8e2.jpg",
+      "01_kiabi_jean-slim-a-5-poches_kiabi-ma_8537077f43.jpg",
+      "01_kiabi_jean-slim-a-5-poches_kiabi-ma_2bc2be98bf.jpg"
+    ]
+  },
+  "sweat-capuche-french-terry-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-ful24",
+    "fichiers": [
+      "02_kiabi_sweat-a-capuche-en-french-terry_kiabi-ma_42d182504f.jpg",
+      "02_kiabi_sweat-a-capuche-en-french-terry_kiabi-ma_b0ed063136.jpg",
+      "02_kiabi_sweat-a-capuche-en-french-terry_kiabi-ma_7872757477.jpg"
+    ]
+  },
+  "sweat-capuche-zippe-uni-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-ful25",
+    "fichiers": [
+      "02_kiabi_sweat-a-capuche-zippe-uni_kiabi-ma_6496221d1c.jpg",
+      "02_kiabi_sweat-a-capuche-zippe-uni_kiabi-ma_c763d81d4c.jpg",
+      "02_kiabi_sweat-a-capuche-zippe-uni_kiabi-ma_6583ff0506.jpg"
+    ]
+  },
+  "sweat-zippe-molleton-leger-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-gad58",
+    "fichiers": [
+      "03_kiabi_sweat-zippe-en-molleton-leger_kiabi-ma_339314b409.jpg",
+      "03_kiabi_sweat-zippe-en-molleton-leger_kiabi-ma_0f5a06fb9f.jpg",
+      "03_kiabi_sweat-zippe-en-molleton-leger_kiabi-ma_9f1fd0ff87.jpg"
+    ]
+  },
+  "sweat-molleton-inscription-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-gad53-1",
+    "fichiers": [
+      "03_kiabi_sweat-en-molleton-avec-inscription_kiabi-ma_d828839b5a.jpg",
+      "03_kiabi_sweat-en-molleton-avec-inscription_kiabi-ma_326b8f6a7b.jpg",
+      "03_kiabi_sweat-en-molleton-avec-inscription_kiabi-ma_79ff433e1e.jpg"
+    ]
+  },
+  "sweat-molleton-leger-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-fzw06-1",
+    "fichiers": [
+      "02_kiabi_sweat-en-molleton-leger_kiabi-ma_9b8932d622.jpg",
+      "02_kiabi_sweat-en-molleton-leger_kiabi-ma_ac595ae8ad.jpg",
+      "02_kiabi_sweat-en-molleton-leger_kiabi-ma_646433da64.jpg"
+    ]
+  },
+  "polo-rugby-manches-longues-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-gjq78",
+    "fichiers": [
+      "07_kiabi_polo-uni-style-rugby-manches-longues_kiabi-ma_a3822c3cd7.jpg",
+      "07_kiabi_polo-uni-style-rugby-manches-longues_kiabi-ma_95c09c0a93.jpg"
+    ]
+  },
+  "pull-col-camionneur-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-gjp45",
+    "fichiers": [
+      "03_kiabi_pull-en-french-terry-col-camionneur_kiabi-ma_81601efbf9.jpg",
+      "03_kiabi_pull-en-french-terry-col-camionneur_kiabi-ma_02a7534ed1.jpg",
+      "03_kiabi_pull-en-french-terry-col-camionneur_kiabi-ma_0aadfd68a3.jpg"
+    ]
+  },
+  "sweat-capuche-kangourou-kiabi": {
+    "origine": "Kiabi Maroc",
+    "page": "https://www.kiabi.ma/products/produit-ref-gad99",
+    "fichiers": [
+      "02_kiabi_sweat-a-capuche-et-poche-kangourou_kiabi-ma_6c7d7284d5.jpg",
+      "02_kiabi_sweat-a-capuche-et-poche-kangourou_kiabi-ma_b3b1bce8b4.jpg",
+      "02_kiabi_sweat-a-capuche-et-poche-kangourou_kiabi-ma_cc7b49b2f4.jpg"
+    ]
+  },
+  "hoodie-ess-elevated-puma": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/puma-hoodie-marron-ess-elevated-hoodie-pour-homme-675975-85-68260480.html",
+    "fichiers": [
+      "02_puma_hoodie-marron-ess-elevated-hoodie-pour_jumia-ma_6eff8d4f92.jpg",
+      "02_puma_hoodie-marron-ess-elevated-hoodie-pour_jumia-ma_49a9723c96.jpg"
+    ]
+  },
+  "hoodie-ess-tape-puma": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/puma-hoodie-blue-ess-tape-hoodie-fl-pour-homme-684675-34-68260460.html",
+    "fichiers": [
+      "02_puma_hoodie-blue-ess-tape-hoodie-fl-pour-ho_jumia-ma_cfff01aaf8.jpg"
+    ]
+  },
+  "hoodie-ess-logo-lab-puma": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/puma-hoodie-vert-ess-logo-lab-holiday-hoodie-fl-pour-homme-688190-75-68260467.html",
+    "fichiers": [
+      "02_puma_hoodie-vert-ess-logo-lab-holiday-hoodi_jumia-ma_2c0a49436d.jpg",
+      "02_puma_hoodie-vert-ess-logo-lab-holiday-hoodi_jumia-ma_4425229d4f.jpg"
+    ]
+  },
+  "hoodie-ess-block-puma": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/puma-hoodie-noir-ess-block-hoodie-tr-pour-homme-684687-01-68267816.html",
+    "fichiers": [
+      "02_puma_hoodie-noir-ess-block-hoodie-tr-pour-h_jumia-ma_ead7924c2a.jpg",
+      "02_puma_hoodie-noir-ess-block-hoodie-tr-pour-h_jumia-ma_06bc2f84b4.jpg"
+    ]
+  },
+  "hoodie-rest-day-myprotein": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/myprotein-sweat-a-capuche-rest-day-pour-homme-mp-mens-rest-day-hoodie-67403356.html",
+    "fichiers": [
+      "02_nomarque_sweat-a-capuche-rest-day-pour-homme-mp_jumia-ma_c3c5bfd131.jpg",
+      "02_nomarque_sweat-a-capuche-rest-day-pour-homme-mp_jumia-ma_73ee11b9b8.jpg",
+      "02_nomarque_sweat-a-capuche-rest-day-pour-homme-mp_jumia-ma_6edfbd49f7.jpg"
+    ]
+  },
+  "hoodie-zippe-form-myprotein": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/myprotein-sweat-a-capuche-zippe-pour-homme-coupe-slim-mp-mens-form-zip-up-hoodie-67403614.html",
+    "fichiers": [
+      "02_nomarque_sweat-a-capuche-zippe-pour-homme-coupe_jumia-ma_529099a99d.jpg",
+      "02_nomarque_sweat-a-capuche-zippe-pour-homme-coupe_jumia-ma_2b6ef8cfc9.jpg",
+      "02_nomarque_sweat-a-capuche-zippe-pour-homme-coupe_jumia-ma_cb4e561c3e.jpg"
+    ]
+  },
+  "hoodie-oversize-indigo-defacto": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/defacto-coupe-oversize-hoodie-sweat-shirt-x8287az-indigo-67886131.html",
+    "fichiers": [
+      "02_defacto_coupe-oversize-hoodie-sweat-shirt-x828_jumia-ma_6ede99a496.jpg",
+      "02_defacto_coupe-oversize-hoodie-sweat-shirt-x828_jumia-ma_ab72514556.jpg",
+      "02_defacto_coupe-oversize-hoodie-sweat-shirt-x828_jumia-ma_0bee323d77.jpg"
+    ]
+  },
+  "sweat-bleu-ciel-trendyol": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/trendyol-sweat-shirt-bleu-ciel-67160835.html",
+    "fichiers": [
+      "03_nomarque_sweat-shirt-bleu-ciel_jumia-ma_3150755820.jpg",
+      "03_nomarque_sweat-shirt-bleu-ciel_jumia-ma_8bea1e61f2.jpg"
+    ]
+  },
+  "hoodie-oversize-lilas-defacto": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/defacto-homme-oversize-sweat-shirt-x8287az-purple-68002573.html",
+    "fichiers": [
+      "02_defacto_homme-oversize-sweat-shirt-x8287az-pur_jumia-ma_c0d0072ab7.jpg",
+      "02_defacto_homme-oversize-sweat-shirt-x8287az-pur_jumia-ma_82f1c0fe03.jpg",
+      "02_defacto_homme-oversize-sweat-shirt-x8287az-pur_jumia-ma_ddaff83482.jpg"
+    ]
+  },
+  "sweat-bleu-marine-trendyol": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/trendyol-sweat-shirt-pour-homme-bleu-marine-67160840.html",
+    "fichiers": [
+      "03_nomarque_sweat-shirt-pour-homme-bleu-marine_jumia-ma_37ae0170d1.jpg",
+      "03_nomarque_sweat-shirt-pour-homme-bleu-marine_jumia-ma_11e65e1d92.jpg",
+      "03_nomarque_sweat-shirt-pour-homme-bleu-marine_jumia-ma_798558e30a.jpg"
+    ]
+  },
+  "sweat-demi-zip-defacto": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/defacto-homme-confort-sweat-shirt-x7405az-grey-68001509.html",
+    "fichiers": [
+      "03_defacto_homme-confort-sweat-shirt-x7405az-grey_jumia-ma_6f518f69f5.jpg"
+    ]
+  },
+  "sweat-col-polo-defacto": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/defacto-homme-moderne-sweat-shirt-w9352az-grey-68001493.html",
+    "fichiers": [
+      "03_defacto_homme-moderne-sweat-shirt-w9352az-grey_jumia-ma_c749859462.jpg",
+      "03_defacto_homme-moderne-sweat-shirt-w9352az-grey_jumia-ma_f61f403711.jpg"
+    ]
+  },
+  "pantalon-survetement-fleece-defacto": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/defacto-coupe-reguliere-fleece-a-poches-pantalon-de-survetement-a1992ax-67885831.html",
+    "fichiers": [
+      "01_defacto_coupe-reguliere-fleece-a-poches-pantal_jumia-ma_f75858d98d.jpg",
+      "01_defacto_coupe-reguliere-fleece-a-poches-pantal_jumia-ma_a6b70dd782.jpg",
+      "01_defacto_coupe-reguliere-fleece-a-poches-pantal_jumia-ma_3e01ce55bf.jpg"
+    ]
+  },
+  "pantalon-slim-defacto": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/defacto-coupe-slim-pantalon-c2401ax-gris-67886144.html",
+    "fichiers": [
+      "01_defacto_coupe-slim-pantalon-c2401ax-gris_jumia-ma_952c409dd2.jpg",
+      "01_defacto_coupe-slim-pantalon-c2401ax-gris_jumia-ma_0a9bcafda2.jpg",
+      "01_defacto_coupe-slim-pantalon-c2401ax-gris_jumia-ma_873930bb3a.jpg"
+    ]
+  },
+  "jean-noir-koton": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/koton-jeans-noir-pour-homme-65964731.html",
+    "fichiers": [
+      "01_koton_jeans-noir-pour-homme_jumia-ma_e1a5ebefad.jpg",
+      "01_koton_jeans-noir-pour-homme_jumia-ma_e36d371f07.jpg"
+    ]
+  },
+  "hoodie-nac-oversize-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/sweat-a-capuche-de-training-oversize-en-fleece-dri-fit-nike-nac-pour-homme-Z4JaaDOI/IM3609-077",
+    "fichiers": [
+      "02_nike_nike-n-a-c-sweat-a-capuche-de-training_nike-fr_a67be17a5a.jpg"
+    ]
+  },
+  "hoodie-nac-sans-manches-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/sweat-a-capuche-de-training-sans-manches-en-fleece-nike-nac-dri-fit-pour-homme-af3wEgrC/IQ5551-077",
+    "fichiers": [
+      "02_nike_nike-n-a-c-sweat-a-capuche-de-training_nike-fr_50e2de1981.jpg"
+    ]
+  },
+  "sweat-club-fleece-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/haut-en-fleece-nike-club-pour-homme-W7qFQKY0/FN3886-100",
+    "fichiers": [
+      "03_nike_nike-club-haut-en-tissu-fleece-pour-ho_nike-fr_eeb519b3d8.jpg"
+    ]
+  },
+  "hoodie-solo-fleece-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/sweat-a-capuche-nike-solo-fleece-pour-homme-g9BQXad7/IX1926-323",
+    "fichiers": [
+      "02_nike_nike-solo-fleece-sweat-a-capuche-pour_nike-fr_2503f59084.jpg"
+    ]
+  },
+  "hoodie-club-fleece-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/sweat-a-capuche-en-fleece-nike-club-pour-homme-3XHBj6KS/FN3859-663",
+    "fichiers": [
+      "02_nike_nike-club-sweat-a-capuche-en-fleece-po_nike-fr_96acd26930.jpg"
+    ]
+  },
+  "veste-tech-windrunner-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/veste-a-zip-en-fleece-windrunner-nike-tech-pour-homme-dSR1Tg/HV0949-085",
+    "fichiers": [
+      "05_nike_nike-tech-veste-a-zip-en-fleece-windru_nike-fr_703e5b2ec7.jpg"
+    ]
+  },
+  "veste-tech-windrunner-reflechissante-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/veste-windrunner-a-zip-en-fleece-avec-motifs-reflechissants-nike-tech-pour-homme-o75J4ImH/IZ8071-010",
+    "fichiers": [
+      "05_nike_nike-tech-veste-windrunner-a-zip-en-fl_nike-fr_56c5c89d3d.jpg"
+    ]
+  },
+  "haut-tech-quart-zip-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/haut-en-fleece-a-1-4-de-zip-nike-tech-pour-homme-aJdeUI5u/IZ6621-010",
+    "fichiers": [
+      "03_nike_nike-tech-haut-en-fleece-a-1-4-de-zip_nike-fr_f7eee38967.jpg"
+    ]
+  },
+  "zoom-skylon-11-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/chaussure-nike-zoom-skylon-11-pour-homme-sUsmCq9t/IU1869-601",
+    "fichiers": [
+      "08_nike_nike-zoom-skylon-11-chaussure-pour-hom_nike-fr_0bccc1a730.jpg"
+    ]
+  },
+  "moon-shoe-og-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/chaussure-nike-moon-shoe-og-pour-homme-zkdytPgS/IX3952-600",
+    "fichiers": [
+      "08_nike_nike-moon-shoe-og-chaussure-pour-homme_nike-fr_ab840e847c.jpg"
+    ]
+  },
+  "air-liquid-max-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/chaussure-nike-air-liquid-max-pour-homme-W3JWgZWK/IQ7635-003",
+    "fichiers": [
+      "08_nike_nike-air-liquid-max-chaussure-pour-hom_nike-fr_d2c03db27e.jpg"
+    ]
+  },
+  "air-max-plus-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/chaussure-nike-air-max-plus-pour-homme-aB68Apmh/IV5756-001",
+    "fichiers": [
+      "08_nike_nike-air-max-plus-chaussure-pour-homme_nike-fr_2c28592694.jpg"
+    ]
+  },
+  "p-6000-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/chaussure-nike-p-6000-QkH5XrfS/IX6221-101",
+    "fichiers": [
+      "08_nike_nike-p-6000-chaussure_nike-fr_74097e962b.jpg"
+    ]
+  },
+  "air-force-1-07-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/chaussure-nike-air-force-1-07-pour-homme-H7b17STt/IX7257-133",
+    "fichiers": [
+      "08_nike_nike-air-force-1-07-chaussure-pour-hom_nike-fr_2c788b3272.jpg"
+    ]
+  },
+  "acg-lava-flow-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/veste-en-duvet-therma-fit-adv-acg-lava-flow-ultralight-pour-homme-e7gh9FP9/IO9003-480",
+    "fichiers": [
+      "05_nike_acg-lava-flow-ultralight-veste-en-duve_nike-fr_59e7e64dd0.jpg"
+    ]
+  },
+  "acg-radical-airflow-haut-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/haut-de-trail-a-manches-longues-dri-fit-acg-radical-airflow-nxt-pour-homme-b4ixE9j6/IQ5848-100",
+    "fichiers": [
+      "07_nike_acg-radical-airflow-nxt-haut-de-trail_nike-fr_9a67719504.jpg"
+    ]
+  },
+  "acg-dawn-range-pantalon-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/pantalon-de-trail-dri-fit-acg-dawn-range-pour-homme-Zeulg39O/IO9665-010",
+    "fichiers": [
+      "01_nike_acg-dawn-range-pantalon-de-trail-dri-f_nike-fr_045128c875.jpg"
+    ]
+  },
+  "acg-radical-airflow-casquette-nike": {
+    "origine": "Nike (site officiel, FR)",
+    "page": "https://www.nike.com/fr/t/casquette-de-trail-reglable-dri-fit-acg-radical-airflow-fly-cap-Ej18USYN/IX1854-100",
+    "fichiers": [
+      "10_nike_acg-radical-airflow-fly-cap-casquette_nike-fr_e7814d2011.jpg"
+    ]
+  },
+  "nb-204l-new-balance": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/new-balance-baskets-lifestyle-nb-204l-g204l9ea-68283060.html",
+    "fichiers": [
+      "08_new-balance_baskets-lifestyle-nb-204l-g204l9ea_jumia-ma_6e4b5b2eff.jpg",
+      "08_new-balance_baskets-lifestyle-nb-204l-g204l9ea_jumia-ma_9d5f6629cf.jpg",
+      "08_new-balance_baskets-lifestyle-nb-204l-g204l9ea_jumia-ma_f40cde4e66.jpg"
+    ]
+  },
+  "nb-530-new-balance": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/new-balance-baskets-lifestyle-nb-530-blanc-gr530lb-68282791.html",
+    "fichiers": [
+      "08_new-balance_baskets-lifestyle-nb-530-blanc-gr530lb_jumia-ma_9c2353fa89.jpg",
+      "08_new-balance_baskets-lifestyle-nb-530-blanc-gr530lb_jumia-ma_6172daeb38.jpg",
+      "08_new-balance_baskets-lifestyle-nb-530-blanc-gr530lb_jumia-ma_e012086b5a.jpg"
+    ]
+  },
+  "nb-603-new-balance": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/new-balance-baskets-lifestyle-nb-603-triple-black-m6037z2-68283061.html",
+    "fichiers": [
+      "08_new-balance_baskets-lifestyle-nb-603-triple-black_jumia-ma_acb6697c42.jpg",
+      "08_new-balance_baskets-lifestyle-nb-603-triple-black_jumia-ma_c384ac7f77.jpg",
+      "08_new-balance_baskets-lifestyle-nb-603-triple-black_jumia-ma_f85097acee.jpg"
+    ]
+  },
+  "nb-fresh-foam-520-new-balance": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/new-balance-chaussure-de-sport-nb-fresh-foam-520-v9-triple-black-m520lt9-68283136.html",
+    "fichiers": [
+      "08_new-balance_chaussure-de-sport-nb-fresh-foam-520-v_jumia-ma_8e23e5248d.jpg",
+      "08_new-balance_chaussure-de-sport-nb-fresh-foam-520-v_jumia-ma_cf58d3d86c.jpg",
+      "08_new-balance_chaussure-de-sport-nb-fresh-foam-520-v_jumia-ma_e6a2af3c9c.jpg"
+    ]
+  },
+  "vs-pace-2-adidas": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/adidas-chaussures-vs-pace-2.0-if4515-noir-67839575.html",
+    "fichiers": [
+      "08_adidas_chaussures-vs-pace-2-0-if4515-noir_jumia-ma_e5c1f99030.jpg",
+      "08_adidas_chaussures-vs-pace-2-0-if4515-noir_jumia-ma_3036804668.jpg"
+    ]
+  },
+  "break-start-adidas": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/adidas-chaussure-break-start-jq9572-67582578.html",
+    "fichiers": [
+      "08_adidas_chaussure-break-start-jq9572_jumia-ma_cdd68fb883.jpg",
+      "08_adidas_chaussure-break-start-jq9572_jumia-ma_d5cff6f0a9.jpg",
+      "08_adidas_chaussure-break-start-jq9572_jumia-ma_1cb73064d9.jpg"
+    ]
+  },
+  "ultimashow-2-adidas": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/adidas-chaussures-ultimashow-2.0-js2602-violet-67839700.html",
+    "fichiers": [
+      "08_adidas_chaussures-ultimashow-2-0-js2602-viole_jumia-ma_b19cf029af.jpg",
+      "08_adidas_chaussures-ultimashow-2-0-js2602-viole_jumia-ma_d9a39f061e.jpg"
+    ]
+  },
+  "breaknet-3-adidas": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/adidas-chaussures-breaknet-3.0-jq4648-blanc-67839610.html",
+    "fichiers": [
+      "08_adidas_chaussures-breaknet-3-0-jq4648-blanc_jumia-ma_8fc99fce6f.jpg",
+      "08_adidas_chaussures-breaknet-3-0-jq4648-blanc_jumia-ma_c923f71d4a.jpg"
+    ]
+  },
+  "baskets-cuir-blanc-vert-durbano": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/durbano-baskets-basses-durbano-en-cuir-blanc-vert.-37665503.html",
+    "fichiers": [
+      "08_nomarque_baskets-basses-d-urbano-en-cuir-blanc_jumia-ma_898bdbd558.jpg"
+    ]
+  },
+  "baskets-cuir-daim-bleu-durbano": {
+    "origine": "Jumia Maroc",
+    "page": "https://www.jumia.ma/durbano-baskets-basses-durbano-en-cuir-daim-bleu.-51814734.html",
+    "fichiers": [
+      "08_nomarque_baskets-basses-d-urbano-en-cuir-daim-b_jumia-ma_82bbe2eadf.jpg"
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+Fichiers déplacés le 2026-10-14 (Lot 1 du plan.md) — export WhatsApp Web sauvegardé par erreur dans assets/tshirts/.
+Aucun n'était référencé par index.html, css/style.css, js/main.js ou README.md (vérifié par grep).
+Les 12 photos .jpg sont restées dans assets/tshirts/DIOR-TSHIRT_files/ (utilisées par l'ancien site).

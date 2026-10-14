@@ -1,0 +1,5 @@
+# 0003 — Méthode de la skill UI Stealer, charte H MODE
+- Date : 2026-10-14
+- Contexte : l'utilisateur a désigné la skill UI Stealer (`/Users/user/Documents/SKILLS/UI-Stealer/`) comme référence de qualité (décision D8). Cette skill embarque aussi la charte d'une autre marque (Melko).
+- Décision : reprendre de la skill la méthode (images de référence dans `Template/`, vérification par le DOM, les types, les tests et le build), la structure (`ui/`, `server/`, scripts, Docker/nginx) et le réglage animations on/off + `prefers-reduced-motion`. Ne PAS reprendre la palette Melko : la charte H MODE (nacre, sable, bronze, or, encre ; Cormorant Garamond + Jost) vient de `Template/hero.png`. Scripts en `.sh` (macOS) au lieu de `.bat`. Composants Lightswind (MIT) installés par la CLI puis ré-habillés.
+- Conséquences : tout nouveau composant passe par le design system et ses tokens. Les vérifications visuelles se font par le DOM et les styles calculés, les captures d'écran du navigateur intégré étant prises en cours d'animation.

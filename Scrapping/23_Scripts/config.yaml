@@ -1,0 +1,168 @@
+# H Mode — collecte d'images mode homme automne-hiver
+# Toutes les limites sont modifiables ici. Les compteurs sont calculés depuis la base
+# (20_Metadata/state.sqlite) : une relance reprend là où la collecte s'est arrêtée.
+
+user_agent: "HModeImageResearchBot/0.1 (bot; internal visual research; respects robots.txt)"
+request_timeout: 25
+min_delay_per_host: 1.5      # secondes entre deux requêtes vers le même hôte
+max_retries: 3
+max_429_per_host: 4         # au-delà : hôte ignoré pour le reste de l'exécution (pas d'insistance)
+
+quality:
+  reject_min_side: 400        # en dessous : miniature inutilisable -> rejet
+  small_min_side: 800         # en dessous : signalé "petite"
+  blur_threshold: 60.0        # variance du laplacien ; en dessous : signalé "flou_possible"
+  near_dup_hamming: 3         # distance pHash <= seuil : signalé quasi-doublon (non supprimé)
+
+# Quotas par défaut (lot "full"). Un lot peut les surcharger.
+quotas:
+  max_per_source: 400
+  max_per_category: 400
+  max_per_subcategory: 120
+  max_images_per_product: 4
+  max_products_per_listing: 60
+
+batches:
+  pilot:
+    quotas:
+      max_per_source: 40
+      max_per_category: 40
+      max_per_subcategory: 12
+      max_images_per_product: 3
+      max_products_per_listing: 8
+    max_pages_per_listing: 1
+
+  full:
+    max_pages_per_listing: 4
+
+# Sources. "enabled: false" + "reason" = source identifiée mais non collectée (documentée dans les rapports).
+# license_class : commercial_ok | autorisation_necessaire | reference_interne | inconnue
+sources:
+  kiabi_ma:
+    enabled: true
+    type: shopify
+    name: "Kiabi Maroc"
+    base: "https://www.kiabi.ma"
+    min_delay: 65              # products.json : 1 requête / ~60 s tolérée (429 + Retry-After: 60 observés)
+    source_type: "site_enseigne"
+    market: "maroc"
+    license_class: autorisation_necessaire
+    license_note: "Photos produit Kiabi, droits réservés. Usage interne de référence uniquement sans accord."
+    listings:
+      - {collection: k-seat-homme}
+      - {collection: k-jean-homme}
+      - {collection: k-pull-homme}
+      - {collection: k-manteau-homme}
+      - {collection: k-veste-homme}
+      - {collection: k-chemise-homme}
+      - {collection: k-sport-homme}
+      - {collection: k-accessoires-homme}
+      - {collection: k-chaussures-homme}
+      - {collection: des-looks-hivernaux-❄-homme, hint: [11_Looks_Complets, Superposition_Hiver]}
+
+  asey_shop:
+    enabled: true
+    type: shopify
+    name: "ASEY Shop"
+    base: "https://www.aseyshop.com"
+    min_delay: 65
+    source_type: "boutique_locale"
+    market: "maroc"
+    license_class: reference_interne
+    license_note: "Revendeur ; photos de la boutique ou de la marque. Droits non cédés."
+    listings:
+      - {collection: all, hint: [08_Sneakers, null]}
+
+  elbarouki:
+    enabled: true
+    type: shopify
+    name: "Elbarouki Store"
+    base: "https://elbarouki.com"
+    min_delay: 65
+    source_type: "boutique_locale"
+    market: "maroc"
+    license_class: reference_interne
+    license_note: "Revendeur ; photos de la boutique ou de la marque. Droits non cédés."
+    listings:
+      - {collection: all, hint: [08_Sneakers, null]}
+
+  itsu_ma:
+    enabled: false
+    type: woocommerce
+    name: "itsu.ma"
+    base: "https://itsu.ma"
+    source_type: "boutique_locale"
+    market: "maroc"
+    license_class: reference_interne
+    reason: "La boutique mentionne une 'qualité premium 1:1' (vocabulaire des répliques). Exclue par prudence ; activable pour référence visuelle uniquement."
+
+  jumia_ma:
+    enabled: true
+    type: jumia
+    name: "Jumia Maroc"
+    base: "https://www.jumia.ma"
+    source_type: "marketplace"
+    market: "maroc"
+    license_class: inconnue
+    license_note: "Marketplace : photos fournies par des vendeurs tiers ou des marques ; titulaire des droits non identifié."
+    # Pagination interdite par robots.txt sur /mlp-* : seule la page 1 y est lue.
+    listings:
+      - {path: /mlp-hoodies-homme/, hint: [02_Hoodies, null]}
+      - {path: /mlp-sweat-homme-sans-capuche/, hint: [03_Sweats_Sans_Capuche, null]}
+      - {path: /new-balance/}
+      - {path: /adidas/}
+      - {path: /baskets-de-ville/, hint: [08_Sneakers, null]}
+      - {path: /jeans-homme/}
+      - {path: /nike/}
+
+  nike_fr:
+    enabled: true
+    type: nike
+    name: "Nike (site officiel, FR)"
+    base: "https://www.nike.com"
+    source_type: "site_marque"
+    market: "international"
+    license_class: autorisation_necessaire
+    license_note: "Visuels officiels Nike, droits réservés. Référence interne uniquement."
+    # Pages /w/ (listes) autorisées par robots.txt ; les pages produit /p/ sont exclues.
+    listings:
+      - {path: /fr/w/hommes-sweats-a-capuche-et-sweats-6riveznik1}
+      - {path: /fr/w/hommes-lifestyle-chaussures-13jrmznik1zy7ok, hint: [08_Sneakers, Nike]}
+      - {path: /fr/w/hommes-exterieur-nik1zxw4h}
+      - {path: /fr/w/hommes-pantalons-et-leggings-2kq19znik1}
+
+  openverse:
+    enabled: false
+    reason: "robots.txt de api.openverse.org : 'Disallow: /v1/images/' pour tous les agents (vérifié le 2026-10-10)."
+    type: openverse
+    name: "Openverse (CC / domaine public)"
+    base: "https://api.openverse.org"
+    source_type: "banque_images_licence_libre"
+    market: "international"
+    license_class: commercial_ok   # affiné image par image selon la licence (ND, NC exclues)
+    queries:
+      - {q: "men hoodie", hint: [02_Hoodies, null]}
+      - {q: "men crewneck sweatshirt", hint: [03_Sweats_Sans_Capuche, null]}
+      - {q: "men streetwear outfit", hint: [11_Looks_Complets, Streetwear]}
+      - {q: "men winter coat outfit", hint: [11_Looks_Complets, Superposition_Hiver]}
+      - {q: "denim jeans men", hint: [01_Jeans_Pantalons, null]}
+      - {q: "sneakers", hint: [08_Sneakers, null]}
+
+  wikimedia_commons: {enabled: false, type: none, name: "Wikimedia Commons", reason: "robots.txt : 'Disallow: /w/' (API incluse) et '/api/' pour tous les agents."}
+  # Sources identifiées mais bloquées / non autorisées (documentées, non collectées)
+  adidas: {enabled: false, type: none, name: "Adidas (site officiel)", reason: "HTTP 403 (protection anti-bot) sur site et robots.txt."}
+  new_balance: {enabled: false, type: none, name: "New Balance (site officiel)", reason: "HTTP 403 (protection anti-bot)."}
+  avito_ma: {enabled: false, type: none, name: "Avito Maroc", reason: "HTTP 403 sur les pages ; annonces de particuliers (données personnelles)."}
+  lcwaikiki_ma: {enabled: false, type: none, name: "LC Waikiki Maroc", reason: "HTTP 403 (protection anti-bot)."}
+  defacto: {enabled: false, type: none, name: "DeFacto", reason: "HTTP 403 (protection anti-bot)."}
+  decathlon_ma: {enabled: false, type: none, name: "Decathlon Maroc", reason: "HTTP 403 (protection anti-bot)."}
+  koton_ma: {enabled: false, type: none, name: "Koton Maroc", reason: "robots.txt : 'User-agent: * / Disallow: /'."}
+  zara_ma: {enabled: false, type: none, name: "Zara Maroc", reason: "HTTP 403 pour un user-agent de bot déclaré."}
+  celio_ma: {enabled: false, type: none, name: "Celio Maroc", reason: "Page d'accueil = page JS minimale (1,4 Ko) ; pas de contenu exploitable sans navigateur."}
+  marjanemall: {enabled: false, type: none, name: "Marjane Mall", reason: "Site Next.js accessible ; adaptateur non encore écrit (candidat lot 3)."}
+  instagram: {enabled: false, type: none, name: "Instagram", reason: "Connexion requise pour la navigation ; automatisation interdite par les CGU."}
+  facebook: {enabled: false, type: none, name: "Facebook / Marketplace", reason: "Connexion requise ; automatisation interdite par les CGU."}
+  google_images: {enabled: false, type: none, name: "Google Images", reason: "Scraping interdit par les CGU ; nécessiterait l'API Custom Search (clé payante)."}
+  pexels: {enabled: false, type: none, name: "Pexels", reason: "HTTP 403 sur le site ; API gratuite disponible avec clé (PEXELS_API_KEY) — non configurée."}
+  unsplash: {enabled: false, type: none, name: "Unsplash", reason: "HTTP 401 ; API disponible avec clé (UNSPLASH_ACCESS_KEY) — non configurée."}
+  otmaroc: {enabled: false, type: none, name: "OTMAROC", reason: "Nom de domaine expiré (vérifié)."}

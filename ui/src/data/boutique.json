@@ -1,0 +1,23 @@
+{
+  "nom": "H MODE",
+  "whatsapp": "212625490034",
+  "whatsappAffiche": "+212 625 490 034",
+  "instagram": {
+    "url": "https://www.instagram.com/hmod_e2121/",
+    "pseudo": "@hmod_e2121"
+  },
+  "facebook": {
+    "url": "https://www.facebook.com/profile.php?id=61594200016066",
+    "nom": "H MODE"
+  },
+  "ville": "Casablanca, Maroc",
+  "adresse": null,
+  "horaires": null,
+  "paiement": "Paiement à la livraison",
+  "livraison": {
+    "zones": null,
+    "fraisDH": null,
+    "delai": null
+  },
+  "retours": null
+}

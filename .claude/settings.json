@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./ui/dist/**)",
+      "Read(./ui/node_modules/**)",
+      "Read(./node_modules/**)",
+      "Read(./ui/tsconfig.tsbuildinfo)",
+      "Read(./legacy/**)",
+      "Read(./Scrapping/**/*.jpg)",
+      "Read(./Scrapping/**/*.jpeg)",
+      "Read(./Scrapping/**/*.png)",
+      "Read(./Scrapping/**/*.webp)",
+      "Read(./Scrapping/23_Scripts/.venv/**)",
+      "Read(./Planning/**/*.pptx)"
+    ]
+  }
+}

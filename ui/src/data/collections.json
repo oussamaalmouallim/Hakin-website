@@ -1,0 +1,16 @@
+[
+  {
+    "slug": "iconiques",
+    "nom": "Maisons iconiques",
+    "accroche": "Dior, Prada, Givenchy, Balenciaga, Amiri.",
+    "recit": "Les signatures les plus reconnaissables de la mode contemporaine, réunies en une sélection de t-shirts.",
+    "image": "/images/produits/t-shirt-givenchy-4g/1"
+  },
+  {
+    "slug": "riviera",
+    "nom": "Riviera Casablanca",
+    "accroche": "Tennis club, voyages et soleil.",
+    "recit": "Des imprimés solaires inspirés des clubs de tennis et des escales de la Riviera, signés Casablanca.",
+    "image": "/images/produits/t-shirt-casa-way/1"
+  }
+]

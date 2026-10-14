@@ -1,0 +1,5 @@
+# 0001 — Commande par WhatsApp, paiement à la livraison, sans backend
+- Date : 2026-10-14
+- Contexte : la boutique vend déjà via WhatsApp (ancien site). Aucun prestataire de paiement, aucun stock en ligne et aucun serveur n'existent. Consigne : aucune fonctionnalité simulée (pas de faux paiement, faux stock ni faux compte serveur).
+- Décision : le panier et la commande vivent dans le navigateur (Zustand + localStorage). La commande génère un message WhatsApp pré-rempli (référence, articles, sous-total, coordonnées) vers le numéro de `boutique.json`. Paiement à la livraison. Le panier n'est vidé que quand le client confirme avoir envoyé le message. Le « compte client » est local à l'appareil.
+- Conséquences : hébergement statique possible (Netlify, nginx). Pas de suivi de commande côté boutique hors WhatsApp, pas de compte multi-appareil. Le mode de paiement exact (espèces, TPE…) reste à confirmer (décision D3 de `plan.md`) : les textes disent seulement « à la livraison ». Un vrai backend (stock, paiement) demandera un nouvel ADR ; `server/` est réservé.

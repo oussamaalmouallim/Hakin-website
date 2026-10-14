@@ -1,0 +1,2628 @@
+[
+  {
+    "slug": "t-shirt-dior-logo",
+    "nom": "T-shirt logo Dior",
+    "marque": "Dior",
+    "categorie": "t-shirts",
+    "collections": [
+      "iconiques"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "gris clair",
+        "hex": "#B9B8B3"
+      },
+      {
+        "nom": "taupe",
+        "hex": "#8B8273"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, logo Dior sur la poitrine.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-dior-logo/1",
+        "alt": "T-shirts logo Dior en quatre coloris sur portants",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-prada-graffiti",
+    "nom": "T-shirt Prada graffiti",
+    "marque": "Prada",
+    "categorie": "t-shirts",
+    "collections": [
+      "iconiques"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, grand logo Prada au graphisme graffiti sur le devant.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-prada-graffiti/1",
+        "alt": "T-shirts Prada graffiti noir et blanc sur portants",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-givenchy-4g",
+    "nom": "T-shirt Givenchy 4G",
+    "marque": "Givenchy",
+    "categorie": "t-shirts",
+    "collections": [
+      "iconiques"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "gris",
+        "hex": "#8E8D88"
+      },
+      {
+        "nom": "bleu marine",
+        "hex": "#1F3550"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, emblème 4G et signature Givenchy sur le devant.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-givenchy-4g/1",
+        "alt": "T-shirts Givenchy 4G en quatre coloris sur portants",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-balenciaga-bb",
+    "nom": "T-shirt Balenciaga BB",
+    "marque": "Balenciaga",
+    "categorie": "t-shirts",
+    "collections": [
+      "iconiques"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, grand logo BB et signature Balenciaga.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-balenciaga-bb/1",
+        "alt": "T-shirts Balenciaga BB noir et blanc sur portants",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-amiri-logo",
+    "nom": "T-shirt logo Amiri",
+    "marque": "Amiri",
+    "categorie": "t-shirts",
+    "collections": [
+      "iconiques"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "rose",
+        "hex": "#EBB7C1"
+      },
+      {
+        "nom": "anthracite",
+        "hex": "#4A4A4F"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, signature Amiri sur le devant.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-amiri-logo/1",
+        "alt": "T-shirts logo Amiri en quatre coloris sur portants",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-casablanca-vague",
+    "nom": "T-shirt Casablanca vague",
+    "marque": "Casablanca",
+    "categorie": "t-shirts",
+    "collections": [
+      "riviera"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "bleu ciel",
+        "hex": "#A9CBE8"
+      },
+      {
+        "nom": "bleu marine",
+        "hex": "#1F3550"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, imprimé vague arc-en-ciel et balle de tennis signé Casablanca.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-casablanca-vague/1",
+        "alt": "T-shirts Casablanca imprimé vague en quatre coloris",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-amore-hotel",
+    "nom": "T-shirt Amore Hotel",
+    "marque": "Casablanca",
+    "categorie": "t-shirts",
+    "collections": [
+      "riviera"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "bleu roi",
+        "hex": "#1E64C8"
+      },
+      {
+        "nom": "rose",
+        "hex": "#EBB7C1"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, illustration d'hôtel et palmiers avec script « Amore » au dos.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-amore-hotel/1",
+        "alt": "T-shirts Amore Hotel vus de dos en quatre coloris",
+        "vue": "dos"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-casablanca-tennis-club",
+    "nom": "T-shirt Casablanca Tennis Club",
+    "marque": "Casablanca",
+    "categorie": "t-shirts",
+    "collections": [
+      "riviera"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "bleu ciel",
+        "hex": "#A9CBE8"
+      },
+      {
+        "nom": "bleu marine",
+        "hex": "#1F3550"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, écusson poitrine et grand imprimé « Casablanca Tennis Club » au dos.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-casablanca-tennis-club/1",
+        "alt": "T-shirts Casablanca Tennis Club vus de dos",
+        "vue": "dos"
+      },
+      {
+        "src": "/images/produits/t-shirt-casablanca-tennis-club/2",
+        "alt": "T-shirts Casablanca Tennis Club vus de face, écusson poitrine",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-casa-airlines",
+    "nom": "T-shirt Casa Airlines",
+    "marque": "Casablanca",
+    "categorie": "t-shirts",
+    "collections": [
+      "riviera"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "rose",
+        "hex": "#EBB7C1"
+      },
+      {
+        "nom": "bleu marine",
+        "hex": "#1F3550"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, motif « Casa Airlines » sur la poitrine et grand imprimé hublot au dos.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-casa-airlines/1",
+        "alt": "T-shirts Casa Airlines vus de dos, imprimé hublot",
+        "vue": "dos"
+      },
+      {
+        "src": "/images/produits/t-shirt-casa-airlines/2",
+        "alt": "T-shirts Casa Airlines vus de face, motif poitrine",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "t-shirt-casa-way",
+    "nom": "T-shirt Casa Way",
+    "marque": "Casablanca",
+    "categorie": "t-shirts",
+    "collections": [
+      "riviera"
+    ],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "bleu ciel",
+        "hex": "#A9CBE8"
+      },
+      {
+        "nom": "rose",
+        "hex": "#EBB7C1"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "T-shirt col rond, grand imprimé « Casa Way » au dos.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/t-shirt-casa-way/1",
+        "alt": "T-shirts Casa Way vus de dos en quatre coloris",
+        "vue": "dos"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "jean-slim-cinq-poches-kiabi",
+    "nom": "Jean slim cinq poches",
+    "marque": "Kiabi",
+    "categorie": "pantalons",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris",
+        "hex": "#8C8C89"
+      },
+      {
+        "nom": "bleu denim",
+        "hex": "#4A6A8F"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Jean coupe slim à cinq poches.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/jean-slim-cinq-poches-kiabi/1",
+        "alt": "Jean slim cinq poches",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/jean-slim-cinq-poches-kiabi/2",
+        "alt": "Jean slim cinq poches, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/jean-slim-cinq-poches-kiabi/3",
+        "alt": "Jean slim cinq poches, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-capuche-french-terry-kiabi",
+    "nom": "Sweat à capuche en French Terry",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris chiné",
+        "hex": "#B5B5B2"
+      },
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat zippé à capuche en French Terry.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-capuche-french-terry-kiabi/1",
+        "alt": "Sweat à capuche zippé en French Terry",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-capuche-french-terry-kiabi/2",
+        "alt": "Sweat à capuche zippé en French Terry, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/sweat-capuche-french-terry-kiabi/3",
+        "alt": "Sweat à capuche zippé en French Terry, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-capuche-zippe-uni-kiabi",
+    "nom": "Sweat à capuche zippé uni",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "gris chiné",
+        "hex": "#B5B5B2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche zippé, uni.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-capuche-zippe-uni-kiabi/1",
+        "alt": "Sweat à capuche zippé uni",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-capuche-zippe-uni-kiabi/2",
+        "alt": "Sweat à capuche zippé uni, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/sweat-capuche-zippe-uni-kiabi/3",
+        "alt": "Sweat à capuche zippé uni, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-zippe-molleton-leger-kiabi",
+    "nom": "Sweat zippé en molleton léger",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "bordeaux",
+        "hex": "#5E2230"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat zippé col montant en molleton léger.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-zippe-molleton-leger-kiabi/1",
+        "alt": "Sweat zippé en molleton léger",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-zippe-molleton-leger-kiabi/2",
+        "alt": "Sweat zippé en molleton léger, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/sweat-zippe-molleton-leger-kiabi/3",
+        "alt": "Sweat zippé en molleton léger, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-molleton-inscription-kiabi",
+    "nom": "Sweat en molleton à inscription",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "kaki",
+        "hex": "#545A34"
+      },
+      {
+        "nom": "gris chiné",
+        "hex": "#B5B5B2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat col rond en molleton, inscription sur la poitrine.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-molleton-inscription-kiabi/1",
+        "alt": "Sweat en molleton à inscription",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-molleton-inscription-kiabi/2",
+        "alt": "Sweat en molleton à inscription, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/sweat-molleton-inscription-kiabi/3",
+        "alt": "Sweat en molleton à inscription, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-molleton-leger-kiabi",
+    "nom": "Sweat en molleton léger",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "marron",
+        "hex": "#5C3326"
+      },
+      {
+        "nom": "anthracite",
+        "hex": "#4A4A4C"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche en molleton léger.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-molleton-leger-kiabi/1",
+        "alt": "Sweat à capuche en molleton léger",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-molleton-leger-kiabi/2",
+        "alt": "Sweat à capuche en molleton léger, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/sweat-molleton-leger-kiabi/3",
+        "alt": "Sweat à capuche en molleton léger, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "polo-rugby-manches-longues-kiabi",
+    "nom": "Polo rugby manches longues",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu rayé",
+        "hex": "#5F7391"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Polo uni style rugby à manches longues, rayures horizontales.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/polo-rugby-manches-longues-kiabi/1",
+        "alt": "Polo rugby rayé à manches longues",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/polo-rugby-manches-longues-kiabi/2",
+        "alt": "Polo rugby rayé à manches longues, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "pull-col-camionneur-kiabi",
+    "nom": "Pull col camionneur en French Terry",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "beige",
+        "hex": "#D9CDB6"
+      },
+      {
+        "nom": "bleu",
+        "hex": "#3E5E91"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Pull col camionneur zippé en French Terry.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/pull-col-camionneur-kiabi/1",
+        "alt": "Pull col camionneur en French Terry",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/pull-col-camionneur-kiabi/2",
+        "alt": "Pull col camionneur en French Terry, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/pull-col-camionneur-kiabi/3",
+        "alt": "Pull col camionneur en French Terry, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-capuche-kangourou-kiabi",
+    "nom": "Sweat à capuche poche kangourou",
+    "marque": "Kiabi",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris chiné",
+        "hex": "#B5B5B2"
+      },
+      {
+        "nom": "beige",
+        "hex": "#D9CDB6"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche avec poche kangourou.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-capuche-kangourou-kiabi/1",
+        "alt": "Sweat à capuche poche kangourou",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-capuche-kangourou-kiabi/2",
+        "alt": "Sweat à capuche poche kangourou, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/sweat-capuche-kangourou-kiabi/3",
+        "alt": "Sweat à capuche poche kangourou, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-ess-elevated-puma",
+    "nom": "Hoodie ESS Elevated",
+    "marque": "Puma",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "camel",
+        "hex": "#B5864F"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche ESS Elevated, logo brodé.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-ess-elevated-puma/1",
+        "alt": "Hoodie Puma ESS Elevated camel",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/hoodie-ess-elevated-puma/2",
+        "alt": "Hoodie Puma ESS Elevated camel, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-ess-tape-puma",
+    "nom": "Hoodie ESS Tape",
+    "marque": "Puma",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu ciel",
+        "hex": "#A9C4DE"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche ESS Tape, bandes logo sur les manches.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-ess-tape-puma/1",
+        "alt": "Hoodie Puma ESS Tape bleu ciel",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-ess-logo-lab-puma",
+    "nom": "Hoodie ESS Logo Lab Holiday",
+    "marque": "Puma",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "vert sapin",
+        "hex": "#1E4A3B"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche ESS Logo Lab Holiday, imprimé sur la poitrine.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-ess-logo-lab-puma/1",
+        "alt": "Hoodie Puma ESS Logo Lab vert sapin",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/hoodie-ess-logo-lab-puma/2",
+        "alt": "Hoodie Puma ESS Logo Lab vert sapin, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-ess-block-puma",
+    "nom": "Hoodie ESS Block",
+    "marque": "Puma",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche ESS Block, color block noir et blanc.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-ess-block-puma/1",
+        "alt": "Hoodie Puma ESS Block noir et blanc",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/hoodie-ess-block-puma/2",
+        "alt": "Hoodie Puma ESS Block noir et blanc, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-rest-day-myprotein",
+    "nom": "Hoodie Rest Day",
+    "marque": "Myprotein",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche Rest Day.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-rest-day-myprotein/1",
+        "alt": "Hoodie Myprotein Rest Day noir",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/hoodie-rest-day-myprotein/2",
+        "alt": "Hoodie Myprotein Rest Day noir, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/hoodie-rest-day-myprotein/3",
+        "alt": "Hoodie Myprotein Rest Day noir, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-zippe-form-myprotein",
+    "nom": "Hoodie zippé Form",
+    "marque": "Myprotein",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu ardoise",
+        "hex": "#4A5468"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche zippé coupe slim.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-zippe-form-myprotein/1",
+        "alt": "Hoodie zippé Myprotein Form",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/hoodie-zippe-form-myprotein/2",
+        "alt": "Hoodie zippé Myprotein Form, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/hoodie-zippe-form-myprotein/3",
+        "alt": "Hoodie zippé Myprotein Form, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-oversize-indigo-defacto",
+    "nom": "Hoodie oversize",
+    "marque": "Defacto",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "indigo",
+        "hex": "#4A6390"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche coupe oversize.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-oversize-indigo-defacto/1",
+        "alt": "Hoodie oversize Defacto indigo",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/hoodie-oversize-indigo-defacto/2",
+        "alt": "Hoodie oversize Defacto indigo, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/hoodie-oversize-indigo-defacto/3",
+        "alt": "Hoodie oversize Defacto indigo, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-bleu-ciel-trendyol",
+    "nom": "Sweat col rond",
+    "marque": "Trendyol",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu ciel",
+        "hex": "#A9C4DE"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat-shirt col rond.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-bleu-ciel-trendyol/1",
+        "alt": "Sweat Trendyol bleu ciel",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-bleu-ciel-trendyol/2",
+        "alt": "Sweat Trendyol bleu ciel, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-oversize-lilas-defacto",
+    "nom": "Hoodie oversize lilas",
+    "marque": "Defacto",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "lilas",
+        "hex": "#B8A9D4"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche coupe oversize.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-oversize-lilas-defacto/1",
+        "alt": "Hoodie oversize Defacto lilas",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/hoodie-oversize-lilas-defacto/2",
+        "alt": "Hoodie oversize Defacto lilas, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/hoodie-oversize-lilas-defacto/3",
+        "alt": "Hoodie oversize Defacto lilas, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-bleu-marine-trendyol",
+    "nom": "Sweat brodé",
+    "marque": "Trendyol",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu marine",
+        "hex": "#1F3550"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat-shirt col rond, motif brodé sur la poitrine.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-bleu-marine-trendyol/1",
+        "alt": "Sweat Trendyol bleu marine",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-bleu-marine-trendyol/2",
+        "alt": "Sweat Trendyol bleu marine, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/sweat-bleu-marine-trendyol/3",
+        "alt": "Sweat Trendyol bleu marine, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-demi-zip-defacto",
+    "nom": "Sweat demi-zip",
+    "marque": "Defacto",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris",
+        "hex": "#8C8C89"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat-shirt col montant demi-zip.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-demi-zip-defacto/1",
+        "alt": "Sweat demi-zip Defacto gris",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-col-polo-defacto",
+    "nom": "Sweat moderne",
+    "marque": "Defacto",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris clair",
+        "hex": "#CFCBC2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat-shirt à col.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-col-polo-defacto/1",
+        "alt": "Sweat Defacto gris clair",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/sweat-col-polo-defacto/2",
+        "alt": "Sweat Defacto gris clair, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "pantalon-survetement-fleece-defacto",
+    "nom": "Pantalon de survêtement en fleece",
+    "marque": "Defacto",
+    "categorie": "pantalons",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu",
+        "hex": "#3E5E91"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Pantalon de survêtement coupe régulière, en fleece, à poches.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/pantalon-survetement-fleece-defacto/1",
+        "alt": "Pantalon de survêtement Defacto",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/pantalon-survetement-fleece-defacto/2",
+        "alt": "Pantalon de survêtement Defacto, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/pantalon-survetement-fleece-defacto/3",
+        "alt": "Pantalon de survêtement Defacto, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "pantalon-slim-defacto",
+    "nom": "Pantalon slim",
+    "marque": "Defacto",
+    "categorie": "pantalons",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris",
+        "hex": "#8C8C89"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Pantalon coupe slim.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/pantalon-slim-defacto/1",
+        "alt": "Pantalon slim Defacto gris",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/pantalon-slim-defacto/2",
+        "alt": "Pantalon slim Defacto gris, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/pantalon-slim-defacto/3",
+        "alt": "Pantalon slim Defacto gris, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "jean-noir-koton",
+    "nom": "Jean noir",
+    "marque": "Koton",
+    "categorie": "pantalons",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Jean noir pour homme.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/jean-noir-koton/1",
+        "alt": "Jean noir Koton",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/jean-noir-koton/2",
+        "alt": "Jean noir Koton, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-nac-oversize-nike",
+    "nom": "Sweat à capuche N.A.C. oversize",
+    "marque": "Nike",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris chiné",
+        "hex": "#B5B5B2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche de training oversize en Fleece Dri-FIT.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-nac-oversize-nike/1",
+        "alt": "Sweat à capuche Nike N.A.C. oversize gris chiné",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-nac-sans-manches-nike",
+    "nom": "Sweat à capuche N.A.C. sans manches",
+    "marque": "Nike",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris chiné",
+        "hex": "#B5B5B2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche de training sans manches en Fleece Dri-FIT.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-nac-sans-manches-nike/1",
+        "alt": "Sweat à capuche sans manches Nike N.A.C.",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "sweat-club-fleece-nike",
+    "nom": "Sweat Club Fleece",
+    "marque": "Nike",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Haut col rond en tissu Fleece.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/sweat-club-fleece-nike/1",
+        "alt": "Sweat Nike Club Fleece blanc",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-solo-fleece-nike",
+    "nom": "Sweat à capuche Solo Fleece",
+    "marque": "Nike",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "vert sapin",
+        "hex": "#1E4A3B"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche en Fleece.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-solo-fleece-nike/1",
+        "alt": "Sweat à capuche Nike Solo Fleece vert sapin",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "hoodie-club-fleece-nike",
+    "nom": "Sweat à capuche Club Fleece",
+    "marque": "Nike",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "rose",
+        "hex": "#EBB7C1"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Sweat à capuche en Fleece.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/hoodie-club-fleece-nike/1",
+        "alt": "Sweat à capuche Nike Club Fleece rose",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "veste-tech-windrunner-nike",
+    "nom": "Veste Tech Windrunner",
+    "marque": "Nike",
+    "categorie": "vestes",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "gris",
+        "hex": "#8C8C89"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Veste à zip en Fleece Windrunner.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/veste-tech-windrunner-nike/1",
+        "alt": "Veste Nike Tech Windrunner grise",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "veste-tech-windrunner-reflechissante-nike",
+    "nom": "Veste Tech Windrunner réfléchissante",
+    "marque": "Nike",
+    "categorie": "vestes",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Veste Windrunner à zip en Fleece, motifs réfléchissants.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/veste-tech-windrunner-reflechissante-nike/1",
+        "alt": "Veste Nike Tech Windrunner noire",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "haut-tech-quart-zip-nike",
+    "nom": "Haut Tech 1/4 de zip",
+    "marque": "Nike",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Haut en Fleece à 1/4 de zip.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/haut-tech-quart-zip-nike/1",
+        "alt": "Haut Nike Tech à quart de zip noir",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "zoom-skylon-11-nike",
+    "nom": "Zoom Skylon 11",
+    "marque": "Nike",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "framboise",
+        "hex": "#B8245A"
+      },
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure Nike Zoom Skylon 11.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/zoom-skylon-11-nike/1",
+        "alt": "Nike Zoom Skylon 11 framboise",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "moon-shoe-og-nike",
+    "nom": "Moon Shoe OG",
+    "marque": "Nike",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bordeaux",
+        "hex": "#5E2230"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure Nike Moon Shoe OG.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/moon-shoe-og-nike/1",
+        "alt": "Nike Moon Shoe OG bordeaux",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "air-liquid-max-nike",
+    "nom": "Air Liquid Max",
+    "marque": "Nike",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure Nike Air Liquid Max.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/air-liquid-max-nike/1",
+        "alt": "Nike Air Liquid Max noire",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "air-max-plus-nike",
+    "nom": "Air Max Plus",
+    "marque": "Nike",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "vert émeraude",
+        "hex": "#1C6B5E"
+      },
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure Nike Air Max Plus.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/air-max-plus-nike/1",
+        "alt": "Nike Air Max Plus vert émeraude",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "p-6000-nike",
+    "nom": "P-6000",
+    "marque": "Nike",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "argent",
+        "hex": "#C7C9CC"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure Nike P-6000.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/p-6000-nike/1",
+        "alt": "Nike P-6000 blanche et argent",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "air-force-1-07-nike",
+    "nom": "Air Force 1 '07",
+    "marque": "Nike",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "bleu marine",
+        "hex": "#1F3550"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure Nike Air Force 1 '07.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/air-force-1-07-nike/1",
+        "alt": "Nike Air Force 1 '07 blanche et bleu marine",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "acg-lava-flow-nike",
+    "nom": "ACG Lava Flow Ultralight",
+    "marque": "Nike",
+    "categorie": "vestes",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu roi",
+        "hex": "#2747B8"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Veste en duvet Therma-FIT ADV.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/acg-lava-flow-nike/1",
+        "alt": "Doudoune Nike ACG Lava Flow bleu roi",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "acg-radical-airflow-haut-nike",
+    "nom": "ACG Radical AirFlow NXT",
+    "marque": "Nike",
+    "categorie": "sweats",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Haut de trail à manches longues Dri-FIT.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/acg-radical-airflow-haut-nike/1",
+        "alt": "Haut Nike ACG Radical AirFlow blanc",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "acg-dawn-range-pantalon-nike",
+    "nom": "Pantalon ACG Dawn Range",
+    "marque": "Nike",
+    "categorie": "pantalons",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Pantalon de trail Dri-FIT.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/acg-dawn-range-pantalon-nike/1",
+        "alt": "Pantalon Nike ACG Dawn Range noir",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "acg-radical-airflow-casquette-nike",
+    "nom": "Casquette ACG Radical AirFlow Fly",
+    "marque": "Nike",
+    "categorie": "accessoires",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Casquette de trail réglable Dri-FIT.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/acg-radical-airflow-casquette-nike/1",
+        "alt": "Casquette Nike ACG Radical AirFlow blanche",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "nb-204l-new-balance",
+    "nom": "204L",
+    "marque": "New Balance",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc cassé",
+        "hex": "#E9E5DC"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Baskets lifestyle NB 204L.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/nb-204l-new-balance/1",
+        "alt": "New Balance 204L blanc cassé",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/nb-204l-new-balance/2",
+        "alt": "New Balance 204L blanc cassé, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/nb-204l-new-balance/3",
+        "alt": "New Balance 204L blanc cassé, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "nb-530-new-balance",
+    "nom": "530",
+    "marque": "New Balance",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "argent",
+        "hex": "#C7C9CC"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Baskets lifestyle NB 530.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/nb-530-new-balance/1",
+        "alt": "New Balance 530 blanche",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/nb-530-new-balance/2",
+        "alt": "New Balance 530 blanche, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/nb-530-new-balance/3",
+        "alt": "New Balance 530 blanche, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": true,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "nb-603-new-balance",
+    "nom": "603 Triple Black",
+    "marque": "New Balance",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Baskets lifestyle NB 603 Triple Black.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/nb-603-new-balance/1",
+        "alt": "New Balance 603 Triple Black",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/nb-603-new-balance/2",
+        "alt": "New Balance 603 Triple Black, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/nb-603-new-balance/3",
+        "alt": "New Balance 603 Triple Black, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "nb-fresh-foam-520-new-balance",
+    "nom": "Fresh Foam 520 v9",
+    "marque": "New Balance",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure de sport NB Fresh Foam 520 v9 Triple Black.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/nb-fresh-foam-520-new-balance/1",
+        "alt": "New Balance Fresh Foam 520 v9 noire",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/nb-fresh-foam-520-new-balance/2",
+        "alt": "New Balance Fresh Foam 520 v9 noire, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/nb-fresh-foam-520-new-balance/3",
+        "alt": "New Balance Fresh Foam 520 v9 noire, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "vs-pace-2-adidas",
+    "nom": "VS Pace 2.0",
+    "marque": "Adidas",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "noir",
+        "hex": "#151514"
+      },
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussures Adidas VS Pace 2.0.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/vs-pace-2-adidas/1",
+        "alt": "Adidas VS Pace 2.0 noire",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/vs-pace-2-adidas/2",
+        "alt": "Adidas VS Pace 2.0 noire, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "break-start-adidas",
+    "nom": "Break Start",
+    "marque": "Adidas",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "écru",
+        "hex": "#EAE3D4"
+      },
+      {
+        "nom": "marron",
+        "hex": "#5C3326"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussure Adidas Break Start.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/break-start-adidas/1",
+        "alt": "Adidas Break Start écru",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/break-start-adidas/2",
+        "alt": "Adidas Break Start écru, vue 2",
+        "vue": "detail"
+      },
+      {
+        "src": "/images/produits/break-start-adidas/3",
+        "alt": "Adidas Break Start écru, vue 3",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "ultimashow-2-adidas",
+    "nom": "Ultimashow 2.0",
+    "marque": "Adidas",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "lilas",
+        "hex": "#B8A9D4"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussures Adidas Ultimashow 2.0.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/ultimashow-2-adidas/1",
+        "alt": "Adidas Ultimashow 2.0 lilas",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/ultimashow-2-adidas/2",
+        "alt": "Adidas Ultimashow 2.0 lilas, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "breaknet-3-adidas",
+    "nom": "Breaknet 3.0",
+    "marque": "Adidas",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Chaussures Adidas Breaknet 3.0.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/breaknet-3-adidas/1",
+        "alt": "Adidas Breaknet 3.0 blanche",
+        "vue": "face"
+      },
+      {
+        "src": "/images/produits/breaknet-3-adidas/2",
+        "alt": "Adidas Breaknet 3.0 blanche, vue 2",
+        "vue": "detail"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "baskets-cuir-blanc-vert-durbano",
+    "nom": "Baskets basses en cuir",
+    "marque": "D'Urbano",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "blanc",
+        "hex": "#F7F6F2"
+      },
+      {
+        "nom": "vert sapin",
+        "hex": "#1E4A3B"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Baskets basses en cuir.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/baskets-cuir-blanc-vert-durbano/1",
+        "alt": "Baskets D'Urbano en cuir blanc et vert",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  },
+  {
+    "slug": "baskets-cuir-daim-bleu-durbano",
+    "nom": "Baskets basses en cuir daim",
+    "marque": "D'Urbano",
+    "categorie": "sneakers",
+    "collections": [],
+    "prixDH": null,
+    "prixBarreDH": null,
+    "coloris": [
+      {
+        "nom": "bleu marine",
+        "hex": "#1F3550"
+      }
+    ],
+    "tailles": [],
+    "disponibilite": "a_confirmer",
+    "description": "Baskets basses en cuir daim.",
+    "matiere": null,
+    "entretien": null,
+    "images": [
+      {
+        "src": "/images/produits/baskets-cuir-daim-bleu-durbano/1",
+        "alt": "Baskets D'Urbano en daim bleu marine",
+        "vue": "face"
+      }
+    ],
+    "nouveau": false,
+    "misEnAvant": false,
+    "aConfirmer": [
+      "prix",
+      "tailles",
+      "disponibilité des coloris",
+      "matière"
+    ]
+  }
+]

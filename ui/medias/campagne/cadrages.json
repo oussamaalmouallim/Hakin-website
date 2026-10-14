@@ -1,0 +1,20 @@
+[
+  {
+    "nom": "hero-modele",
+    "rect": {
+      "left": 1060,
+      "top": 120,
+      "width": 560,
+      "height": 820
+    }
+  },
+  {
+    "nom": "ambiance-olivier",
+    "rect": {
+      "left": 0,
+      "top": 420,
+      "width": 620,
+      "height": 520
+    }
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "slug": "t-shirts",
+    "nom": "T-shirts",
+    "accroche": "Les signatures des grandes maisons, du logo discret au grand imprimé.",
+    "actif": true,
+    "image": "/images/produits/t-shirt-casablanca-tennis-club/1"
+  },
+  {
+    "slug": "sweats",
+    "nom": "Sweats & hoodies",
+    "accroche": "Capuches, cols ronds, zips et polos en molleton.",
+    "actif": true,
+    "image": "/images/produits/hoodie-solo-fleece-nike/1"
+  },
+  {
+    "slug": "vestes",
+    "nom": "Vestes",
+    "accroche": "Vestes zippées en Fleece et doudoune légère.",
+    "actif": true,
+    "image": "/images/produits/veste-tech-windrunner-nike/1"
+  },
+  {
+    "slug": "pantalons",
+    "nom": "Pantalons & jeans",
+    "accroche": "Jeans, pantalons slim et pantalons de survêtement.",
+    "actif": true,
+    "image": "/images/produits/jean-slim-cinq-poches-kiabi/1"
+  },
+  {
+    "slug": "sneakers",
+    "nom": "Sneakers",
+    "accroche": "Nike, New Balance, Adidas : lifestyle, running et cuir.",
+    "actif": true,
+    "image": "/images/produits/air-force-1-07-nike/1"
+  },
+  {
+    "slug": "accessoires",
+    "nom": "Accessoires",
+    "accroche": "Casquettes et pièces pour compléter la tenue.",
+    "actif": true,
+    "image": "/images/produits/acg-radical-airflow-casquette-nike/1"
+  }
+]

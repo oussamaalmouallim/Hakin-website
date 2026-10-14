@@ -1,0 +1,262 @@
+{
+  "t-shirt-dior-logo": {
+    "prixDH": 450,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-prada-graffiti": {
+    "prixDH": 520,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-givenchy-4g": {
+    "prixDH": 480,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-balenciaga-bb": {
+    "prixDH": 520,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-amiri-logo": {
+    "prixDH": 490,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-casablanca-vague": {
+    "prixDH": 560,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-amore-hotel": {
+    "prixDH": 560,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-casablanca-tennis-club": {
+    "prixDH": 590,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-casa-airlines": {
+    "prixDH": 560,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  },
+  "t-shirt-casa-way": {
+    "prixDH": 540,
+    "tailles": [
+      {
+        "taille": "S",
+        "disponible": true
+      },
+      {
+        "taille": "M",
+        "disponible": true
+      },
+      {
+        "taille": "L",
+        "disponible": true
+      },
+      {
+        "taille": "XL",
+        "disponible": true
+      },
+      {
+        "taille": "XXL",
+        "disponible": false
+      }
+    ],
+    "disponibilite": "disponible"
+  }
+}

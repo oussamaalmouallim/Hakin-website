@@ -1,0 +1,12 @@
+---
+paths:
+  - "ui/src/data/**"
+  - "ui/scripts/**"
+  - "ui/medias/**"
+---
+- `prixDH: null` = « Prix sur demande » : produit non ajoutable au panier, bouton WhatsApp à la place (ADR 0002).
+- Toute information non validée par la boutique va dans `aConfirmer` et s'affiche « À confirmer ». Ne jamais inventer prix, tailles, matière, stock, délais.
+- `produits.demo.json` : valeurs FICTIVES, chargées seulement avec `VITE_DEMO=1` (bandeau visible). Ne jamais les recopier dans `produits.json`.
+- `boutique.json` est la source unique du numéro WhatsApp, des réseaux et des infos de livraison.
+- Photos : dossier unique `ui/medias/` (originaux `produits/<slug>/<n>.jpg`, `campagne/`), puis `npm run images` → WebP 480/960 dans `public/images/` (généré, ne pas éditer). Provenance dans `medias/provenance.json`.
+- Descriptions : décrire seulement ce qui est visible sur la photo.

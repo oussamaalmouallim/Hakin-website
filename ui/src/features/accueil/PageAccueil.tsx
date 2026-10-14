@@ -65,7 +65,7 @@ function Heros() {
 
 function Collections() {
   return (
-    <section className="conteneur py-24 lg:py-36">
+    <section className="conteneur pb-24 pt-16 sm:pt-20 lg:pb-36 lg:pt-24">
       <Revelation className="mb-14 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
         <div><p className="label mb-4 text-bronze">Collections</p><h2 className="titre-1 max-w-xl equilibre">Deux univers, une même exigence</h2></div>
         <Link to="/collections" className="lien-souligne label">Toutes les collections <ArrowRight className="h-3.5 w-3.5" /></Link>
@@ -88,7 +88,7 @@ function Collections() {
 
 function Manifeste() {
   return (
-    <section className="conteneur pb-24 pt-16 text-center sm:pt-20 lg:pb-36 lg:pt-24">
+    <section className="conteneur pt-16 text-center sm:pt-20 lg:pt-24">
       <p className="label mb-10 text-bronze">Notre regard</p>
       <ScrollReveal className="mx-auto max-w-5xl text-[clamp(1.9rem,4.4vw,3.6rem)] leading-[1.15] equilibre">
         Les signatures des grandes maisons, choisies avec soin et conseillées personnellement, pour un style qui vous ressemble.

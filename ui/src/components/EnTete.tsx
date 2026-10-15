@@ -52,7 +52,7 @@ export function EnTete() {
           <ul className="hidden items-center gap-9 lg:flex">
             {LIENS_PRINCIPAUX.map(l => (
               <li key={l.vers}>
-                <NavLink to={l.vers} className={({ isActive }) => cn('label relative py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:bg-current after:transition-transform after:duration-500 after:ease-maison',
+                <NavLink to={l.vers} className={({ isActive }) => cn('label relative whitespace-nowrap py-2 transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:bg-current after:transition-transform after:duration-500 after:ease-maison',
                   isActive ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100')}>{l.libelle}</NavLink>
               </li>
             ))}

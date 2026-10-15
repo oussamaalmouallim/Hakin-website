@@ -8,7 +8,7 @@ export function PageMaison() {
     <>
       <EnTetePage surtitre="La Maison" titre="Le casual, une autre élégance." ariane={[{ libelle: 'Accueil', vers: '/' }, { libelle: 'La Maison' }]} />
       <section className="conteneur grid items-center gap-12 lg:grid-cols-2 lg:gap-24">
-        <Cadre className="aspect-[4/5]"><img src="/images/campagne/hero-modele-640.webp" srcSet="/images/campagne/hero-modele-640.webp 640w, /images/campagne/hero-modele-1280.webp 978w" sizes="(min-width: 1024px) 40vw, 100vw" alt="Homme en veste en jean et sweat à capuche écru, lunettes de soleil" className="absolute inset-0 h-full w-full object-cover object-top" /></Cadre>
+        <Cadre className="aspect-[4/5]"><img src="/images/campagne/hero-modele-640.webp" srcSet="/images/campagne/hero-modele-640.webp 640w, /images/campagne/hero-modele-1280.webp 1060w" sizes="(min-width: 1024px) 40vw, 100vw" alt="Homme en veste en jean et sweat à capuche écru, lunettes de soleil" className="absolute inset-0 h-full w-full object-cover object-top" /></Cadre>
         <Revelation className="flex flex-col gap-6 text-[17px] text-gris">
           <Monogramme className="h-14" />
           <p>H MODE est une boutique de vêtements premium pour homme, à {boutique.ville}.</p>

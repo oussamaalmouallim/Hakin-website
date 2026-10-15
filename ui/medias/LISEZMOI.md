@@ -7,7 +7,8 @@ medias/
 ├── produits/<slug-du-produit>/1.jpg   ← photo de la carte (vue principale)
 │                              2.jpg   ← vue au survol de la carte, puis galerie de la fiche
 │                              3.jpg … ← vues suivantes de la galerie
-├── campagne/hero3.jpeg                ← maquette d'où est découpé le modèle du héros (accueil, page Maison)
+├── campagne/hero3.jpeg                ← maquette d'origine du héros (non modifiée)
+├── campagne/hero3-retouche.jpg        ← copie sans les textes de la maquette (« H MODE » vertical, icônes) : source du héros
 ├── campagne/cadrages.json             ← pour chaque image : fichier source, zone découpée (x, y, largeur, hauteur), largeurs
 └── provenance.json                    ← d'où vient chaque photo (photos boutique, Nike, Jumia…)
 ```

@@ -25,29 +25,42 @@ function Heros() {
   const parallaxe = useMedia('(min-width: 640px)') && actives
   return (
     <section ref={ref} className="relative flex flex-col overflow-hidden bg-gradient-to-b from-sable-200 via-sable-100 to-nacre sm:block sm:min-h-[100svh]">
-      {/* Arche de lumière (rappel de la maquette) */}
-      <div aria-hidden className="absolute -right-[20%] top-[-20%] h-[120%] w-[90%] rounded-t-full bg-gradient-to-b from-neige/45 to-transparent blur-2xl sm:-right-[10%] sm:w-[60%]" />
-      <motion.div style={parallaxe ? { y: yImage } : undefined} className="relative order-2 mx-auto h-[62svh] w-[88%] sm:absolute sm:bottom-0 sm:right-0 sm:order-none sm:mx-0 sm:h-[88%] sm:w-[46%] lg:w-[38%]">
-        <motion.img src="/images/campagne/hero-modele-640.webp" srcSet="/images/campagne/hero-modele-640.webp 640w, /images/campagne/hero-modele-1280.webp 978w"
-          sizes="(min-width: 1024px) 38vw, (min-width: 640px) 46vw, 88vw" alt="Homme en veste en jean et sweat à capuche écru, lunettes de soleil, assis sur un muret"
-          {...{ fetchpriority: 'high' }} className="masque-heros h-full w-full object-cover object-top"
+      {/* Grand écran : la scène entière en fond, nette sur le personnage */}
+      <div aria-hidden className="absolute inset-0 hidden lg:block">
+        <motion.img src="/images/campagne/hero-scene-1920.webp"
+          srcSet="/images/campagne/hero-scene-1280.webp 1280w, /images/campagne/hero-scene-1920.webp 1920w, /images/campagne/hero-scene-2560.webp 2560w"
+          sizes="100vw" alt="" {...{ fetchpriority: 'high' }} className="h-full w-full object-cover object-[62%_center]"
+          initial={actives ? { opacity: 0 } : false} animate={{ opacity: 1 }} transition={{ duration: 1.6, ease: EASE_MAISON }} />
+      </div>
+      {/* Flou dégradé : fort derrière le texte, il s'efface en allant vers le personnage */}
+      <div aria-hidden className="flou-heros pointer-events-none absolute inset-0 hidden backdrop-blur-[10px] lg:block" />
+      {/* Voile nacré léger pour la lisibilité du texte, et fondu vers la section suivante */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 hidden bg-gradient-to-r from-nacre/50 via-nacre/20 via-45% to-transparent to-65% lg:block" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-6 bg-gradient-to-b from-transparent to-nacre/70 lg:block" />
+
+      {/* Mobile et tablette : arche de lumière + portrait du modèle */}
+      <div aria-hidden className="absolute -right-[20%] top-[-20%] h-[120%] w-[90%] rounded-t-full bg-gradient-to-b from-neige/45 to-transparent blur-2xl sm:-right-[10%] sm:w-[60%] lg:hidden" />
+      <motion.div style={parallaxe ? { y: yImage } : undefined} className="relative order-2 mx-auto h-[62svh] w-[88%] sm:absolute sm:bottom-0 sm:right-0 sm:order-none sm:mx-0 sm:h-[88%] sm:w-[46%] lg:hidden">
+        <motion.img src="/images/campagne/hero-modele-640.webp" srcSet="/images/campagne/hero-modele-640.webp 640w, /images/campagne/hero-modele-1280.webp 1060w"
+          sizes="(min-width: 640px) 46vw, 88vw" alt="Homme en veste en jean et sweat à capuche écru, lunettes de soleil, assis sur un muret"
+          className="masque-heros h-full w-full object-cover object-top"
           initial={actives ? { opacity: 0, scale: 1.06 } : false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: EASE_MAISON }} />
       </motion.div>
 
       <motion.div style={parallaxe ? { opacity: opaciteTexte } : undefined} variants={conteneurCascade} initial={actives ? 'cache' : false} animate="visible"
-        className="conteneur relative z-10 order-1 grid pb-12 pt-28 sm:min-h-[100svh] sm:grid-rows-[1fr_auto] sm:pb-10 lg:grid-cols-[1fr_auto_1fr] lg:grid-rows-1 lg:items-center lg:pb-0">
-        <motion.div variants={elementApparition} className="hidden lg:block">
-          <p className="font-display text-[22px] uppercase italic leading-snug tracking-[0.18em] text-encre/80">Le casual,<br />une autre élégance.</p>
+        className="conteneur relative z-10 order-1 grid pb-12 pt-28 sm:min-h-[100svh] sm:grid-rows-[1fr_auto] sm:pb-10 lg:grid-cols-[1fr_auto_1.8fr] lg:grid-rows-1 lg:items-center lg:gap-10 lg:pb-0 lg:pt-16">
+        <motion.div variants={elementApparition} className="hidden lg:invisible lg:block xl:visible">
+          <p className="font-display text-[19px] uppercase italic leading-snug tracking-[0.18em] text-encre/80 xl:text-[22px]">Le casual,<br />une autre élégance.</p>
           <span className="mt-6 block h-px w-24 bg-encre/50" />
         </motion.div>
 
         <div className="flex flex-col items-center text-center sm:items-start sm:text-left lg:items-center lg:text-center">
-          <motion.div variants={elementApparition}><Monogramme className="h-24 sm:h-32 lg:h-40" /></motion.div>
-          <motion.h1 variants={elementApparition} className="mt-4 font-display text-[clamp(3rem,8vw,6.5rem)] font-medium uppercase leading-none tracking-[0.18em]">H Mode</motion.h1>
-          <motion.p variants={elementApparition} className="filet-etoile mt-6 text-[14px]" aria-hidden>✦</motion.p>
-          <motion.p variants={elementApparition} className="label-large mt-4 text-encre/70">Style · Quality · You</motion.p>
-          <motion.p variants={elementApparition} className="mt-8 max-w-sm font-display text-[20px] italic text-encre/80 lg:hidden">Le casual, une autre élégance.</motion.p>
-          <motion.div variants={elementApparition} className="mt-10 flex w-full max-w-xs flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:justify-start lg:justify-center">
+          <motion.div variants={elementApparition}><Monogramme className="h-24 sm:h-32 lg:h-24 xl:h-32 2xl:h-40" /></motion.div>
+          <motion.h1 variants={elementApparition} className="mt-4 font-display text-[clamp(3rem,8vw,6.5rem)] font-medium uppercase leading-none tracking-[0.18em] lg:text-[clamp(3.25rem,5.6vw,6rem)]">H Mode</motion.h1>
+          <motion.p variants={elementApparition} className="filet-etoile mt-6 text-[14px] lg:mt-4 xl:mt-6" aria-hidden>✦</motion.p>
+          <motion.p variants={elementApparition} className="label-large mt-4 text-encre/70 lg:mt-3 xl:mt-4">Style · Quality · You</motion.p>
+          <motion.p variants={elementApparition} className="mt-8 max-w-sm font-display text-[20px] italic text-encre/80 lg:mt-4 lg:text-[18px] xl:hidden">Le casual, une autre élégance.</motion.p>
+          <motion.div variants={elementApparition} className="mt-10 flex w-full max-w-xs flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:justify-start lg:mt-7 lg:justify-center xl:mt-10">
             <BoutonLien to="/boutique">Découvrir la boutique</BoutonLien>
             <BoutonLien to="/collections" variante="contour">Les collections</BoutonLien>
           </motion.div>
@@ -55,11 +68,10 @@ function Heros() {
         <div className="hidden lg:block" />
       </motion.div>
 
-      <a href="#selection" className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-3 text-encre/70 lg:flex">
+      <a href="#selection" className="absolute bottom-7 left-[28%] z-10 hidden -translate-x-1/2 flex-col items-center gap-3 text-encre/70 lg:flex">
         <span className="label">Découvrir</span>
         <ArrowDown className="h-4 w-4 animate-descendre" strokeWidth={1.25} />
       </a>
-      <p aria-hidden className="label absolute right-5 top-1/2 hidden -translate-y-1/2 whitespace-nowrap text-encre/45 [writing-mode:vertical-rl] xl:block">H Mode — {boutique.ville}</p>
     </section>
   )
 }

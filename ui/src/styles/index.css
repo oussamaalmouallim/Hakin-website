@@ -50,14 +50,21 @@
 }
 
 @layer utilities {
-  /* Photo du héros : fondus haut (court, sur le mur) + bas (mobile) ; + gauche (desktop) pour l'intégrer au fond sable */
-  .masque-heros { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 5%, #000 80%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 5%, #000 80%, transparent); }
+  /* Photo du héros : fondus courts sur les bords seulement (haut, bas ; + gauche en desktop), le modèle reste net */
+  .masque-heros { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); }
   @media (min-width: 640px) {
     .masque-heros {
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 24%), linear-gradient(to bottom, transparent, #000 5%, #000 76%, transparent);
-      mask-image: linear-gradient(to right, transparent, #000 24%), linear-gradient(to bottom, transparent, #000 5%, #000 76%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 8%), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
+      mask-image: linear-gradient(to right, transparent, #000 8%), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
       -webkit-mask-composite: source-in; mask-composite: intersect;
     }
+  }
+  /* Héros grand écran : le flou couvre la zone du texte puis s'efface avant le personnage et dans le bas */
+  .flou-heros {
+    /* Horizontal : fort à gauche, nul avant le personnage. Vertical : s'efface dans le bas du héros (terrasse nette). */
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 34%, transparent 58%), linear-gradient(to bottom, #000 0%, #000 62%, transparent 88%);
+    mask-image: linear-gradient(to right, #000 0%, #000 34%, transparent 58%), linear-gradient(to bottom, #000 0%, #000 62%, transparent 88%);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
   }
   .defilement-masque { scrollbar-width: none; }
   .defilement-masque::-webkit-scrollbar { display: none; }

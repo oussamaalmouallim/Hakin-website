@@ -1,13 +1,28 @@
 [
   {
+    "nom": "hero-scene",
+    "source": "hero3-scene.jpg",
+    "rect": {
+      "left": 0,
+      "top": 0,
+      "width": 2732,
+      "height": 1536
+    },
+    "largeurs": [
+      1280,
+      1920,
+      2560
+    ]
+  },
+  {
     "nom": "hero-modele",
     "rect": {
-      "left": 1636,
-      "top": 104,
-      "width": 978,
-      "height": 1432
+      "left": 1590,
+      "top": 0,
+      "width": 1060,
+      "height": 1536
     },
-    "source": "hero3.jpeg",
+    "source": "hero3-retouche.jpg",
     "largeurs": [
       640,
       1280

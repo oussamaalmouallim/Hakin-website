@@ -7,8 +7,8 @@ medias/
 ├── produits/<slug-du-produit>/1.jpg   ← photo de la carte (vue principale)
 │                              2.jpg   ← vue au survol de la carte, puis galerie de la fiche
 │                              3.jpg … ← vues suivantes de la galerie
-├── campagne/hero.png                  ← maquette d'où sont découpées les images de l'accueil
-├── campagne/cadrages.json             ← zones découpées dans hero.png (x, y, largeur, hauteur)
+├── campagne/hero3.jpeg                ← maquette d'où est découpé le modèle du héros (accueil, page Maison)
+├── campagne/cadrages.json             ← pour chaque image : fichier source, zone découpée (x, y, largeur, hauteur), largeurs
 └── provenance.json                    ← d'où vient chaque photo (photos boutique, Nike, Jumia…)
 ```
 

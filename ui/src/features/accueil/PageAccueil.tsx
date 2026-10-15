@@ -28,7 +28,8 @@ function Heros() {
       {/* Arche de lumière (rappel de la maquette) */}
       <div aria-hidden className="absolute -right-[20%] top-[-20%] h-[120%] w-[90%] rounded-t-full bg-gradient-to-b from-neige/45 to-transparent blur-2xl sm:-right-[10%] sm:w-[60%]" />
       <motion.div style={parallaxe ? { y: yImage } : undefined} className="relative order-2 mx-auto h-[62svh] w-[88%] sm:absolute sm:bottom-0 sm:right-0 sm:order-none sm:mx-0 sm:h-[88%] sm:w-[46%] lg:w-[38%]">
-        <motion.img src="/images/campagne/hero-modele-640.webp" alt="Homme en costume de lin écru, lunettes de soleil, adossé à un mur de pierre claire"
+        <motion.img src="/images/campagne/hero-modele-640.webp" srcSet="/images/campagne/hero-modele-640.webp 640w, /images/campagne/hero-modele-1280.webp 978w"
+          sizes="(min-width: 1024px) 38vw, (min-width: 640px) 46vw, 88vw" alt="Homme en veste en jean et sweat à capuche écru, lunettes de soleil, assis sur un muret"
           {...{ fetchpriority: 'high' }} className="masque-heros h-full w-full object-cover object-top"
           initial={actives ? { opacity: 0, scale: 1.06 } : false} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.8, ease: EASE_MAISON }} />
       </motion.div>
@@ -36,7 +37,7 @@ function Heros() {
       <motion.div style={parallaxe ? { opacity: opaciteTexte } : undefined} variants={conteneurCascade} initial={actives ? 'cache' : false} animate="visible"
         className="conteneur relative z-10 order-1 grid pb-12 pt-28 sm:min-h-[100svh] sm:grid-rows-[1fr_auto] sm:pb-10 lg:grid-cols-[1fr_auto_1fr] lg:grid-rows-1 lg:items-center lg:pb-0">
         <motion.div variants={elementApparition} className="hidden lg:block">
-          <p className="font-display text-[22px] uppercase italic leading-snug tracking-[0.18em] text-encre/80">Plus qu'un style,<br />une attitude.</p>
+          <p className="font-display text-[22px] uppercase italic leading-snug tracking-[0.18em] text-encre/80">Le casual,<br />une autre élégance.</p>
           <span className="mt-6 block h-px w-24 bg-encre/50" />
         </motion.div>
 
@@ -45,7 +46,7 @@ function Heros() {
           <motion.h1 variants={elementApparition} className="mt-4 font-display text-[clamp(3rem,8vw,6.5rem)] font-medium uppercase leading-none tracking-[0.18em]">H Mode</motion.h1>
           <motion.p variants={elementApparition} className="filet-etoile mt-6 text-[14px]" aria-hidden>✦</motion.p>
           <motion.p variants={elementApparition} className="label-large mt-4 text-encre/70">Style · Quality · You</motion.p>
-          <motion.p variants={elementApparition} className="mt-8 max-w-sm font-display text-[20px] italic text-encre/80 lg:hidden">Plus qu'un style, une attitude.</motion.p>
+          <motion.p variants={elementApparition} className="mt-8 max-w-sm font-display text-[20px] italic text-encre/80 lg:hidden">Le casual, une autre élégance.</motion.p>
           <motion.div variants={elementApparition} className="mt-10 flex w-full max-w-xs flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:justify-start lg:justify-center">
             <BoutonLien to="/boutique">Découvrir la boutique</BoutonLien>
             <BoutonLien to="/collections" variante="contour">Les collections</BoutonLien>

@@ -50,12 +50,12 @@
 }
 
 @layer utilities {
-  /* Photo du héros : fondu bas (mobile) ; fondus gauche + bas (desktop) pour l'intégrer au fond sable */
-  .masque-heros { -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent); mask-image: linear-gradient(to bottom, #000 80%, transparent); }
+  /* Photo du héros : fondus haut (court, sur le mur) + bas (mobile) ; + gauche (desktop) pour l'intégrer au fond sable */
+  .masque-heros { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 5%, #000 80%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 5%, #000 80%, transparent); }
   @media (min-width: 640px) {
     .masque-heros {
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 24%), linear-gradient(to bottom, #000 76%, transparent);
-      mask-image: linear-gradient(to right, transparent, #000 24%), linear-gradient(to bottom, #000 76%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 24%), linear-gradient(to bottom, transparent, #000 5%, #000 76%, transparent);
+      mask-image: linear-gradient(to right, transparent, #000 24%), linear-gradient(to bottom, transparent, #000 5%, #000 76%, transparent);
       -webkit-mask-composite: source-in; mask-composite: intersect;
     }
   }

@@ -46,11 +46,12 @@ for (const slug of (await readdir(join(medias, 'produits'), { withFileTypes: tru
 }
 console.log(`${total} images produit générées`)
 
-// Campagne : cadrages de medias/campagne/hero.png définis dans medias/campagne/cadrages.json
-const hero = join(medias, 'campagne', 'hero.png')
+// Campagne : cadrages définis dans medias/campagne/cadrages.json (image source, zone, largeurs produites)
 await mkdir(join(sortie, 'campagne'), { recursive: true })
 for (const c of JSON.parse(await readFile(join(medias, 'campagne', 'cadrages.json'), 'utf8'))) {
-  const info = await sharp(hero).extract(c.rect).resize({ width: 640, withoutEnlargement: true }).webp({ quality: 84 })
-    .toFile(join(sortie, 'campagne', `${c.nom}-640.webp`))
-  console.log(`campagne/${c.nom}-640.webp  ${info.width}x${info.height}`)
+  for (const l of c.largeurs ?? [640]) {
+    const info = await sharp(join(medias, 'campagne', c.source ?? 'hero.png')).extract(c.rect).resize({ width: l, withoutEnlargement: true })
+      .webp({ quality: 84 }).toFile(join(sortie, 'campagne', `${c.nom}-${l}.webp`))
+    console.log(`campagne/${c.nom}-${l}.webp  ${info.width}x${info.height}`)
+  }
 }

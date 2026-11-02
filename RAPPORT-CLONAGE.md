@@ -30,6 +30,7 @@
 | Filtres | clics réels | Jeans → 2 · Jeans + Pantalons → 5 · + Nike → 1 · Tout effacer → 62 · page 3 → 14 cartes |
 | Parcours d'achat (démo) | fiche → taille obligatoire → quantité 2 → panier → commande (erreurs puis saisie) → WhatsApp (intercepté) → confirmation | message WhatsApp correct, panier vidé seulement à la confirmation, commande enregistrée dans le compte (donnée de test effacée ensuite) |
 | Tests automatiques | `npm test` | 17 / 17, dont le nouveau test des filtres catégorie, étiquette, prix max et URL |
+| Empreintes du checkout (02/11) | source servie par le relais (panier de test dans son stockage, langue FR), clone sur la démo, 4 largeurs, 25 cibles | 1440 et 1024 px : positions, tailles, rayons, ombres, polices identiques ; restent des longueurs de texte (libellés H MODE) et la ligne « + E-mail ou instructions » (+33 px). 768 px : écart voulu, la source déborde horizontalement. 375 px : hauteurs liées aux textes |
 | Débordement mobile | 18 routes à 320 px | aucun |
 | Menu mobile, recherche, panier | DOM et styles calculés | conformes aux relevés |
 

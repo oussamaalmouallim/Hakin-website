@@ -9,6 +9,9 @@ export const SEUIL_ENTETE = 50
 /** Durées des panneaux en secondes (Relevé : menu .4s, recherche et panier .42s). */
 export const DUREE_MENU = 0.4
 export const DUREE_PANNEAU = 0.42
+/** cloneme: A-14 — écran d'entrée (Relevé, composant d'intro de la référence, visiteur qui revient) : nom à 200 ms,
+ *  barre jaune 1,5 s, rideau qui monte à 1 900 ms en 750 ms, retiré à 2 700 ms. */
+export const INTRO = { marque: 200, sortie: 1900, fin: 2700 } as const
 
 export const conteneurCascade: Variants = {
   cache: {},

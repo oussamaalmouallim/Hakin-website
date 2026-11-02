@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
-import { IconeWhatsApp, Monogramme } from '@/design-system'
+import { IconeWhatsApp } from '@/design-system'
 import { lienWhatsApp } from '@/lib/whatsapp'
 import { MODE_DEMO } from '@/lib/catalogue'
-import { EASE_MAISON } from '@/lib/animations'
+import { INTRO } from '@/lib/animations'
+import { useAnimationsActives } from '@/state/animations'
 import { cn } from '@/lib/utils'
 
 /** cloneme: C-02, A-05 — bandeau noir défilant de la référence : Archivo Black 18 px capitales,
@@ -50,26 +50,42 @@ export function BoutonWhatsAppFlottant() {
   )
 }
 
-/** Loader de marque (repris de l'ancien site) : première visite de la session, ≤ 900 ms. */
+/** cloneme: A-14 — écran d'entrée de la référence (composant d'intro, cas « visiteur qui revient »), à chaque chargement du site :
+ *  fond encre plein écran ; à 200 ms le nom monte de 28 px et apparaît (550 ms, retard 150 ms), la ligne mono jaune suit (retard 400 ms) ;
+ *  une barre jaune de 2 px se remplit en 1,5 s ; à 1 900 ms l'écran monte comme un rideau (750 ms, `--courbe-rideau`) ; retiré à 2 700 ms.
+ *  Le défilement de la page est bloqué pendant l'intro. Sans choix de langue ni vidéo : site en français seul, vidéo exclue.
+ *  Animations coupées, ou drapeau `hmode-sans-intro` (tests) : pas d'intro. */
 export function ChargeurMarque() {
-  const [visible, setVisible] = useState(() => { try { return !sessionStorage.getItem('hmode-vu') } catch { return false } })
+  const actives = useAnimationsActives()
+  const [etape, setEtape] = useState<'in' | 'marque' | 'sortie' | 'fin'>(() => {
+    try { if (sessionStorage.getItem('hmode-sans-intro')) return 'fin' } catch { /* stockage indisponible */ }
+    return 'in'
+  })
   useEffect(() => {
-    if (!visible) return
-    try { sessionStorage.setItem('hmode-vu', '1') } catch { /* ignoré */ }
-    const t = window.setTimeout(() => setVisible(false), 900)
-    return () => window.clearTimeout(t)
-  }, [visible])
+    if (etape === 'fin') return
+    if (!actives) { setEtape('fin'); return }
+    document.body.style.overflow = 'hidden'
+    const t = [
+      window.setTimeout(() => setEtape('marque'), INTRO.marque),
+      window.setTimeout(() => setEtape('sortie'), INTRO.sortie),
+      window.setTimeout(() => { document.body.style.overflow = ''; setEtape('fin') }, INTRO.fin),
+    ]
+    return () => { t.forEach(window.clearTimeout); document.body.style.overflow = '' }
+  }, [actives]) // eslint-disable-line react-hooks/exhaustive-deps
+  if (etape === 'fin' || !actives) return null
+  const visible = etape !== 'in'
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div className="fixed inset-0 z-[500] grid place-items-center bg-fond" exit={{ opacity: 0 }} transition={{ duration: 0.6, ease: EASE_MAISON }} aria-hidden>
-          <motion.div className="flex flex-col items-center gap-5" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE_MAISON }}>
-            <Monogramme className="h-20" />
-            <span className="font-display text-[26px] uppercase tracking-[0.4em]">H Mode</span>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div aria-hidden className={cn('fixed inset-0 z-[10000] flex flex-col items-center justify-center overflow-hidden bg-encre will-change-transform',
+      etape === 'sortie' ? '-translate-y-full transition-transform duration-[750ms] ease-[var(--courbe-rideau)]' : 'translate-y-0')}>
+      <div className={cn('font-display text-[clamp(2rem,6vw,5rem)] uppercase leading-none tracking-[-0.02em] text-fond transition-[opacity,transform] delay-150 duration-[550ms] ease-[var(--courbe-panneau)]',
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-7 opacity-0')}>H Mode</div>
+      <div className={cn('mt-3.5 font-mono text-[clamp(0.6rem,1.2vw,0.75rem)] uppercase tracking-[0.22em] text-accent transition-opacity delay-[400ms] duration-500 ease-linear',
+        visible ? 'opacity-100' : 'opacity-0')}>Casablanca · Style · Quality · You</div>
+      <div className="absolute inset-x-0 bottom-0 h-0.5 bg-fond/[0.08]">
+        {/* Référence : `width 0 → 100%` ; ici `scaleX` depuis la gauche, même rendu sans recalcul de mise en page */}
+        <div className={cn('h-full origin-left bg-accent', visible ? 'scale-x-100 transition-transform duration-[1500ms] ease-[var(--courbe-standard)]' : 'scale-x-0')} />
+      </div>
+    </div>
   )
 }
 

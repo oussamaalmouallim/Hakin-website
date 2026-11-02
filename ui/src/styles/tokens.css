@@ -46,6 +46,7 @@
   --courbe-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --courbe-maison: cubic-bezier(0.16, 1, 0.3, 1);
   --courbe-panneau: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --courbe-rideau: cubic-bezier(0.76, 0, 0.24, 1);
 
   /* En-tête */
   --voile-entete: #f5f4f0b8;

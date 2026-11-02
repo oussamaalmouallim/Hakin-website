@@ -1,17 +1,150 @@
 {
-  "P-02": {
-    "source": "https://www.original-fit.ma/shop",
-    "clone": "http://localhost:6011/boutique",
-    "cibles": {
-      "entete": { "source": "header", "clone": "[data-ref=entete]" },
-      "titre": { "source": "h1", "clone": "[data-ref=boutique-titre]" },
-      "bandeau-titre": { "source": "h1 ~ p, div.border-b > div > p", "clone": "[data-ref=boutique-titre] + p" },
-      "filtres": { "source": "div.w-55 > aside", "clone": "div.w-\\[220px\\] > aside" },
-      "titre-filtres": { "source": "div.w-55 aside h3", "clone": "div.w-\\[220px\\] aside h3" },
-      "grille": { "source": "div.grid:has(> article)", "clone": "[data-ref=grille]" },
-      "carte": { "source": "article", "clone": "[data-ref=grille] article" },
-      "tri": { "source": "select", "clone": "select[aria-label=Trier]" },
-      "pied": { "source": "footer", "clone": "[data-ref=pied]" }
-    }
+ "P-02": {
+  "source": "https://www.original-fit.ma/shop",
+  "clone": "http://localhost:6011/boutique",
+  "cibles": {
+   "entete": {
+    "source": "header",
+    "clone": "[data-ref=entete]"
+   },
+   "titre": {
+    "source": "h1",
+    "clone": "[data-ref=boutique-titre]"
+   },
+   "bandeau-titre": {
+    "source": "h1 ~ p, div.border-b > div > p",
+    "clone": "[data-ref=boutique-titre] + p"
+   },
+   "filtres": {
+    "source": "div.w-55 > aside",
+    "clone": "div.w-\\[220px\\] > aside"
+   },
+   "titre-filtres": {
+    "source": "div.w-55 aside h3",
+    "clone": "div.w-\\[220px\\] aside h3"
+   },
+   "grille": {
+    "source": "div.grid:has(> article)",
+    "clone": "[data-ref=grille]"
+   },
+   "carte": {
+    "source": "article",
+    "clone": "[data-ref=grille] article"
+   },
+   "tri": {
+    "source": "select",
+    "clone": "select[aria-label=Trier]"
+   },
+   "pied": {
+    "source": "footer",
+    "clone": "[data-ref=pied]"
+   }
   }
+ },
+ "P-05": {
+  "source": "https://www.original-fit.ma/checkout",
+  "clone": "http://localhost:6012/commande?article=t-shirt-prada-graffiti&coloris=noir&taille=M&qte=1",
+  "cibles": {
+   "retour": {
+    "source": "div.px-5 > a.mb-6",
+    "clone": "[data-ref=co-retour]"
+   },
+   "titre": {
+    "source": "h1",
+    "clone": "h1"
+   },
+   "grille": {
+    "source": "form",
+    "clone": "form"
+   },
+   "colonne": {
+    "source": "form > div:first-child",
+    "clone": "form > div:first-child"
+   },
+   "s1-titre": {
+    "source": "form > div > section:nth-of-type(1) h2",
+    "clone": "form > div > section:nth-of-type(1) h2"
+   },
+   "s1-pastille": {
+    "source": "form > div > section:nth-of-type(1) h2 > span",
+    "clone": "form > div > section:nth-of-type(1) h2 > span"
+   },
+   "libelle": {
+    "source": "form > div > section:nth-of-type(1) label",
+    "clone": "form > div > section:nth-of-type(1) label"
+   },
+   "champ": {
+    "source": "#checkout-name",
+    "clone": "[data-ref=co-nom]"
+   },
+   "champs": {
+    "source": "form > div > section:nth-of-type(1) > div.grid",
+    "clone": "form > div > section:nth-of-type(1) > div.grid"
+   },
+   "s2-carte": {
+    "source": "form > div > section:nth-of-type(2) > div",
+    "clone": "form > div > section:nth-of-type(2) > div"
+   },
+   "s2-titre": {
+    "source": "form > div > section:nth-of-type(2) > div p",
+    "clone": "form > div > section:nth-of-type(2) > div p"
+   },
+   "s3-carte": {
+    "source": "form > div > section:nth-of-type(3) > div",
+    "clone": "form > div > section:nth-of-type(3) > div"
+   },
+   "s3-icone": {
+    "source": "form > div > section:nth-of-type(3) > div > div:first-child > div:first-child",
+    "clone": "form > div > section:nth-of-type(3) > div > div:first-child > div:first-child"
+   },
+   "s3-titre": {
+    "source": "form > div > section:nth-of-type(3) > div > div:first-child > div:nth-child(2) > p:first-child",
+    "clone": "form > div > section:nth-of-type(3) > div > div:first-child > div:nth-child(2) > p:first-child"
+   },
+   "s3-sous-titre": {
+    "source": "form > div > section:nth-of-type(3) > div > div:first-child > div:nth-child(2) > p:last-child",
+    "clone": "form > div > section:nth-of-type(3) > div > div:first-child > div:nth-child(2) > p:last-child"
+   },
+   "s3-coche": {
+    "source": "form > div > section:nth-of-type(3) ul li",
+    "clone": "form > div > section:nth-of-type(3) ul li"
+   },
+   "recap": {
+    "source": "form aside",
+    "clone": "form aside"
+   },
+   "recap-titre": {
+    "source": "form aside h2",
+    "clone": "form aside h2"
+   },
+   "recap-ligne": {
+    "source": "form aside > div:first-of-type > div",
+    "clone": "form aside > ul > li"
+   },
+   "recap-vignette": {
+    "source": "form aside > div:first-of-type > div > div:first-child",
+    "clone": "form aside > ul > li > div:first-child"
+   },
+   "recap-nom": {
+    "source": "form aside > div:first-of-type > div p:first-child",
+    "clone": "form aside > ul > li p:first-child"
+   },
+   "total": {
+    "source": "form aside span.text-\\[26px\\]",
+    "clone": "[data-ref=co-total]"
+   },
+   "encart": {
+    "source": "form aside div.bg-\\(--accent\\)",
+    "clone": "[data-ref=co-encart]"
+   },
+   "bouton": {
+    "source": "form aside button[type=submit]",
+    "clone": "form aside button[type=submit]"
+   },
+   "mention": {
+    "source": "form aside > p:last-child",
+    "clone": "form aside > p:last-child"
+   }
+  }
+ }
 }

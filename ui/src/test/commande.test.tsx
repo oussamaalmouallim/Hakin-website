@@ -41,7 +41,7 @@ async function remplir(u: ReturnType<typeof userEvent.setup>) {
 
 describe('checkout : commande enregistrée en base puis WhatsApp, paiement à la livraison', () => {
   beforeEach(() => {
-    sessionStorage.setItem('hmode-vu', '1')
+    sessionStorage.setItem('hmode-sans-intro', '1')
     usePanier.getState().remplacer([], null)
     useCompte.getState().toutEffacer()
     rpc.mockReset()

@@ -4,14 +4,35 @@
     {
       "name": "hmode-ui",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "ui", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "ui",
+        "run",
+        "dev"
+      ],
       "port": 6011
     },
     {
       "name": "hmode-ui-demo",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "ui", "run", "dev:demo"],
+      "runtimeArgs": [
+        "--prefix",
+        "ui",
+        "run",
+        "dev:demo"
+      ],
       "port": 6012
+    },
+    {
+      "name": "hmode-ui-local",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "ui",
+        "run",
+        "dev:local"
+      ],
+      "port": 6013
     }
   ]
 }

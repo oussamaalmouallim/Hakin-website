@@ -27,7 +27,7 @@ const monter = (url: string) => render(
   <MemoryRouter initialEntries={[url]}><FournisseurAnimations><FournisseurNotifications><App /></FournisseurNotifications></FournisseurAnimations></MemoryRouter>)
 
 describe('parcours d\'achat', () => {
-  beforeEach(() => { usePanier.getState().vider(); sessionStorage.setItem('hmode-vu', '1') })
+  beforeEach(() => { usePanier.getState().vider(); sessionStorage.setItem('hmode-sans-intro', '1') })
 
   it('fiche produit : refuse l\'ajout sans taille, puis ajoute la variante choisie', async () => {
     const u = userEvent.setup()

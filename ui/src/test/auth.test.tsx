@@ -41,7 +41,7 @@ const monter = (url: string) => render(
 
 describe('comptes : connexion, inscription, session', () => {
   beforeEach(() => {
-    sessionStorage.setItem('hmode-vu', '1')
+    sessionStorage.setItem('hmode-sans-intro', '1')
     etat.session = null
     useSession.setState({ utilisateur: null, pret: true, recuperation: false })
     vi.clearAllMocks()

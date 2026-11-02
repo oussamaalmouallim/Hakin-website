@@ -71,6 +71,7 @@ Changer une valeur ici, puis demander « applique palette.md » : le code suit.
 |---|---|---|---|
 | `--courbe-standard` | `cubic-bezier(0.4, 0, 0.2, 1)` | Relevé `transition` des cartes | survols, boutons |
 | `--courbe-maison` | `cubic-bezier(0.16, 1, 0.3, 1)` | H MODE | entrées de page, révélations |
+| `--courbe-rideau` | `cubic-bezier(0.76, 0, 0.24, 1)` | Relevé intro (`transform 0.75s`) | sortie de l'écran d'entrée vers le haut |
 | `--courbe-panneau` | `cubic-bezier(0.2, 0.8, 0.2, 1)` | Relevé `.mobile-panel`, `.cart-drawer`, `.nav-link-underline:after` | menu mobile, recherche, panier, soulignés |
 
 ## En-tête et panneaux

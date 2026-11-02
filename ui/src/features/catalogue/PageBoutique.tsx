@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { SlidersHorizontal, X } from 'lucide-react'
 import { usePiegeFocus } from '@/design-system'
 import { CarteProduit } from '@/components/CarteProduit'
@@ -70,16 +70,19 @@ export function PageBoutique() {
   const allerPage = (n: number) => { setPage(n); haut.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
 
   const seule = filtres.categories.length === 1 ? trouverCategorie(filtres.categories[0]) : undefined
+  const actifs = nbFiltresActifs(filtres)
+  // Rayons du menu (référence : Hommes, Femmes, Soldes) : titre de la page et état vide dédié
+  const rayon = filtres.solde ? 'Soldes' : filtres.genre === 'homme' ? 'Hommes' : filtres.genre === 'femme' ? 'Femmes' : null
+  const rayonVide = rayon !== null && resultats.length === 0 && actifs === 0
   const nbPages = Math.max(1, Math.ceil(resultats.length / PAR_PAGE))
   const visibles = resultats.slice((page - 1) * PAR_PAGE, page * PAR_PAGE)
-  const actifs = nbFiltresActifs(filtres)
   const tris = TRIS.filter(t => fac.prix || !t.prix)
 
   return (
     <div className="min-h-screen pt-20">
       <div ref={haut} className="flex scroll-mt-20 flex-wrap items-center justify-between gap-4 border-b border-ligne px-5 py-6 md:px-14">
         <div>
-          <h1 data-ref="boutique-titre" className="font-display text-[28px] uppercase leading-[1.5] tracking-[0.02em]">{seule ? seule.nom : 'Toute la boutique'}</h1>
+          <h1 data-ref="boutique-titre" className="font-display text-[28px] uppercase leading-[1.5] tracking-[0.02em]">{rayon ? (seule ? `${rayon} · ${seule.nom}` : rayon) : seule ? seule.nom : 'Toute la boutique'}</h1>
           <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-gris" aria-live="polite">{resultats.length} pièce{resultats.length > 1 ? 's' : ''}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -99,7 +102,13 @@ export function PageBoutique() {
         </div>
         <div className="min-w-0 flex-1">
           {actifs > 0 && <div className="mb-6 md:hidden"><PucesActives filtres={filtres} onChange={changer} /></div>}
-          {resultats.length === 0 ? (
+          {rayonVide ? (
+            <div className="flex flex-col items-center gap-4 py-20 text-center">
+              <h2 className="font-display text-[18px] uppercase tracking-[0.04em]">{filtres.solde ? 'Aucune pièce en solde' : 'Aucune pièce pour le moment'}</h2>
+              <p className="max-w-[300px] text-sm text-gris">{filtres.solde ? 'Les pièces en solde apparaîtront ici dès leur mise en ligne.' : `Les pièces ${filtres.genre === 'femme' ? 'femme' : 'homme'} apparaîtront ici dès leur mise en ligne.`}</p>
+              <Link to="/boutique" className={cn(pilule, 'border-encre px-6 py-3 transition-colors hover:bg-encre hover:text-fond')}>Voir toute la boutique</Link>
+            </div>
+          ) : resultats.length === 0 ? (
             <div className="flex flex-col items-center gap-4 py-20 text-center">
               <h2 className="font-display text-[18px] uppercase tracking-[0.04em]">Aucune pièce</h2>
               <p className="max-w-[280px] text-sm text-gris">Aucune pièce ne correspond à ces filtres. Retirez-en un pour élargir la recherche.</p>

@@ -19,6 +19,8 @@ export interface ImageProduit {
 
 export interface Produit {
   slug: string
+  /** Rayon du menu (Hommes / Femmes de la référence). « mixte » apparaît dans les deux. Absent = dans aucun des deux. */
+  genre?: 'homme' | 'femme' | 'mixte'
   nom: string
   marque: string
   categorie: string

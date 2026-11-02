@@ -1,6 +1,7 @@
 [
   {
     "slug": "t-shirt-dior-logo",
+    "genre": "homme",
     "nom": "T-shirt logo Dior",
     "marque": "Dior",
     "categorie": "t-shirts",
@@ -50,6 +51,7 @@
   },
   {
     "slug": "t-shirt-prada-graffiti",
+    "genre": "homme",
     "nom": "T-shirt Prada graffiti",
     "marque": "Prada",
     "categorie": "t-shirts",
@@ -91,6 +93,7 @@
   },
   {
     "slug": "t-shirt-givenchy-4g",
+    "genre": "homme",
     "nom": "T-shirt Givenchy 4G",
     "marque": "Givenchy",
     "categorie": "t-shirts",
@@ -140,6 +143,7 @@
   },
   {
     "slug": "t-shirt-balenciaga-bb",
+    "genre": "homme",
     "nom": "T-shirt Balenciaga BB",
     "marque": "Balenciaga",
     "categorie": "t-shirts",
@@ -181,6 +185,7 @@
   },
   {
     "slug": "t-shirt-amiri-logo",
+    "genre": "homme",
     "nom": "T-shirt logo Amiri",
     "marque": "Amiri",
     "categorie": "t-shirts",
@@ -230,6 +235,7 @@
   },
   {
     "slug": "t-shirt-casablanca-vague",
+    "genre": "homme",
     "nom": "T-shirt Casablanca vague",
     "marque": "Casablanca",
     "categorie": "t-shirts",
@@ -279,6 +285,7 @@
   },
   {
     "slug": "t-shirt-amore-hotel",
+    "genre": "homme",
     "nom": "T-shirt Amore Hotel",
     "marque": "Casablanca",
     "categorie": "t-shirts",
@@ -328,6 +335,7 @@
   },
   {
     "slug": "t-shirt-casablanca-tennis-club",
+    "genre": "homme",
     "nom": "T-shirt Casablanca Tennis Club",
     "marque": "Casablanca",
     "categorie": "t-shirts",
@@ -382,6 +390,7 @@
   },
   {
     "slug": "t-shirt-casa-airlines",
+    "genre": "homme",
     "nom": "T-shirt Casa Airlines",
     "marque": "Casablanca",
     "categorie": "t-shirts",
@@ -436,6 +445,7 @@
   },
   {
     "slug": "t-shirt-casa-way",
+    "genre": "homme",
     "nom": "T-shirt Casa Way",
     "marque": "Casablanca",
     "categorie": "t-shirts",
@@ -485,6 +495,7 @@
   },
   {
     "slug": "jean-slim-cinq-poches-kiabi",
+    "genre": "homme",
     "nom": "Jean slim cinq poches",
     "marque": "Kiabi",
     "categorie": "jeans",
@@ -534,6 +545,7 @@
   },
   {
     "slug": "sweat-capuche-french-terry-kiabi",
+    "genre": "homme",
     "nom": "Sweat à capuche en French Terry",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -583,6 +595,7 @@
   },
   {
     "slug": "sweat-capuche-zippe-uni-kiabi",
+    "genre": "homme",
     "nom": "Sweat à capuche zippé uni",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -632,6 +645,7 @@
   },
   {
     "slug": "sweat-zippe-molleton-leger-kiabi",
+    "genre": "homme",
     "nom": "Sweat zippé en molleton léger",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -681,6 +695,7 @@
   },
   {
     "slug": "sweat-molleton-inscription-kiabi",
+    "genre": "homme",
     "nom": "Sweat en molleton à inscription",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -730,6 +745,7 @@
   },
   {
     "slug": "sweat-molleton-leger-kiabi",
+    "genre": "homme",
     "nom": "Sweat en molleton léger",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -779,6 +795,7 @@
   },
   {
     "slug": "polo-rugby-manches-longues-kiabi",
+    "genre": "homme",
     "nom": "Polo rugby manches longues",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -819,6 +836,7 @@
   },
   {
     "slug": "pull-col-camionneur-kiabi",
+    "genre": "homme",
     "nom": "Pull col camionneur en French Terry",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -868,6 +886,7 @@
   },
   {
     "slug": "sweat-capuche-kangourou-kiabi",
+    "genre": "homme",
     "nom": "Sweat à capuche poche kangourou",
     "marque": "Kiabi",
     "categorie": "sweats",
@@ -917,6 +936,7 @@
   },
   {
     "slug": "hoodie-ess-elevated-puma",
+    "genre": "homme",
     "nom": "Hoodie ESS Elevated",
     "marque": "Puma",
     "categorie": "sweats",
@@ -957,6 +977,7 @@
   },
   {
     "slug": "hoodie-ess-tape-puma",
+    "genre": "homme",
     "nom": "Hoodie ESS Tape",
     "marque": "Puma",
     "categorie": "sweats",
@@ -992,6 +1013,7 @@
   },
   {
     "slug": "hoodie-ess-logo-lab-puma",
+    "genre": "homme",
     "nom": "Hoodie ESS Logo Lab Holiday",
     "marque": "Puma",
     "categorie": "sweats",
@@ -1032,6 +1054,7 @@
   },
   {
     "slug": "hoodie-ess-block-puma",
+    "genre": "homme",
     "nom": "Hoodie ESS Block",
     "marque": "Puma",
     "categorie": "sweats",
@@ -1076,6 +1099,7 @@
   },
   {
     "slug": "hoodie-rest-day-myprotein",
+    "genre": "homme",
     "nom": "Hoodie Rest Day",
     "marque": "Myprotein",
     "categorie": "sweats",
@@ -1121,6 +1145,7 @@
   },
   {
     "slug": "hoodie-zippe-form-myprotein",
+    "genre": "homme",
     "nom": "Hoodie zippé Form",
     "marque": "Myprotein",
     "categorie": "sweats",
@@ -1166,6 +1191,7 @@
   },
   {
     "slug": "hoodie-oversize-indigo-defacto",
+    "genre": "homme",
     "nom": "Hoodie oversize",
     "marque": "Defacto",
     "categorie": "sweats",
@@ -1211,6 +1237,7 @@
   },
   {
     "slug": "sweat-bleu-ciel-trendyol",
+    "genre": "homme",
     "nom": "Sweat col rond",
     "marque": "Trendyol",
     "categorie": "sweats",
@@ -1251,6 +1278,7 @@
   },
   {
     "slug": "hoodie-oversize-lilas-defacto",
+    "genre": "homme",
     "nom": "Hoodie oversize lilas",
     "marque": "Defacto",
     "categorie": "sweats",
@@ -1296,6 +1324,7 @@
   },
   {
     "slug": "sweat-bleu-marine-trendyol",
+    "genre": "homme",
     "nom": "Sweat brodé",
     "marque": "Trendyol",
     "categorie": "sweats",
@@ -1341,6 +1370,7 @@
   },
   {
     "slug": "sweat-demi-zip-defacto",
+    "genre": "homme",
     "nom": "Sweat demi-zip",
     "marque": "Defacto",
     "categorie": "sweats",
@@ -1376,6 +1406,7 @@
   },
   {
     "slug": "sweat-col-polo-defacto",
+    "genre": "homme",
     "nom": "Sweat moderne",
     "marque": "Defacto",
     "categorie": "sweats",
@@ -1416,6 +1447,7 @@
   },
   {
     "slug": "pantalon-survetement-fleece-defacto",
+    "genre": "homme",
     "nom": "Pantalon de survêtement en fleece",
     "marque": "Defacto",
     "categorie": "pantalons",
@@ -1461,6 +1493,7 @@
   },
   {
     "slug": "pantalon-slim-defacto",
+    "genre": "homme",
     "nom": "Pantalon slim",
     "marque": "Defacto",
     "categorie": "pantalons",
@@ -1506,6 +1539,7 @@
   },
   {
     "slug": "jean-noir-koton",
+    "genre": "homme",
     "nom": "Jean noir",
     "marque": "Koton",
     "categorie": "jeans",
@@ -1546,6 +1580,7 @@
   },
   {
     "slug": "hoodie-nac-oversize-nike",
+    "genre": "homme",
     "nom": "Sweat à capuche N.A.C. oversize",
     "marque": "Nike",
     "categorie": "sweats",
@@ -1581,6 +1616,7 @@
   },
   {
     "slug": "hoodie-nac-sans-manches-nike",
+    "genre": "homme",
     "nom": "Sweat à capuche N.A.C. sans manches",
     "marque": "Nike",
     "categorie": "sweats",
@@ -1616,6 +1652,7 @@
   },
   {
     "slug": "sweat-club-fleece-nike",
+    "genre": "homme",
     "nom": "Sweat Club Fleece",
     "marque": "Nike",
     "categorie": "sweats",
@@ -1651,6 +1688,7 @@
   },
   {
     "slug": "hoodie-solo-fleece-nike",
+    "genre": "homme",
     "nom": "Sweat à capuche Solo Fleece",
     "marque": "Nike",
     "categorie": "sweats",
@@ -1686,6 +1724,7 @@
   },
   {
     "slug": "hoodie-club-fleece-nike",
+    "genre": "homme",
     "nom": "Sweat à capuche Club Fleece",
     "marque": "Nike",
     "categorie": "sweats",
@@ -1721,6 +1760,7 @@
   },
   {
     "slug": "veste-tech-windrunner-nike",
+    "genre": "homme",
     "nom": "Veste Tech Windrunner",
     "marque": "Nike",
     "categorie": "vestes",
@@ -1756,6 +1796,7 @@
   },
   {
     "slug": "veste-tech-windrunner-reflechissante-nike",
+    "genre": "homme",
     "nom": "Veste Tech Windrunner réfléchissante",
     "marque": "Nike",
     "categorie": "vestes",
@@ -1791,6 +1832,7 @@
   },
   {
     "slug": "haut-tech-quart-zip-nike",
+    "genre": "homme",
     "nom": "Haut Tech 1/4 de zip",
     "marque": "Nike",
     "categorie": "sweats",
@@ -1826,6 +1868,7 @@
   },
   {
     "slug": "zoom-skylon-11-nike",
+    "genre": "homme",
     "nom": "Zoom Skylon 11",
     "marque": "Nike",
     "categorie": "sneakers",
@@ -1865,6 +1908,7 @@
   },
   {
     "slug": "moon-shoe-og-nike",
+    "genre": "homme",
     "nom": "Moon Shoe OG",
     "marque": "Nike",
     "categorie": "sneakers",
@@ -1904,6 +1948,7 @@
   },
   {
     "slug": "air-liquid-max-nike",
+    "genre": "homme",
     "nom": "Air Liquid Max",
     "marque": "Nike",
     "categorie": "sneakers",
@@ -1939,6 +1984,7 @@
   },
   {
     "slug": "air-max-plus-nike",
+    "genre": "homme",
     "nom": "Air Max Plus",
     "marque": "Nike",
     "categorie": "sneakers",
@@ -1978,6 +2024,7 @@
   },
   {
     "slug": "p-6000-nike",
+    "genre": "homme",
     "nom": "P-6000",
     "marque": "Nike",
     "categorie": "sneakers",
@@ -2017,6 +2064,7 @@
   },
   {
     "slug": "air-force-1-07-nike",
+    "genre": "homme",
     "nom": "Air Force 1 '07",
     "marque": "Nike",
     "categorie": "sneakers",
@@ -2056,6 +2104,7 @@
   },
   {
     "slug": "acg-lava-flow-nike",
+    "genre": "homme",
     "nom": "ACG Lava Flow Ultralight",
     "marque": "Nike",
     "categorie": "vestes",
@@ -2091,6 +2140,7 @@
   },
   {
     "slug": "acg-radical-airflow-haut-nike",
+    "genre": "homme",
     "nom": "ACG Radical AirFlow NXT",
     "marque": "Nike",
     "categorie": "sweats",
@@ -2126,6 +2176,7 @@
   },
   {
     "slug": "acg-dawn-range-pantalon-nike",
+    "genre": "homme",
     "nom": "Pantalon ACG Dawn Range",
     "marque": "Nike",
     "categorie": "pantalons",
@@ -2161,6 +2212,7 @@
   },
   {
     "slug": "acg-radical-airflow-casquette-nike",
+    "genre": "homme",
     "nom": "Casquette ACG Radical AirFlow Fly",
     "marque": "Nike",
     "categorie": "accessoires",
@@ -2196,6 +2248,7 @@
   },
   {
     "slug": "nb-204l-new-balance",
+    "genre": "homme",
     "nom": "204L",
     "marque": "New Balance",
     "categorie": "sneakers",
@@ -2241,6 +2294,7 @@
   },
   {
     "slug": "nb-530-new-balance",
+    "genre": "homme",
     "nom": "530",
     "marque": "New Balance",
     "categorie": "sneakers",
@@ -2290,6 +2344,7 @@
   },
   {
     "slug": "nb-603-new-balance",
+    "genre": "homme",
     "nom": "603 Triple Black",
     "marque": "New Balance",
     "categorie": "sneakers",
@@ -2335,6 +2390,7 @@
   },
   {
     "slug": "nb-fresh-foam-520-new-balance",
+    "genre": "homme",
     "nom": "Fresh Foam 520 v9",
     "marque": "New Balance",
     "categorie": "sneakers",
@@ -2380,6 +2436,7 @@
   },
   {
     "slug": "vs-pace-2-adidas",
+    "genre": "homme",
     "nom": "VS Pace 2.0",
     "marque": "Adidas",
     "categorie": "sneakers",
@@ -2424,6 +2481,7 @@
   },
   {
     "slug": "break-start-adidas",
+    "genre": "homme",
     "nom": "Break Start",
     "marque": "Adidas",
     "categorie": "sneakers",
@@ -2473,6 +2531,7 @@
   },
   {
     "slug": "ultimashow-2-adidas",
+    "genre": "homme",
     "nom": "Ultimashow 2.0",
     "marque": "Adidas",
     "categorie": "sneakers",
@@ -2513,6 +2572,7 @@
   },
   {
     "slug": "breaknet-3-adidas",
+    "genre": "homme",
     "nom": "Breaknet 3.0",
     "marque": "Adidas",
     "categorie": "sneakers",
@@ -2553,6 +2613,7 @@
   },
   {
     "slug": "baskets-cuir-blanc-vert-durbano",
+    "genre": "homme",
     "nom": "Baskets basses en cuir",
     "marque": "D'Urbano",
     "categorie": "sneakers",
@@ -2592,6 +2653,7 @@
   },
   {
     "slug": "baskets-cuir-daim-bleu-durbano",
+    "genre": "homme",
     "nom": "Baskets basses en cuir daim",
     "marque": "D'Urbano",
     "categorie": "sneakers",

@@ -6,8 +6,8 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig({
   plugins: [react()],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-  server: { host: true, port: 6011, strictPort: true },
-  preview: { port: 6011 },
+  server: { host: true, port: 6013, strictPort: true },
+  preview: { port: 6013 },
   // Tests : jamais le vrai projet Supabase (le client est simulé dans les tests qui en ont besoin).
   test: { environment: 'jsdom', globals: true, setupFiles: './src/test/setup.ts', css: false, env: { VITE_SUPABASE_URL: '', VITE_SUPABASE_PUBLISHABLE_KEY: '' } },
 })

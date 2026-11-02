@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { IconeWhatsApp } from '@/design-system'
 import { lienWhatsApp } from '@/lib/whatsapp'
-import { MODE_DEMO } from '@/lib/catalogue'
 import { INTRO } from '@/lib/animations'
 import { useAnimationsActives } from '@/state/animations'
 import { cn } from '@/lib/utils'
@@ -87,9 +86,4 @@ export function ChargeurMarque() {
       </div>
     </div>
   )
-}
-
-export function BandeauDemo() {
-  if (!MODE_DEMO) return null
-  return <div className="label fixed inset-x-0 bottom-0 z-[60] h-[var(--demo-h)] truncate bg-alerte px-4 py-1.5 text-center text-nacre">Mode démo — prix<span className="hidden sm:inline"> et tailles</span> fictifs<span className="hidden sm:inline">, pour tester le panier</span></div>
 }

@@ -3,6 +3,8 @@ import type { Produit } from './types'
 export type Tri = 'pertinence' | 'nouveautes' | 'prix-croissant' | 'prix-decroissant' | 'nom'
 /** Étiquettes de la référence (« Tags ») tirées des données : nouveauté, mise en avant. */
 export type Etiquette = 'nouveau' | 'une'
+/** Rayons du menu de la référence (`/shop?g=men`, `?g=women`, `?sale=1`) : contexte de la page, pas des filtres à cocher. */
+export type Genre = 'homme' | 'femme'
 
 export interface Filtres {
   categories: string[]
@@ -15,14 +17,20 @@ export interface Filtres {
   /** Prix maximum (curseur « Prix max » de la référence) ; null = pas de limite. */
   prixMax: number | null
   tri: Tri
+  genre: Genre | null
+  /** Seulement les pièces en solde (prix barré supérieur au prix). */
+  solde: boolean
 }
 
-export const FILTRES_VIDES: Filtres = { categories: [], marques: [], coloris: [], tailles: [], collections: [], etiquettes: [], disponibles: false, prixMax: null, tri: 'pertinence' }
+export const FILTRES_VIDES: Filtres = { categories: [], marques: [], coloris: [], tailles: [], collections: [], etiquettes: [], disponibles: false, prixMax: null, tri: 'pertinence', genre: null, solde: false }
 
 const aEtiquette = (p: Produit, e: Etiquette) => (e === 'nouveau' ? p.nouveau : p.misEnAvant)
+export const estEnSolde = (p: Produit) => p.prixDH !== null && p.prixBarreDH !== null && p.prixBarreDH > p.prixDH
 
 export function appliquerFiltres(liste: Produit[], f: Filtres): Produit[] {
   const res = liste.filter(p =>
+    (!f.genre || p.genre === f.genre || p.genre === 'mixte') &&
+    (!f.solde || estEnSolde(p)) &&
     (!f.categories.length || f.categories.includes(p.categorie)) &&
     (!f.etiquettes.length || f.etiquettes.some(e => aEtiquette(p, e))) &&
     (f.prixMax === null || (p.prixDH !== null && p.prixDH <= f.prixMax)) &&
@@ -91,11 +99,14 @@ export function filtresDepuisURL(sp: URLSearchParams): Filtres {
   return { categories: liste('categorie'), marques: liste('marque'), coloris: liste('coloris'), tailles: liste('taille'), collections: liste('collection'),
     etiquettes: liste('tag').filter((e): e is Etiquette => e === 'nouveau' || e === 'une'),
     disponibles: sp.get('dispo') === '1', prixMax: Number.isFinite(max) && max > 0 ? max : null,
-    tri: tri && ['nouveautes', 'prix-croissant', 'prix-decroissant', 'nom'].includes(tri) ? tri : 'pertinence' }
+    tri: tri && ['nouveautes', 'prix-croissant', 'prix-decroissant', 'nom'].includes(tri) ? tri : 'pertinence',
+    genre: sp.get('genre') === 'homme' || sp.get('genre') === 'femme' ? sp.get('genre') as Genre : null, solde: sp.get('solde') === '1' }
 }
 
 export function filtresVersURL(f: Filtres): URLSearchParams {
   const sp = new URLSearchParams()
+  if (f.genre) sp.set('genre', f.genre)
+  if (f.solde) sp.set('solde', '1')
   if (f.categories.length) sp.set('categorie', f.categories.join(','))
   if (f.marques.length) sp.set('marque', f.marques.join(','))
   if (f.coloris.length) sp.set('coloris', f.coloris.join(','))

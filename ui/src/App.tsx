@@ -8,7 +8,7 @@ import { useCompte } from './state/compte'
 import { EnTete } from './components/EnTete'
 import { MenuMobile, MiniPanier, Recherche, useFermerSurNavigation } from './components/Panneaux'
 import { PiedDePage } from './components/PiedDePage'
-import { BandeauDemo, BoutonWhatsAppFlottant, ChargeurMarque, RepereLateral } from './components/Ambiance'
+import { BoutonWhatsAppFlottant, ChargeurMarque, RepereLateral } from './components/Ambiance'
 import { PageAccueil } from './features/accueil/PageAccueil'
 import { PageBoutique } from './features/catalogue/PageBoutique'
 import { PageCollection, PageCollections } from './features/catalogue/PageCollections'
@@ -91,7 +91,6 @@ export default function App() {
       </AnimatePresence>
       {!pleinEcran && <PiedDePage />}
       {!pleinEcran && <BoutonWhatsAppFlottant />}
-      <BandeauDemo />
     </>
   )
 }

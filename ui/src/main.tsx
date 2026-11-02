@@ -13,9 +13,7 @@ import './styles/index.css'
 import { FournisseurAnimations } from './state/animations'
 import { FournisseurNotifications } from './design-system'
 import App from './App'
-import { MODE_DEMO } from './lib/catalogue'
 
-if (MODE_DEMO) document.documentElement.style.setProperty('--demo-h', '28px')
 
 createRoot(document.getElementById('racine')!).render(
   <StrictMode>

@@ -12,6 +12,7 @@ import { rechercher, suggestions } from '@/lib/recherche'
 import { formatDH } from '@/lib/format'
 import { DUREE_MENU, DUREE_PANNEAU, EASE_MAISON, EASE_PANNEAU } from '@/lib/animations'
 import { LiensReseaux } from './Reseaux'
+import { LIENS_PRINCIPAUX } from './EnTete'
 
 /** Ferme tout panneau ouvert quand l'adresse change. */
 export function useFermerSurNavigation() {
@@ -80,9 +81,10 @@ export function MenuMobile() {
   const ouvert = useInterface(s => s.panneau === 'menu')
   const fermer = useInterface(s => s.fermer)
   const ref = usePiegeFocus(ouvert, fermer)
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const connecte = useSession(s => Boolean(s.utilisateur) || !s.pret)
-  const liens = [{ vers: '/', libelle: 'Accueil' }, { vers: '/boutique', libelle: 'Boutique' }, ...categoriesActives().map(c => ({ vers: `/boutique/${c.slug}`, libelle: c.nom }))]
+  // Référence : Boutique · Hommes · Femmes · Soldes (rouge) en Archivo Black 36 px ; H MODE ajoute Accueil en tête
+  const liens = LIENS_PRINCIPAUX
   const secondaires = [
     { vers: '/collections', libelle: 'Collections' }, { vers: '/maison', libelle: 'La Maison' }, { vers: '/contact', libelle: 'Contact' },
     { vers: '/compte/favoris', libelle: 'Favoris' }, connecte ? { vers: '/compte', libelle: 'Compte' } : { vers: '/connexion', libelle: 'Connexion' },
@@ -98,8 +100,8 @@ export function MenuMobile() {
           </button>
           <nav aria-label="Menu mobile" className="flex flex-col gap-5">
             {liens.map(l => (
-              <Link key={l.vers} to={l.vers} aria-current={pathname === l.vers ? 'page' : undefined}
-                className="font-display text-[clamp(28px,9vw,36px)] leading-none tracking-[-0.01em] text-encre aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-[3px] aria-[current=page]:underline-offset-4">{l.libelle}</Link>
+              <Link key={l.vers} to={l.vers} aria-current={pathname + search === l.vers ? 'page' : undefined}
+                className={`font-display text-[clamp(28px,9vw,36px)] leading-none tracking-[-0.01em] ${l.solde ? 'text-danger' : 'text-encre'} aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-[3px] aria-[current=page]:underline-offset-4`}>{l.libelle}</Link>
             ))}
           </nav>
           <div className="mt-auto flex flex-col gap-4">

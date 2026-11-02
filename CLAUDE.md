@@ -2,11 +2,11 @@
 <!-- Notes mainteneur : invisibles pour Claude. Plan lot par lot : plan.md · données manquantes : TODO.md -->
 
 ## Commandes
-- Dev : `./start.sh` → http://localhost:6011 · Démo (prix fictifs) : `./start.sh demo` → http://localhost:6012 · Arrêt : `./stop.sh`
+- Un seul serveur : `./start.sh` → http://localhost:6013 (prix de démo, Supabase de `ui/.env`) · Arrêt : `./stop.sh`. Ne jamais lancer d'autre serveur de dev (plus de 6011 / 6012).
 - Dans `ui/` : Tests : `npm test` · Types : `npm run lint` · Build : `npm run build` · Images WebP : `npm run images`
 - Test d'un seul fichier : `cd ui && npx vitest run src/test/logique.test.ts`
 - Production locale (Docker/nginx) : `./deploy.sh` → http://localhost:6111
-- Supabase local (tests avec vrais comptes) : `npx supabase start -x studio,imgproxy,storage-api,edge-runtime,logflare,vector,realtime,postgres-meta,supavisor` à la racine (arrêt : `npx supabase stop`) · site branché dessus : `cd ui && npm run dev:local` → http://localhost:6013 · tests : `npm run test:supabase` · e-mails reçus : http://127.0.0.1:54324
+- Tests avec vrais comptes (ponctuel, puis arrêter) : `npx supabase start -x studio,imgproxy,storage-api,edge-runtime,logflare,vector,realtime,postgres-meta,supavisor` à la racine → `cd ui && npm run test:supabase` → `npx supabase stop`. E-mails reçus : http://127.0.0.1:54324
 
 ## Conventions
 - Code, noms et textes en français (composants `PageBoutique`, `CarteProduit`, état `usePanier`…).
@@ -30,7 +30,7 @@
 - Captures du navigateur intégré : prises en cours d'animation (contenu pâle) ; panneau masqué = animations en pause.
 - Panier persistant : clé `hmode-panier`, `version: 1` (une autre version vide le panier).
 - Tests : jamais le vrai Supabase (`env` vidé dans `vite.config.ts`) ; client simulé dans `src/test/*` (fausse base à RLS dans `synchro.test.ts`).
-- La démo (6012) écrit dans la vraie base : références de commande `DEMO-…`, à supprimer côté Supabase.
+- Le serveur 6013 (prix de démo) écrit dans la vraie base : références de commande `DEMO-…`, à supprimer côté Supabase.
 - L'ancien site (`index.html`, `css/`, `js/`, `assets/`) reste en place jusqu'à la mise en ligne : ne pas le supprimer.
 - `npx lightswind add …` réécrit `ui/tailwind.config.js` (plugin `lightswind/plugin` non installé → page blanche) : sauvegarder la config avant, la restaurer après, puis ré-habiller le composant (licence MIT en tête).
 

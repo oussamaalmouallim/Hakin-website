@@ -69,6 +69,9 @@
     transition: transform 0.35s var(--courbe-panneau);
   }
   .lien-nav:hover::after, .lien-nav.actif::after { transform: scaleX(1); }
+  /* Lien « Soldes » de la référence : texte et trait rouges */
+  .lien-nav.solde { color: var(--danger); }
+  .lien-nav.solde::after { background: var(--danger); }
 
   /* cloneme: A-11 — secousse du sac une fois au chargement (Relevé .animate-jiggle : 1.2s, retard 1.2s) */
   .anim-secousse { animation: secousse 1.2s 1.2s; }

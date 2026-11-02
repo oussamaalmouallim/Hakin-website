@@ -104,6 +104,19 @@ describe('filtres et recherche', () => {
     const g = { ...FILTRES_VIDES, categories: ['t-shirts', 'jeans'], etiquettes: ['une' as const], prixMax: 900, tri: 'nouveautes' as const }
     expect(filtresDepuisURL(filtresVersURL(g))).toEqual(g)
   })
+  it('rayons du menu : Hommes / Femmes (mixte dans les deux), Soldes (prix barré supérieur), aller-retour URL', () => {
+    const liste = [
+      { ...produits[0], slug: 'h', genre: 'homme' as const },
+      { ...produits[0], slug: 'f', genre: 'femme' as const, prixBarreDH: 700 },
+      { ...produits[0], slug: 'm', genre: 'mixte' as const, prixBarreDH: 400 },
+    ]
+    expect(appliquerFiltres(liste, { ...FILTRES_VIDES, genre: 'homme' }).map(p => p.slug)).toEqual(['h', 'm'])
+    expect(appliquerFiltres(liste, { ...FILTRES_VIDES, genre: 'femme' }).map(p => p.slug)).toEqual(['f', 'm'])
+    expect(appliquerFiltres(liste, { ...FILTRES_VIDES, solde: true }).map(p => p.slug)).toEqual(['f'])
+    const g = { ...FILTRES_VIDES, genre: 'femme' as const, solde: true }
+    expect(filtresDepuisURL(filtresVersURL(g))).toEqual(g)
+    expect(filtresDepuisURL(new URLSearchParams('genre=autre')).genre).toBeNull()
+  })
   it('recherche sans accents ni casse, tous les mots requis', () => {
     expect(rechercher(produits, 'ete').map(p => p.slug)).toEqual(['a'])
     expect(rechercher(produits, 'CASABLANCA rose').map(p => p.slug)).toEqual(['b'])

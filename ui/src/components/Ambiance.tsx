@@ -7,18 +7,30 @@ import { MODE_DEMO } from '@/lib/catalogue'
 import { EASE_MAISON } from '@/lib/animations'
 import { cn } from '@/lib/utils'
 
-/** Bandeau défilant (repris de l'ancien site), textes réels uniquement. */
+/** cloneme: C-02, A-05 — bandeau noir défilant de la référence : Archivo Black 18 px capitales,
+ *  pastille jaune de 10 px après chaque élément, écart 48 px, boucle de 30 s. Textes réels H MODE uniquement. */
 export function BandeauDefilant({ elements }: { elements: string[] }) {
   const serie = [...elements, ...elements]
   return (
-    <div className="overflow-hidden border-y border-ligne bg-nacre py-5" aria-label={elements.join(' · ')}>
-      <div className="flex w-max animate-defiler" aria-hidden>
+    <div data-ref="bandeau" className="overflow-hidden border-y border-encre bg-encre py-[18px] text-fond" aria-label={elements.join(' · ')}>
+      <div className="anim-bande flex w-max whitespace-nowrap font-display text-[18px] uppercase tracking-[0.04em]" aria-hidden>
         {serie.map((e, i) => (
-          <span key={i} className="flex items-center whitespace-nowrap px-8 font-display text-[22px] italic text-encre/80">
-            {e}<span className="ml-16 text-[12px] not-italic text-or">✦</span>
+          <span key={i} className="flex items-center gap-12 pr-12">
+            {e}<span className="inline-block h-2.5 w-2.5 rounded-full bg-accent" />
           </span>
         ))}
       </div>
+    </div>
+  )
+}
+
+/** cloneme: C-07 — repère vertical fixé à droite (≥ 1024 px) : mono 10 px gris, filet de 60 px entre deux mots. */
+export function RepereLateral() {
+  return (
+    <div aria-hidden className="pointer-events-none fixed right-7 top-1/2 z-50 hidden -translate-y-1/2 flex-col items-center gap-4 font-mono text-[10px] uppercase tracking-[0.2em] text-gris lg:flex">
+      <span className="[writing-mode:vertical-rl]">H MODE</span>
+      <span className="h-[60px] w-px bg-current opacity-40" />
+      <span className="[writing-mode:vertical-rl]">Casa</span>
     </div>
   )
 }
@@ -50,7 +62,7 @@ export function ChargeurMarque() {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div className="fixed inset-0 z-[100] grid place-items-center bg-nacre" exit={{ opacity: 0 }} transition={{ duration: 0.6, ease: EASE_MAISON }} aria-hidden>
+        <motion.div className="fixed inset-0 z-[500] grid place-items-center bg-fond" exit={{ opacity: 0 }} transition={{ duration: 0.6, ease: EASE_MAISON }} aria-hidden>
           <motion.div className="flex flex-col items-center gap-5" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: EASE_MAISON }}>
             <Monogramme className="h-20" />
             <span className="font-display text-[26px] uppercase tracking-[0.4em]">H Mode</span>

@@ -17,7 +17,7 @@ export function PageCollections() {
             <Link to={`/collections/${c.slug}`} className={`group grid items-center gap-10 lg:grid-cols-2 lg:gap-20 ${i % 2 ? 'lg:[&>*:first-child]:order-2' : ''}`}>
               <Cadre className="aspect-[4/5]"><ImageProduit src={c.image} alt={`Collection ${c.nom}`} zoomSurvol className="absolute inset-0" tailles="(min-width: 1024px) 50vw, 100vw" /></Cadre>
               <div>
-                <p className="label text-bronze">{String(i + 1).padStart(2, '0')} — {produitsDeCollection(c.slug).length} pièces</p>
+                <p className="surtitre text-gris">{String(i + 1).padStart(2, '0')} — {produitsDeCollection(c.slug).length} pièces</p>
                 <h2 className="titre-1 mt-5">{c.nom}</h2>
                 <p className="mt-6 max-w-md text-[17px] text-gris">{c.recit}</p>
                 <span className="lien-souligne label mt-10">Explorer la collection <ArrowRight className="h-3.5 w-3.5" /></span>

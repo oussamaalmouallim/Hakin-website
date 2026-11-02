@@ -1,15 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Heart, Maximize2 } from 'lucide-react'
 import {
-  AConfirmer, Accordeon, Bouton, BoutonExterne, Cadre, FilAriane, IconeWhatsApp, ImageProduit, Modale, Prix, Quantite,
+  AConfirmer, Bouton, BoutonExterne, IconeWhatsApp, ImageProduit, Modale, PastilleCouleur, Prix, Quantite,
   Revelation, SelecteurColoris, SelecteurTaille, useNotifier,
 } from '@/design-system'
+import { formatDH } from '@/lib/format'
 import { CarteProduit } from '@/components/CarteProduit'
 import { boutique, estCommandable, estPackshot, produitsLies, srcImage, trouverCategorie, trouverProduit } from '@/lib/catalogue'
 import { lienWhatsApp, messageProduit } from '@/lib/whatsapp'
+import { lienCommandeDirecte } from '@/lib/commandeDirecte'
 import { cn } from '@/lib/utils'
 import { usePanier } from '@/state/panier'
 import { useFavoris } from '@/state/favoris'
@@ -18,45 +20,39 @@ import { useAnimationsActives } from '@/state/animations'
 import { Page404 } from '@/features/infos/Page404'
 import type { Produit } from '@/lib/types'
 
+/** cloneme: C-20 — galerie de la référence : carrés `--fond-2` rayon 20 px en grille 2 colonnes écart 12 px, vignettes 4 colonnes en dessous.
+ *  H MODE : 1 photo → un grand carré ; 3 photos → la 1re sur deux colonnes. Clic = agrandir (fonction conservée). */
 function Galerie({ produit }: { produit: Produit }) {
   const [zoom, setZoom] = useState<number | null>(null)
-  const [actif, setActif] = useState(0)
-  const piste = useRef<HTMLDivElement>(null)
   const packshot = estPackshot(produit)
-  const surDefilement = () => {
-    const el = piste.current
-    if (el) setActif(Math.round(el.scrollLeft / el.clientWidth))
-  }
+  const principales = produit.images.slice(0, 4)
+  const autres = produit.images.slice(4)
+  const pastille = produit.nouveau ? 'Nouveau' : produit.misEnAvant ? 'À la une' : null
   return (
     <div>
-      {/* Mobile : glisser */}
-      <div className="relative lg:hidden">
-        <div ref={piste} onScroll={surDefilement} className="defilement-masque flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain">
-          {produit.images.map((img, i) => (
-            <button key={img.src} type="button" onClick={() => setZoom(i)} className="w-full shrink-0 snap-center p-2" aria-label={`Agrandir : ${img.alt}`}>
-              <Cadre className="aspect-[4/5]">
-                <ImageProduit src={img.src} alt={img.alt} prioritaire={i === 0} packshot={packshot} className="absolute inset-0" tailles="100vw" />
-              </Cadre>
-            </button>
-          ))}
-        </div>
-        {produit.images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2" aria-hidden>
-            {produit.images.map((_, i) => <span key={i} className={cn('h-[3px] rounded-full bg-encre transition-all duration-500', i === actif ? 'w-6' : 'w-2 opacity-30')} />)}
-          </div>
-        )}
-      </div>
-      {/* Desktop : images empilées */}
-      <div className="hidden gap-8 lg:grid">
-        {produit.images.map((img, i) => (
-          <button key={img.src} type="button" onClick={() => setZoom(i)} className="group relative cursor-zoom-in" aria-label={`Agrandir : ${img.alt}`}>
-            <Cadre className="aspect-[4/5]">
-              <ImageProduit src={img.src} alt={img.alt} prioritaire={i === 0} packshot={packshot} className="absolute inset-0" tailles="55vw" zoomSurvol />
-            </Cadre>
-            <span className="absolute bottom-7 right-7 z-[4] grid h-10 w-10 place-items-center rounded-full bg-nacre/80 opacity-0 transition-opacity duration-500 group-hover:opacity-100"><Maximize2 className="h-4 w-4" strokeWidth={1.25} /></span>
+      <div className="grid grid-cols-2 gap-3">
+        {principales.map((img, i) => (
+          <button key={img.src} type="button" onClick={() => setZoom(i)} aria-label={`Agrandir : ${img.alt}`}
+            className={cn('group relative aspect-square cursor-zoom-in overflow-hidden rounded-carte bg-fond-2', (principales.length === 1 || (principales.length === 3 && i === 0)) && 'col-span-2')}>
+            {i === 0 && pastille && (
+              <span className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-encre px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-fond">
+                <span className="anim-pouls h-1.5 w-1.5 rounded-full bg-accent" />{pastille}
+              </span>
+            )}
+            <ImageProduit src={img.src} alt={img.alt} prioritaire={i === 0} packshot={packshot} className="absolute inset-0" tailles="(min-width: 768px) 30vw, 50vw" zoomSurvol />
+            <span className="absolute bottom-3 right-3 z-[4] grid h-9 w-9 place-items-center rounded-full bg-fond/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100"><Maximize2 className="h-4 w-4" strokeWidth={1.5} /></span>
           </button>
         ))}
       </div>
+      {autres.length > 0 && (
+        <div className="mt-3 grid grid-cols-4 gap-3">
+          {autres.map((img, i) => (
+            <button key={img.src} type="button" onClick={() => setZoom(i + 4)} aria-label={`Agrandir : ${img.alt}`} className="relative aspect-square overflow-hidden rounded-xl bg-fond-2">
+              <ImageProduit src={img.src} alt="" packshot={packshot} className="absolute inset-0" tailles="120px" />
+            </button>
+          ))}
+        </div>
+      )}
       <Modale ouvert={zoom !== null} onFermer={() => setZoom(null)} titre={produit.nom} large>
         {zoom !== null && (
           <div>
@@ -65,8 +61,8 @@ function Galerie({ produit }: { produit: Produit }) {
               <div className="mt-4 flex justify-center gap-2">
                 {produit.images.map((img, i) => (
                   <button key={img.src} type="button" onClick={() => setZoom(i)} aria-label={`Vue ${i + 1}`} aria-current={i === zoom}
-                    className={cn('w-14 outline outline-1 outline-offset-2 transition-[opacity,outline-color]', i === zoom ? 'outline-or' : 'outline-transparent opacity-60')}>
-                    <Cadre compact className="aspect-[4/5]"><ImageProduit src={img.src} alt="" packshot={packshot} className="absolute inset-0" tailles="56px" /></Cadre>
+                    className={cn('relative aspect-square w-14 overflow-hidden rounded-xl border bg-fond-2 transition-[opacity,border-color]', i === zoom ? 'border-encre' : 'border-transparent opacity-60')}>
+                    <ImageProduit src={img.src} alt="" packshot={packshot} className="absolute inset-0" tailles="56px" />
                   </button>
                 ))}
               </div>
@@ -75,6 +71,34 @@ function Galerie({ produit }: { produit: Produit }) {
         )}
       </Modale>
     </div>
+  )
+}
+
+const secondaire = 'flex w-full items-center justify-center gap-3 rounded-full border border-ligne-forte bg-fond-2 py-4 font-display text-[13px] uppercase tracking-[0.16em] text-encre transition-colors hover:bg-fond-3'
+
+/** Bouton favori rond 48 px de la référence. */
+function BoutonFavori({ actif, onClick, nom }: { actif: boolean; onClick: () => void; nom: string }) {
+  return (
+    <button type="button" onClick={onClick} aria-pressed={actif} aria-label={actif ? `Retirer ${nom} des favoris` : `Ajouter ${nom} aux favoris`}
+      className={cn('grid h-12 w-12 shrink-0 place-items-center rounded-full border transition-all', actif ? 'border-encre bg-encre text-fond' : 'border-ligne-forte text-encre hover:border-encre')}>
+      <Heart className={cn('h-4 w-4', actif && 'fill-current')} strokeWidth={1.75} />
+    </button>
+  )
+}
+
+/** Tableau à filets de la référence : intitulé mono 11 px gris (140 px), valeur 14 px. */
+function Tableau({ lignes }: { lignes: [string, ReactNode][] }) {
+  return (
+    <table className="w-full border-collapse">
+      <tbody>
+        {lignes.map(([k, v]) => (
+          <tr key={k} className="border-b border-ligne">
+            <th scope="row" className="w-[140px] py-3 text-left align-top font-mono text-[11px] font-normal uppercase tracking-[0.18em] text-gris">{k}</th>
+            <td className="py-3 text-[14px]">{v}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
 
@@ -97,9 +121,11 @@ export function PageProduit() {
   const [erreurTaille, setErreurTaille] = useState(false)
   const [guide, setGuide] = useState(false)
   const [barreVisible, setBarreVisible] = useState(false)
+  const [onglet, setOnglet] = useState('description')
   const zoneAchat = useRef<HTMLDivElement>(null)
   const ajouter = usePanier(s => s.ajouter)
   const ouvrir = useInterface(s => s.ouvrir)
+  const naviguer = useNavigate()
   const notifier = useNotifier()
   const favori = useFavoris(s => s.slugs.includes(slug))
   const basculerFavori = useFavoris(s => s.basculer)
@@ -127,89 +153,126 @@ export function PageProduit() {
     notifier({ ton: 'succes', message: <>« {produit.nom} » ajouté au panier.</> })
     ouvrir('panier')
   }
+  // Commander directement : cette variante seule va au checkout, le panier n'est pas modifié.
+  const surCommande = () => {
+    if (!commandable || !coloris) return
+    if (!taille) { setErreurTaille(true); return }
+    naviguer(lienCommandeDirecte(produit.slug, coloris, taille, quantite))
+  }
   const lienWA = lienWhatsApp(messageProduit(produit.nom, { coloris: coloris ?? undefined, taille: taille ?? undefined }))
+
+  const etiquette = 'mb-3 font-mono text-[11px] uppercase tracking-[0.22em] text-gris'
+  const caracteristiques: [string, ReactNode][] = [
+    ['Marque', produit.marque], ['Catégorie', categorie?.nom ?? produit.categorie],
+    ['Coloris', <span className="flex flex-wrap gap-2">{produit.coloris.map(c => <PastilleCouleur key={c.nom} nom={c.nom} hex={c.hex} />)}</span>],
+    ['Tailles', produit.tailles.length ? produit.tailles.map(t => t.taille).join(' · ') : <AConfirmer />],
+  ]
+  const onglets: { id: string; libelle: string; contenu: ReactNode }[] = [
+    { id: 'description', libelle: 'Description', contenu: <><p className="mb-6 text-[16px] leading-[1.7] text-gris">{produit.description}</p><Tableau lignes={caracteristiques.slice(0, 2)} /></> },
+    { id: 'caracteristiques', libelle: 'Caractéristiques', contenu: <Tableau lignes={caracteristiques} /> },
+    { id: 'matiere', libelle: 'Matière & entretien', contenu: <Tableau lignes={[['Matière', produit.matiere ?? <AConfirmer />], ['Entretien', produit.entretien ?? <AConfirmer />]]} /> },
+    { id: 'livraison', libelle: 'Livraison & paiement', contenu: <Tableau lignes={[['Paiement', `${boutique.paiement}. Confirmation de chaque commande sur WhatsApp.`], ['Zones et délais', boutique.livraison.zones ?? <AConfirmer />]]} /> },
+  ]
+  const ongletActif = onglets.find(o => o.id === onglet) ?? onglets[0]
 
   return (
     <>
-      <div className="conteneur pt-[calc(var(--nav-h)+1.5rem)] lg:pt-28">
-        <div className="mb-6 lg:mb-10"><FilAriane elements={[{ libelle: 'Accueil', vers: '/' }, { libelle: 'Boutique', vers: '/boutique' }, ...(categorie ? [{ libelle: categorie.nom, vers: `/boutique/${categorie.slug}` }] : []), { libelle: produit.nom }]} /></div>
-        <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16 xl:gap-24">
-          <div className="-mx-4 sm:mx-0"><Galerie produit={produit} /></div>
+      {/* cloneme: P-03 — fiche produit de la référence : fil d'Ariane mono, galerie 1.2fr / infos 1fr écart 64 px, onglets, « Vous aimerez aussi ». */}
+      <div className="min-h-screen pt-20">
+        <nav aria-label="Fil d'Ariane" className="flex flex-wrap items-center gap-2 px-5 py-4 font-mono text-[11px] uppercase tracking-[0.18em] text-gris md:px-14">
+          <Link to="/" className="hover:text-encre">Accueil</Link><span aria-hidden>/</span>
+          <Link to="/boutique" className="hover:text-encre">Boutique</Link><span aria-hidden>/</span>
+          {categorie && <><Link to={`/boutique/${categorie.slug}`} className="hover:text-encre">{categorie.nom}</Link><span aria-hidden>/</span></>}
+          <span className="text-encre" aria-current="page">{produit.nom}</span>
+        </nav>
+        <div className="grid grid-cols-1 gap-8 px-5 py-6 md:grid-cols-[1.2fr_1fr] md:gap-16 md:px-14">
+          <Galerie produit={produit} />
 
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <motion.div initial={animations ? { opacity: 0, y: 16 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
-              <p className="label text-bronze">{produit.marque}</p>
-              <h1 className="titre-1 mt-3">{produit.nom}</h1>
-              <div className="mt-5"><Prix prixDH={produit.prixDH} prixBarreDH={produit.prixBarreDH} grand /></div>
+          <motion.div className="flex flex-col gap-6 md:sticky md:top-24 md:self-start" initial={animations ? { opacity: 0, y: 16 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}>
+            <div>
+              <p className="surtitre text-gris">{produit.marque}</p>
+              <h1 className="font-display text-[clamp(36px,5vw,56px)] uppercase leading-[0.92] tracking-[-0.02em]">{produit.nom} <em aria-hidden className="contour-encre not-italic">/ {categorie?.nom ?? produit.categorie}</em></h1>
+            </div>
+            {produit.prixDH === null
+              ? <p className="font-display text-[24px] uppercase tracking-[0.02em]">Prix sur demande</p>
+              : <Prix prixDH={produit.prixDH} prixBarreDH={produit.prixBarreDH} className="text-[32px] [&_s]:text-[20px]" />}
+            <p className="text-[15px] leading-[1.62] text-gris">{produit.description}</p>
 
-              <div ref={zoneAchat} className="mt-10 flex flex-col gap-8 border-t border-ligne pt-8">
-                <div>
-                  <p className="label mb-3 text-gris">Coloris — <span className="capitalize text-encre">{coloris}</span></p>
-                  <SelecteurColoris coloris={produit.coloris} valeur={coloris} onChange={setColoris} />
-                  {produit.aConfirmer.includes('disponibilité des coloris') && <p className="mt-3 text-[13px] text-gris">Coloris photographiés en boutique, disponibilité à confirmer.</p>}
-                </div>
-
-                <div>
-                  <div className="mb-3 flex items-center justify-between">
-                    <p className="label text-gris">Taille{taille && <> — <span className="text-encre">{taille}</span></>}</p>
-                    {produit.tailles.length > 0 && <button type="button" onClick={() => setGuide(true)} className="label underline underline-offset-4 hover:text-bronze">Guide des tailles</button>}
-                  </div>
-                  {produit.tailles.length ? (
-                    <SelecteurTaille tailles={produit.tailles} valeur={taille} erreur={erreurTaille} onChange={t => { setTaille(t); setErreurTaille(false) }} />
-                  ) : <AConfirmer>Tailles bientôt renseignées — demandez la vôtre sur WhatsApp</AConfirmer>}
-                  {erreurTaille && <p role="alert" className="mt-3 text-[13px] text-erreur">Veuillez choisir une taille.</p>}
-                </div>
-
-                {commandable ? (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex gap-3">
-                      <Quantite valeur={quantite} onChange={setQuantite} />
-                      <Bouton onClick={surAjout} className="flex-1" taille="md">Ajouter au panier</Bouton>
-                    </div>
-                    <BoutonExterne href={lienWA} variante="whatsapp" plein_largeur icone={<IconeWhatsApp className="h-4 w-4 text-whatsapp" />}>Commander sur WhatsApp</BoutonExterne>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-3">
-                    <BoutonExterne href={lienWA} plein_largeur icone={<IconeWhatsApp className="h-4 w-4 text-whatsapp" />}>
-                      {epuise ? 'Être prévenu sur WhatsApp' : 'Demander prix et disponibilité'}
-                    </BoutonExterne>
-                    <p className="text-center text-[13px] text-gris">{epuise ? 'Cette pièce est épuisée.' : 'Prix bientôt affiché en ligne. Réponse personnelle sur WhatsApp.'}</p>
-                  </div>
-                )}
-
-                <button type="button" onClick={() => basculerFavori(produit.slug)} aria-pressed={favori} className="label inline-flex items-center gap-2 self-start hover:text-bronze">
-                  <Heart className={cn('h-4 w-4', favori && 'fill-bronze text-bronze')} strokeWidth={1.25} />{favori ? 'Dans vos favoris' : 'Ajouter aux favoris'}
-                </button>
+            <div ref={zoneAchat} className="flex flex-col gap-6">
+              <div>
+                <p className={etiquette}>Couleur</p>
+                <SelecteurColoris coloris={produit.coloris} valeur={coloris} onChange={setColoris} />
+                {produit.aConfirmer.includes('disponibilité des coloris') && <p className="mt-3 text-[13px] text-gris">Coloris photographiés en boutique, disponibilité à confirmer.</p>}
               </div>
 
-              <div className="mt-10 border-t border-ligne">
-                <Accordeon titre="Description" ouvertParDefaut>{produit.description}</Accordeon>
-                <Accordeon titre="Matière & entretien">
-                  <p>Matière : {produit.matiere ?? <AConfirmer />}</p>
-                  <p className="mt-2">Entretien : {produit.entretien ?? <AConfirmer />}</p>
-                </Accordeon>
-                <Accordeon titre="Livraison & paiement">
-                  <p>{boutique.paiement}. Confirmation de chaque commande sur WhatsApp.</p>
-                  <p className="mt-2">Zones, délais et frais : {boutique.livraison.zones ?? <AConfirmer />}</p>
-                </Accordeon>
+              <div>
+                <div className="flex items-center justify-between">
+                  <p className={etiquette}>Taille — {taille ? <strong className="font-normal text-encre">{taille}</strong> : 'Choisir'}</p>
+                  {produit.tailles.length > 0 && <button type="button" onClick={() => setGuide(true)} className="mb-3 font-mono text-[11px] uppercase tracking-[0.18em] underline underline-offset-4 hover:text-danger">Guide des tailles</button>}
+                </div>
+                {produit.tailles.length ? (
+                  <SelecteurTaille tailles={produit.tailles} valeur={taille} erreur={erreurTaille} onChange={t => { setTaille(t); setErreurTaille(false) }} />
+                ) : <AConfirmer>Tailles bientôt renseignées — demandez la vôtre sur WhatsApp</AConfirmer>}
+                {erreurTaille && <p role="alert" className="mt-3 font-mono text-[11px] uppercase tracking-[0.15em] text-danger">Veuillez choisir une taille.</p>}
               </div>
-            </motion.div>
-          </div>
+
+              {commandable ? (
+                <>
+                  <div className="flex items-center gap-3">
+                    <Quantite valeur={quantite} onChange={setQuantite} />
+                    {/* Référence : grisé (fond filet, texte gris) tant qu'aucune taille n'est choisie. `aria-disabled` plutôt que `disabled` : le clic affiche « Veuillez choisir une taille ». */}
+                    <button type="button" onClick={surAjout} aria-disabled={!taille}
+                      className={cn('flex-1 rounded-full py-4 font-display text-[13px] uppercase tracking-[0.16em] transition-all',
+                        taille ? 'bg-encre text-fond hover:bg-encre-douce' : 'cursor-not-allowed bg-ligne text-gris')}>
+                      Ajouter au panier{produit.prixDH !== null && <span aria-hidden> — {formatDH(produit.prixDH * quantite)}</span>}
+                    </button>
+                    <BoutonFavori actif={favori} onClick={() => basculerFavori(produit.slug)} nom={produit.nom} />
+                  </div>
+                  {/* Référence : « Acheter · Paiement à la livraison », libellé « Choisir une taille » et opacité 40 % tant que la taille manque */}
+                  <button type="button" onClick={surCommande} aria-disabled={!taille} className={cn(secondaire, !taille && 'cursor-not-allowed opacity-40')}>
+                    {taille ? 'Commander · Paiement à la livraison' : 'Choisir une taille'}
+                  </button>
+                  <a href={lienWA} target="_blank" rel="noopener noreferrer" className={secondaire}><IconeWhatsApp className="h-4 w-4 text-whatsapp" />Commander sur WhatsApp</a>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-3">
+                    <a href={lienWA} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-3 rounded-full bg-encre py-4 font-display text-[13px] uppercase tracking-[0.16em] text-fond transition-colors hover:bg-encre-douce">
+                      <IconeWhatsApp className="h-4 w-4 text-whatsapp" />{epuise ? 'Être prévenu sur WhatsApp' : 'Demander prix et disponibilité'}
+                    </a>
+                    <BoutonFavori actif={favori} onClick={() => basculerFavori(produit.slug)} nom={produit.nom} />
+                  </div>
+                  <p className="text-center font-mono text-[10px] uppercase tracking-[0.16em] text-gris">{epuise ? 'Cette pièce est épuisée.' : 'Prix bientôt affiché en ligne · réponse personnelle sur WhatsApp'}</p>
+                </>
+              )}
+            </div>
+          </motion.div>
         </div>
+
+        {/* cloneme: C-21 — onglets de la référence : mono 12 px .18em, actif souligné 2 px encre, contenu `py-10` largeur 640 px, tableau à filets. */}
+        <div className="mt-8 px-5 md:px-14">
+          <div role="tablist" aria-label="Informations produit" className="defilement-masque flex gap-6 overflow-x-auto border-b border-ligne">
+            {onglets.map(o => (
+              <button key={o.id} type="button" role="tab" aria-selected={o.id === ongletActif.id} aria-controls={`onglet-${o.id}`} onClick={() => setOnglet(o.id)}
+                className={cn('-mb-px whitespace-nowrap border-b-2 py-4 font-mono text-[12px] uppercase tracking-[0.18em] transition-colors', o.id === ongletActif.id ? 'border-encre text-encre' : 'border-transparent text-gris hover:text-encre')}>{o.libelle}</button>
+            ))}
+          </div>
+          <div id={`onglet-${ongletActif.id}`} role="tabpanel" className="py-10"><div className="max-w-[640px]">{ongletActif.contenu}</div></div>
+        </div>
+
+        <section className="px-5 pb-16 pt-6 md:px-14">
+          <h2 className="mb-8 font-display text-[32px] uppercase tracking-[-0.01em]">Vous aimerez aussi</h2>
+          <ul className="grid grid-cols-2 gap-5 md:grid-cols-4">
+            {produitsLies(produit).map((p, i) => <li key={p.slug}><Revelation delai={i * 0.06}><CarteProduit produit={p} /></Revelation></li>)}
+          </ul>
+        </section>
       </div>
 
-      <section className="conteneur mt-28">
-        <Revelation className="mb-10"><p className="label mb-3 text-bronze">Vous aimerez aussi</p><h2 className="titre-2">Dans le même esprit</h2></Revelation>
-        <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-6 lg:grid-cols-4">
-          {produitsLies(produit).map((p, i) => <li key={p.slug}><Revelation delai={i * 0.06}><CarteProduit produit={p} /></Revelation></li>)}
-        </ul>
-      </section>
-
       {/* Barre d'achat collante (mobile), rendue dans <body> : un ancêtre transformé (transition de page) casserait position: fixed */}
-      {createPortal(<div className={cn('fixed inset-x-0 bottom-[var(--demo-h)] z-40 border-t border-ligne bg-nacre/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur transition-transform duration-500 ease-maison lg:hidden', barreVisible ? 'translate-y-0' : 'translate-y-full')}
+      {createPortal(<div className={cn('fixed inset-x-0 bottom-[var(--demo-h)] z-40 border-t border-ligne bg-[var(--voile-entete)] px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-[18px] pt-3 backdrop-blur transition-transform duration-500 ease-maison md:hidden', barreVisible ? 'translate-y-0' : 'translate-y-full')}
         {...(!barreVisible && { inert: '', 'aria-hidden': true })}>
         <div className="flex items-center gap-3">
-          <div className="min-w-0 flex-1"><p className="truncate font-display text-[17px]">{produit.nom}</p><Prix prixDH={produit.prixDH} /></div>
+          <div className="min-w-0 flex-1"><p className="truncate font-display text-[15px] uppercase">{produit.nom}</p><Prix prixDH={produit.prixDH} /></div>
           {commandable
             ? <Bouton taille="sm" onClick={() => { zoneAchat.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' }); if (taille) surAjout(); else setErreurTaille(true) }}>Ajouter</Bouton>
             : <BoutonExterne href={lienWA} taille="sm">WhatsApp</BoutonExterne>}

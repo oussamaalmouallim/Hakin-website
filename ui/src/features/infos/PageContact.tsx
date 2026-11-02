@@ -34,7 +34,7 @@ export function PageContact() {
           <BoutonExterne href={lienWhatsApp()} variante="whatsapp" taille="lg" className="self-start" icone={<IconeWhatsApp className="h-5 w-5 text-whatsapp" />}>{boutique.whatsappAffiche}</BoutonExterne>
           <LiensReseaux avecTexte />
           <div className="flex gap-4">
-            <MapPin className="mt-1 h-5 w-5 shrink-0 text-bronze" strokeWidth={1.25} />
+            <MapPin className="mt-1 h-5 w-5 shrink-0 text-encre" strokeWidth={1.25} />
             <div>
               <p className="label mb-2">Adresse</p>
               <p>{boutique.ville}</p>
@@ -46,12 +46,12 @@ export function PageContact() {
         </Revelation>
         <Revelation delai={0.1}>
           {lien ? (
-            <div className="flex flex-col items-start gap-5 bg-sable-50 p-10">
-              <p className="filet-etoile" aria-hidden>✦</p>
-              <h2 className="titre-2">Votre message est prêt</h2>
-              <p className="text-gris">WhatsApp s'est ouvert avec votre message. Appuyez sur « Envoyer » : nous vous répondons rapidement.</p>
-              <BoutonExterne href={lien} icone={<IconeWhatsApp className="h-4 w-4 text-whatsapp" />}>Rouvrir WhatsApp</BoutonExterne>
-              <Bouton variante="texte" onClick={() => { setLien(null); setF({ nom: '', telephone: '', sujet: '', message: '' }) }}>Écrire un autre message</Bouton>
+            <div className="flex flex-col items-start gap-5 rounded-carte bg-encre p-10 text-fond">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent">Message prêt</p>
+              <h2 className="font-display text-[clamp(28px,3vw,40px)] uppercase leading-[0.95] tracking-[-0.015em]">Votre message est prêt</h2>
+              <p className="text-fond/70">WhatsApp s'est ouvert avec votre message. Appuyez sur « Envoyer » : nous vous répondons rapidement.</p>
+              <BoutonExterne href={lien} variante="clair" icone={<IconeWhatsApp className="h-4 w-4 text-whatsapp" />}>Rouvrir WhatsApp</BoutonExterne>
+              <Bouton variante="texte" className="text-fond" onClick={() => { setLien(null); setF({ nom: '', telephone: '', sujet: '', message: '' }) }}>Écrire un autre message</Bouton>
             </div>
           ) : (
             <form noValidate onSubmit={envoyer} className="grid gap-7 sm:grid-cols-2" aria-label="Formulaire de contact">

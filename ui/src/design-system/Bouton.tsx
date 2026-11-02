@@ -4,19 +4,22 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+/** cloneme: C-08 — boutons pilule de la référence : mono 11 px capitales, interlettrage .18em, rayon plein ;
+ *  `accent` = gros bouton jaune Archivo Black (« Acheter » de l'appel final). */
 export const styleBouton = cva(
-  'group/bouton relative inline-flex select-none items-center justify-center gap-3 overflow-hidden rounded-fin font-sans text-[11px] font-normal uppercase tracking-label transition-[color,background-color,border-color,transform,opacity] duration-500 ease-maison active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40',
+  'group/bouton relative inline-flex select-none items-center justify-center gap-2.5 overflow-hidden rounded-full font-mono text-[11px] font-normal uppercase tracking-[0.18em] transition-[color,background-color,border-color,transform,opacity] duration-200 ease-standard active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40',
   {
     variants: {
       variante: {
-        plein: 'bg-encre text-nacre hover:bg-bronze-fonce',
-        contour: 'border border-encre/80 text-encre hover:bg-encre hover:text-nacre',
-        clair: 'bg-nacre text-encre hover:bg-neige',
-        'contour-clair': 'border border-nacre/70 text-nacre hover:bg-nacre hover:text-encre',
+        plein: 'bg-encre text-fond hover:bg-encre-douce',
+        contour: 'border border-encre text-encre hover:bg-encre hover:text-fond',
+        clair: 'bg-fond text-encre hover:bg-blanc',
+        'contour-clair': 'border border-fond/40 text-fond hover:bg-fond hover:text-encre',
+        accent: 'bg-accent font-display text-[13px] tracking-[0.08em] text-encre hover:bg-accent-doux',
         texte: 'px-0 text-encre underline-offset-[6px] hover:underline',
-        whatsapp: 'border border-encre/15 bg-neige text-encre hover:border-encre/40',
+        whatsapp: 'border border-ligne-forte bg-blanc text-encre hover:border-encre',
       },
-      taille: { sm: 'h-10 px-5', md: 'h-12 px-8', lg: 'h-14 px-10', icone: 'h-11 w-11 p-0' },
+      taille: { sm: 'h-9 px-4', md: 'h-11 px-6', lg: 'h-14 px-9', icone: 'h-11 w-11 p-0' },
       plein_largeur: { true: 'w-full' },
     },
     compoundVariants: [{ variante: 'texte', className: 'h-auto px-0' }],

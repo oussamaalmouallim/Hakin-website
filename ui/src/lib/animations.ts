@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react'
 import type { Transition, Variants } from 'framer-motion'
 
 export const EASE_MAISON = [0.16, 1, 0.3, 1] as const
+/** cloneme: A-08, A-09, A-10 — courbe des panneaux de la référence (`cubic-bezier(.2,.8,.2,1)`). cloneme-ok */
+export const EASE_PANNEAU = [0.2, 0.8, 0.2, 1] as const
+/** Seuil de défilement de l'en-tête (Relevé : `window.scrollY > 50`). */
+export const SEUIL_ENTETE = 50
+/** Durées des panneaux en secondes (Relevé : menu .4s, recherche et panier .42s). */
+export const DUREE_MENU = 0.4
+export const DUREE_PANNEAU = 0.42
 
 export const conteneurCascade: Variants = {
   cache: {},

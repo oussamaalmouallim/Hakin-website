@@ -77,6 +77,62 @@ describe('parcours d\'achat', () => {
     expect(usePanier.getState().lignes).toHaveLength(0)
   })
 
+  it('commande directe : sans taille refusée, puis checkout de cette seule pièce, panier intact', async () => {
+    const u = userEvent.setup()
+    const ouvrir = vi.spyOn(window, 'open').mockReturnValue(null)
+    usePanier.getState().ajouter('a', 'noir', 'M', 3) // déjà au panier : ne doit pas bouger
+    monter('/produit/a')
+    await u.click(await screen.findByRole('button', { name: 'Choisir une taille' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('Veuillez choisir une taille')
+    await u.click(screen.getByRole('radio', { name: 'Taille M' }))
+    await u.click(screen.getByRole('button', { name: 'Commander · Paiement à la livraison' }))
+    expect(await screen.findByRole('button', { name: /Envoyer ma commande/ })).toBeInTheDocument()
+    expect(screen.getAllByText('500 DH', { normalizer: t => t.replace(/\u00a0/g, ' ') }).length).toBeGreaterThan(0)
+    await u.clear(screen.getByLabelText('Nom complet')) // pré-rempli par le profil du test précédent
+    await u.type(screen.getByLabelText('Nom complet'), 'Sara Alaoui')
+    await u.clear(screen.getByLabelText('Téléphone (WhatsApp)')) // pré-rempli par le profil du test précédent
+    await u.type(screen.getByLabelText('Téléphone (WhatsApp)'), '0612345678')
+    await u.selectOptions(screen.getByLabelText('Ville'), 'Rabat')
+    await u.type(screen.getByLabelText('Adresse'), '4 avenue Mohammed V')
+    await u.click(screen.getByRole('checkbox'))
+    await u.click(screen.getByRole('button', { name: /Envoyer ma commande/ }))
+    const url = decodeURIComponent(String(ouvrir.mock.calls[0][0])).replace(/\u00a0/g, ' ')
+    expect(url).toContain('noir, taille M × 1 = 500 DH')
+    await u.click(await screen.findByRole('button', { name: "J'ai envoyé ma commande" }))
+    expect(usePanier.getState().lignes).toEqual([{ cle: 'a|noir|M', slug: 'a', coloris: 'noir', taille: 'M', quantite: 3 }])
+  })
+
+  it('commande directe : variante indisponible dans l\'adresse → refusée', async () => {
+    monter('/commande?article=a&coloris=noir&taille=XL&qte=1')
+    expect(await screen.findByText('Variante indisponible')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Envoyer ma commande/ })).not.toBeInTheDocument()
+  })
+
+  it('recherche : saisie, résultats, raccourci marque, état vide, accès à la fiche', async () => {
+    const u = userEvent.setup()
+    monter('/')
+    await u.click(await screen.findByRole('button', { name: 'Rechercher' }))
+    const volet = await screen.findByRole('dialog', { name: 'Recherche' })
+    const champ = within(volet).getByRole('textbox', { name: /Rechercher une pièce/ })
+    await u.type(champ, 'zzz')
+    expect(within(volet).getByText(/Aucune pièce ne correspond à « zzz »/)).toBeInTheDocument()
+    await u.clear(champ); await u.type(champ, 'dior')
+    expect(within(volet).getByText('Résultats · 1')).toBeInTheDocument()
+    expect(within(volet).getByRole('link', { name: /Dior\s*1/ })).toHaveAttribute('href', '/boutique?marque=Dior')
+    await u.click(within(volet).getByRole('link', { name: /T-shirt Été/ }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'T-shirt Été' })).toBeInTheDocument()
+  })
+
+  it('page de recherche : résultats en direct depuis l\'adresse et la saisie', async () => {
+    const u = userEvent.setup()
+    monter('/recherche?q=riviera')
+    expect(await screen.findByText('1 résultat')).toBeInTheDocument()
+    const champ = screen.getByRole('searchbox', { name: 'Rechercher' })
+    await u.clear(champ); await u.type(champ, 't shirt')
+    expect(await screen.findByText('2 résultats')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /T-shirts\s*2/ })).toHaveAttribute('href', '/boutique/t-shirts')
+  })
+
   it('route inconnue → 404 ; réseaux officiels présents', async () => {
     monter('/nimporte-quoi')
     expect(await screen.findByText("Cette page s'est éclipsée")).toBeInTheDocument()

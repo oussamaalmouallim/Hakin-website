@@ -2,13 +2,13 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
-import { EASE_MAISON } from '@/lib/animations'
+import { DUREE_PANNEAU, EASE_MAISON, EASE_PANNEAU } from '@/lib/animations'
 import { cn } from '@/lib/utils'
 
 const FOCUSABLES = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
 
 /** Piège le focus, ferme sur Échap, bloque le défilement de la page, rend le focus à l'ouvreur. */
-function usePiegeFocus(ouvert: boolean, onFermer: () => void) {
+export function usePiegeFocus(ouvert: boolean, onFermer: () => void) {
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!ouvert) return
@@ -71,18 +71,20 @@ export function Tiroir({ ouvert, onFermer, titre, children, cote = 'droite', pie
   return createPortal(
     <AnimatePresence>
       {ouvert && (
-        <div className="fixed inset-0 z-[70]">
-          <motion.div className="absolute inset-0 bg-encre/30" onClick={onFermer}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.45 }} />
+        <div className="fixed inset-0 z-[400]">
+          <motion.div className="absolute inset-0 bg-encre/25" onClick={onFermer}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: DUREE_PANNEAU }} />
+          {/* cloneme: C-06, A-10 — tiroir de la référence (.cart-drawer) : 460 px, filet latéral, ombre portée, glissement .42s */}
           <motion.aside ref={ref} role="dialog" aria-modal="true" aria-label={label}
-            className={cn('absolute top-0 flex h-full w-full max-w-[440px] flex-col bg-nacre shadow-flottant', cote === 'droite' ? 'right-0' : 'left-0')}
-            initial={{ x }} animate={{ x: 0 }} exit={{ x }} transition={{ duration: 0.7, ease: EASE_MAISON }}>
-            <header className="flex items-center justify-between border-b border-ligne px-6 py-5">
-              <div className="label-large">{titre}</div>
-              <BoutonFermer onClick={onFermer} className="-mr-2" />
+            className={cn('absolute top-0 flex h-full w-[min(460px,100vw)] flex-col bg-fond',
+              cote === 'droite' ? 'right-0 border-l border-[var(--ligne-entete)] shadow-[var(--ombre-tiroir)]' : 'left-0 border-r border-[var(--ligne-entete)]')}
+            initial={{ x }} animate={{ x: 0 }} exit={{ x }} transition={{ duration: DUREE_PANNEAU, ease: EASE_PANNEAU }}>
+            <header className="flex items-center justify-between border-b border-ligne px-[30px] pb-[18px] pt-7">
+              <h3 className="flex items-center gap-2.5 font-display text-[20px] uppercase tracking-[0.02em]">{titre}</h3>
+              <BoutonFermer onClick={onFermer} className="-mr-2 h-9 w-9 hover:rotate-0 hover:bg-encre/[0.06]" />
             </header>
-            <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-6">{children}</div>
-            {pied && <footer className="border-t border-ligne px-6 py-6">{pied}</footer>}
+            <div className="flex-1 overflow-y-auto overscroll-contain px-[30px] py-6">{children}</div>
+            {pied && <footer className="border-t border-ligne px-[30px] py-6">{pied}</footer>}
           </motion.aside>
         </div>
       )}

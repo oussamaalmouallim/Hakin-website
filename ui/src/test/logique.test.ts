@@ -14,7 +14,7 @@ const { usePanier, sousTotal, nbArticles, cleLigne, lignesDetaillees, QTE_MAX } 
 const { estCommandable, produits } = await import('@/lib/catalogue')
 const { messageCommande, lienWhatsApp } = await import('@/lib/whatsapp')
 const { appliquerFiltres, facettesCroisees, FILTRES_VIDES, filtresDepuisURL, filtresVersURL } = await import('@/lib/filtres')
-const { rechercher } = await import('@/lib/recherche')
+const { rechercher, suggestions } = await import('@/lib/recherche')
 const { formatDH, telephoneMarocValide } = await import('@/lib/format')
 const { validerCommande } = await import('@/features/commande/PageCommande')
 
@@ -91,10 +91,34 @@ describe('filtres et recherche', () => {
     const f = { ...FILTRES_VIDES, marques: ['Dior', 'Amiri'], disponibles: true, tri: 'nom' as const }
     expect(filtresDepuisURL(filtresVersURL(f))).toEqual(f)
   })
+  it('filtres de la refonte : type de vêtement, étiquette « À la une », prix max (sans prix = exclu)', () => {
+    expect(appliquerFiltres(produits, { ...FILTRES_VIDES, categories: ['t-shirts'] })).toHaveLength(2)
+    expect(appliquerFiltres(produits, { ...FILTRES_VIDES, categories: ['jeans'] })).toHaveLength(0)
+    expect(appliquerFiltres(produits, { ...FILTRES_VIDES, etiquettes: ['une'] }).map(p => p.slug)).toEqual(['b'])
+    expect(appliquerFiltres(produits, { ...FILTRES_VIDES, prixMax: 600 }).map(p => p.slug)).toEqual(['a'])
+    expect(appliquerFiltres(produits, { ...FILTRES_VIDES, prixMax: 400 })).toHaveLength(0)
+    const f = facettesCroisees(produits, { ...FILTRES_VIDES, etiquettes: ['une'] })
+    expect(f.categories).toEqual([{ valeur: 't-shirts', n: 1 }])
+    expect(f.etiquettes).toEqual([{ valeur: 'nouveau', n: 0 }, { valeur: 'une', n: 1 }])
+    expect(f.prix).toEqual({ min: 500, max: 500 })
+    const g = { ...FILTRES_VIDES, categories: ['t-shirts', 'jeans'], etiquettes: ['une' as const], prixMax: 900, tri: 'nouveautes' as const }
+    expect(filtresDepuisURL(filtresVersURL(g))).toEqual(g)
+  })
   it('recherche sans accents ni casse, tous les mots requis', () => {
     expect(rechercher(produits, 'ete').map(p => p.slug)).toEqual(['a'])
     expect(rechercher(produits, 'CASABLANCA rose').map(p => p.slug)).toEqual(['b'])
     expect(rechercher(produits, 'dior rose')).toHaveLength(0)
+  })
+  it('recherche : ponctuation ignorée, nom de catégorie, classement par pertinence, raccourcis marque et type', () => {
+    expect(rechercher(produits, 't shirt')).toHaveLength(2)
+    expect(rechercher(produits, 'TSHIRT')).toHaveLength(2)
+    expect(rechercher(produits, 'riviera').map(p => p.slug)).toEqual(['b'])
+    // « léger » est dans la description de a, « casablanca » dans la marque de b : la marque passe devant
+    expect(rechercher(produits, 'casablanca').map(p => p.slug)).toEqual(['b'])
+    expect(rechercher(produits, '   ')).toEqual([])
+    expect(suggestions(produits, 'dio').marques).toEqual([{ libelle: 'Dior', vers: '/boutique?marque=Dior', n: 1 }])
+    expect(suggestions(produits, 'shirt').categories.map(c => [c.vers, c.n])).toEqual([['/boutique/t-shirts', 2]])
+    expect(suggestions(produits, 'zzz')).toEqual({ marques: [], categories: [] })
   })
 })
 

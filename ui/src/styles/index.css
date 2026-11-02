@@ -2,47 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Charte H MODE ─────────────────────────────────────────────── */
+/* ── Charte : Original Fit + touche beige H MODE (valeurs dans tokens.css) ── */
 @layer base {
   :root {
-    --nav-h: 72px;
+    /* Hauteur de l'en-tête de la référence : 71 px mobile, 83 px dès 768 px (Mesuré) */
+    --nav-h: 71px;
     /* Hauteur du bandeau « mode démo » (0 hors démo) : les barres fixées en bas se placent au-dessus. */
     --demo-h: 0px;
-    --ease-maison: cubic-bezier(0.16, 1, 0.3, 1);
     color-scheme: light;
   }
+  @media (min-width: 768px) { :root { --nav-h: 83px; } }
   html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   html[data-animations='off'] { scroll-behavior: auto; }
   body {
-    @apply min-h-screen bg-nacre font-sans text-[16px] font-light leading-relaxed text-encre antialiased;
+    @apply min-h-screen bg-fond font-sans text-[16px] font-normal leading-normal text-encre antialiased;
     text-rendering: optimizeLegibility;
   }
-  h1, h2, h3, h4 { @apply font-display font-normal leading-[1.05] tracking-[-0.01em]; }
-  ::selection { @apply bg-sable-200 text-encre; }
-  :focus-visible { @apply outline outline-1 outline-offset-4 outline-bronze; }
+  /* Titres de la référence : Archivo Black, capitales, interlettrage léger */
+  h1, h2, h3, h4 { @apply font-display font-normal uppercase leading-[1.05] tracking-titre; }
+  ::selection { @apply bg-accent text-encre; }
+  :focus-visible { @apply outline outline-2 outline-offset-2 outline-encre; }
   img { @apply max-w-full; }
   button { -webkit-tap-highlight-color: transparent; }
 }
 
 @layer components {
-  .conteneur { @apply mx-auto w-full max-w-site px-4 sm:px-6 lg:px-10; }
+  /* Gouttières de la référence : 20 px, 56 px dès 768 px (Relevé `px-5 md:px-14`) */
+  .conteneur { @apply mx-auto w-full max-w-site px-5 md:px-14; }
 
-  /* Typographie */
-  .label { @apply font-sans text-[11px] font-normal uppercase tracking-label; }
-  .label-large { @apply font-sans text-[11px] font-normal uppercase tracking-large; }
-  .titre-display { @apply font-display text-[clamp(3.25rem,9vw,7.5rem)] leading-[0.92]; }
-  .titre-1 { @apply font-display text-[clamp(2.5rem,5.5vw,4.5rem)] leading-[1.08]; }
-  .titre-2 { @apply font-display text-[clamp(2rem,3.6vw,3rem)] leading-[1.1]; }
-  .titre-3 { @apply font-display text-[clamp(1.4rem,2vw,1.75rem)] leading-[1.15]; }
+  /* Typographie (référence) : étiquettes en JetBrains Mono, titres en Archivo Black capitales */
+  .label { @apply font-mono text-[11px] font-normal uppercase tracking-label; }
+  .label-large { @apply font-mono text-[11px] font-normal uppercase tracking-large; }
+  .titre-display { @apply font-display text-[clamp(2.75rem,8vw,6.5rem)] uppercase leading-[0.92]; }
+  .titre-1 { @apply font-display text-[clamp(2.25rem,5vw,4rem)] uppercase leading-[0.95]; }
+  .titre-2 { @apply font-display text-[clamp(1.6rem,3vw,2.5rem)] uppercase leading-[1]; }
+  .titre-3 { @apply font-display text-[clamp(1.1rem,1.6vw,1.35rem)] uppercase leading-[1.1]; }
+  /* Titre « en creux » de la référence (MEILLEURES / VENTES) */
+  .titre-contour { color: transparent; -webkit-text-stroke: 1.5px var(--encre); }
+  /* Relevé .text-stroke-ink / .text-stroke-bg : contour 2 px (2,4 px sur fond sombre) */
+  .contour-encre { color: transparent; -webkit-text-stroke: 2px var(--encre); }
+  .contour-fond { color: transparent; -webkit-text-stroke: 2.4px var(--fond); }
+  .contour-filigrane { color: transparent; -webkit-text-stroke: 1.5px var(--filigrane); }
+
+  /* Surtitre de section de la référence (.sec-eyebrow) : mono 11 px, interlettrage .24em, filet de 24 px avant */
+  .surtitre { @apply mb-2.5 flex items-center font-mono text-[11px] uppercase tracking-[0.24em]; }
+  .surtitre::before { content: ''; display: inline-block; width: 24px; height: 1px; margin-right: 10px; background: currentColor; }
+  /* Titre de section de la référence : Archivo Black clamp(48–96 px), interlettrage -.025em, interligne .88 */
+  .titre-section { @apply font-display text-[clamp(48px,7vw,96px)] uppercase leading-[0.88] tracking-[-0.025em]; }
+  /* Rythme des sections de la référence : 48 px / 20 px en mobile, 90 px / 56 px dès 768 px */
+  .section-of { @apply px-5 py-12 md:px-14 md:py-[90px]; }
   .texte-doux { @apply text-gris; }
 
   /* Lien souligné animé */
   .lien-souligne {
     @apply relative inline-flex items-center gap-2 pb-1;
     background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat;
-    transition: background-size 0.6s var(--ease-maison);
+    transition: background-size 0.6s var(--courbe-maison);
   }
   .lien-souligne:hover { background-size: 0% 1px; background-position: right bottom; }
+
+  /* cloneme: A-07 — lien du menu : trait de 1,5 px qui s'étire au survol et reste sous le lien actif (Relevé .nav-link-underline) */
+  .lien-nav { @apply relative inline-flex items-center py-1.5; }
+  .lien-nav::after {
+    content: ''; position: absolute; left: 0; bottom: 0; height: 1.5px; width: 100%;
+    background: var(--encre); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.35s var(--courbe-panneau);
+  }
+  .lien-nav:hover::after, .lien-nav.actif::after { transform: scaleX(1); }
+
+  /* cloneme: A-11 — secousse du sac une fois au chargement (Relevé .animate-jiggle : 1.2s, retard 1.2s) */
+  .anim-secousse { animation: secousse 1.2s 1.2s; }
+
+  /* cloneme: A-05 — bandeau noir : défilement continu 30 s (Relevé .animate-strip) */
+  .anim-bande { animation: defiler 30s linear infinite; }
 
   /* Filet or avec étoile (repris de la maquette) */
   .filet-etoile { @apply flex items-center gap-3 text-or; }
@@ -51,25 +83,34 @@
 
 @layer utilities {
   /* Photo du héros : fondus courts sur les bords seulement (haut, bas ; + gauche en desktop), le modèle reste net */
-  .masque-heros { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); }
+  .masque-heros { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); } /* cloneme-ok : #000 = opacité du masque, pas une couleur */
   @media (min-width: 640px) {
     .masque-heros {
-      -webkit-mask-image: linear-gradient(to right, transparent, #000 8%), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
-      mask-image: linear-gradient(to right, transparent, #000 8%), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 8%), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); /* cloneme-ok : #000 = opacité du masque, pas une couleur */
+      mask-image: linear-gradient(to right, transparent, #000 8%), linear-gradient(to bottom, transparent, #000 8%, #000 90%, transparent); /* cloneme-ok : #000 = opacité du masque, pas une couleur */
       -webkit-mask-composite: source-in; mask-composite: intersect;
     }
   }
   /* Héros grand écran : le flou couvre la zone du texte puis s'efface avant le personnage et dans le bas */
   .flou-heros {
     /* Horizontal : fort à gauche, nul avant le personnage. Vertical : s'efface dans le bas du héros (terrasse nette). */
-    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 34%, transparent 58%), linear-gradient(to bottom, #000 0%, #000 62%, transparent 88%);
-    mask-image: linear-gradient(to right, #000 0%, #000 34%, transparent 58%), linear-gradient(to bottom, #000 0%, #000 62%, transparent 88%);
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 34%, transparent 58%), linear-gradient(to bottom, #000 0%, #000 62%, transparent 88%); /* cloneme-ok : #000 = opacité du masque, pas une couleur */
+    mask-image: linear-gradient(to right, #000 0%, #000 34%, transparent 58%), linear-gradient(to bottom, #000 0%, #000 62%, transparent 88%); /* cloneme-ok : #000 = opacité du masque, pas une couleur */
     -webkit-mask-composite: source-in; mask-composite: intersect;
   }
   .defilement-masque { scrollbar-width: none; }
   .defilement-masque::-webkit-scrollbar { display: none; }
   .equilibre { text-wrap: balance; }
 }
+
+@keyframes secousse {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-12deg); }
+  40% { transform: rotate(10deg); }
+  60% { transform: rotate(-6deg); }
+  80% { transform: rotate(4deg); }
+}
+@keyframes defiler { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* Animations coupées : bouton « animations off » ou préférence système */
 html[data-animations='off'] *,
@@ -82,3 +123,24 @@ html[data-animations='off'] *::after {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; }
 }
+
+/* cloneme: A-03 — bouton rapide des cartes « meilleures ventes » : caché, monte de 10 px au survol (Relevé .ml-quick, .25s).
+   Sans survol (tactile) il reste masqué et ne capte pas les touchers. */
+.ml-rapide { opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity 0.25s, transform 0.25s; }
+/* cloneme: A-12 — cartes « Acheter par type » (Relevé .style-card) : l'image pivote à -8° et grossit, la flèche jaune tourne de -45°. */
+.carte-type-img { transition: transform 0.5s var(--courbe-panneau); transform: translate(-50%, -50%) rotate(-12deg); }
+.carte-type-fleche { transition: transform 0.35s; }
+@media (hover: hover) {
+  .carte-type:hover .carte-type-img { transform: translate(-50%, -50%) rotate(-8deg) scale(1.05); }
+  .carte-type:hover .carte-type-fleche { transform: rotate(-45deg) scale(1.08); }
+}
+@media (hover: hover) {
+  .group:hover .ml-rapide, .ml-rapide:focus-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+}
+
+/* cloneme: A-06 — filigrane géant en creux qui défile (Relevé .watermark-text : ticker 60 s linéaire) */
+.anim-filigrane { animation: defiler 60s linear infinite; }
+
+/* cloneme: A-13 — point « en direct » de la pastille de galerie (Relevé .animate-livepulse : 1,6 s, halo rouge de 8 px) */
+.anim-pouls { animation: pouls 1.6s ease-in-out infinite; }
+@keyframes pouls { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 60%, transparent); } 50% { box-shadow: 0 0 0 8px transparent; } }

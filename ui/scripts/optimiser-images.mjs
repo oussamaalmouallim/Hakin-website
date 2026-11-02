@@ -1,7 +1,7 @@
 // Génère les images publiées (WebP) à partir du dossier unique ui/medias/. Relançable : écrase les sorties.
 // Usage : npm run images   (voir ui/medias/LISEZMOI.md)
 import sharp from 'sharp'
-import { mkdir, readFile, readdir } from 'node:fs/promises'
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
 import { dirname, extname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -45,6 +45,21 @@ for (const slug of (await readdir(join(medias, 'produits'), { withFileTypes: tru
   }
 }
 console.log(`${total} images produit générées`)
+
+// Images sur fond clair uni (coins clairs) : la carte les présente détourées sur le disque, comme la référence (design.md, C-09).
+// Les autres (photos portées, mises en scène) remplissent la zone image. Résultat : src/data/fonds-clairs.json.
+const fondsClairs = []
+for (const p of produits) {
+  for (const img of p.images ?? []) {
+    const f = join(ici, '..', 'public', `${img.src}-480.webp`)
+    const { data } = await sharp(f).resize(40, 40, { fit: 'fill' }).removeAlpha().raw().toBuffer({ resolveWithObject: true }).catch(() => ({ data: null }))
+    if (!data) continue
+    const px = (x, y) => [...data.subarray((y * 40 + x) * 3, (y * 40 + x) * 3 + 3)]
+    if ([px(0, 0), px(39, 0), px(0, 39), px(39, 39)].every(c => c.every(v => v >= 245))) fondsClairs.push(img.src)
+  }
+}
+await writeFile(join(ici, '..', 'src', 'data', 'fonds-clairs.json'), JSON.stringify(fondsClairs, null, 1) + '\n')
+console.log(`${fondsClairs.length} images sur fond clair`)
 
 // Campagne : cadrages définis dans medias/campagne/cadrages.json (image source, zone, largeurs produites)
 await mkdir(join(sortie, 'campagne'), { recursive: true })

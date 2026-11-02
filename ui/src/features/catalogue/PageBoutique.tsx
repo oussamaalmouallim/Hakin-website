@@ -1,112 +1,136 @@
-import { Fragment, useMemo, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowRight, LayoutGrid, Rows2, SlidersHorizontal } from 'lucide-react'
-import { Bouton, EtatVide, Monogramme, Revelation, Tiroir } from '@/design-system'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { SlidersHorizontal, X } from 'lucide-react'
+import { usePiegeFocus } from '@/design-system'
 import { CarteProduit } from '@/components/CarteProduit'
-import { EnTetePage } from '@/components/EnTetePage'
-import { produits, trouverCategorie, collections } from '@/lib/catalogue'
+import { produits, trouverCategorie } from '@/lib/catalogue'
 import { appliquerFiltres, facettesCroisees, filtresDepuisURL, filtresVersURL, nbFiltresActifs, type Filtres, type Tri } from '@/lib/filtres'
 import { cn } from '@/lib/utils'
 import { Page404 } from '@/features/infos/Page404'
 import { PanneauFiltres, PucesActives } from './Filtres'
 
-const PAR_PAGE = 12
-const TRIS: { v: Tri; l: string }[] = [
-  { v: 'pertinence', l: 'Sélection' }, { v: 'prix-croissant', l: 'Prix croissant' }, { v: 'prix-decroissant', l: 'Prix décroissant' }, { v: 'nom', l: 'Nom A → Z' }]
+/** 24 cartes par page (Mesuré : 24 `article` sur la page 1 de la référence). */
+const PAR_PAGE = 24
+const TRIS: { v: Tri; l: string; prix?: boolean }[] = [
+  { v: 'pertinence', l: 'Mis en avant' }, { v: 'nouveautes', l: 'Nouveautés' },
+  { v: 'prix-croissant', l: 'Prix : croissant', prix: true }, { v: 'prix-decroissant', l: 'Prix : décroissant', prix: true }, { v: 'nom', l: 'Nom : A → Z' }]
 
-/** Encart éditorial inséré dans la grille pour casser l'effet catalogue (texte seul : aucune photo ne montre la collection portée). */
-function Encart({ index }: { index: number }) {
-  const c = collections[index % collections.length]
-  return (
-    <Revelation className="h-full">
-      <Link to={`/collections/${c.slug}`} className="group relative flex h-full min-h-[320px] flex-col items-center justify-center gap-5 overflow-hidden bg-sable-50 px-10 text-center">
-        <span aria-hidden className="pointer-events-none absolute -right-10 -top-6 opacity-[0.07]"><Monogramme className="h-72" /></span>
-        <span className="label text-bronze">Collection</span>
-        <span className="titre-1 equilibre">{c.nom}</span>
-        <span className="max-w-sm text-gris">{c.accroche}</span>
-        <span className="lien-souligne label mt-4">Découvrir la collection <ArrowRight className="h-3.5 w-3.5" /></span>
-      </Link>
-    </Revelation>
-  )
+const pilule = 'rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.18em]'
+
+/** cloneme: C-11 — tiroir de filtres mobile de la référence : voile encre 40 %, panneau gauche 300 px `p-8`,
+ *  titre 18 px + croix, colonne de filtres, bouton « Appliquer les filtres » Archivo Black 13 px. Sans animation (Relevé). */
+function TiroirFiltres({ ouvert, onFermer, children }: { ouvert: boolean; onFermer: () => void; children: React.ReactNode }) {
+  const ref = usePiegeFocus(ouvert, onFermer)
+  if (!ouvert) return null
+  return createPortal(
+    <div className="fixed inset-0 z-[500]">
+      <div className="absolute inset-0 bg-encre/40" onClick={onFermer} aria-hidden />
+      <div ref={ref} role="dialog" aria-modal="true" aria-label="Filtres" className="absolute bottom-0 left-0 top-0 w-[300px] max-w-full overflow-y-auto overscroll-contain bg-fond p-8">
+        <div className="mb-6 flex items-center justify-between">
+          <span className="font-display text-[18px] uppercase">Filtres</span>
+          <button type="button" onClick={onFermer} aria-label="Fermer les filtres" className="text-encre"><X className="h-5 w-5" strokeWidth={1.75} /></button>
+        </div>
+        {children}
+        <button type="button" onClick={onFermer} className="mt-6 w-full rounded-full bg-encre py-4 font-display text-[13px] uppercase tracking-[0.16em] text-fond">Appliquer les filtres</button>
+      </div>
+    </div>, document.body)
 }
 
+/** cloneme: P-02, C-12 — page boutique de la référence (`/shop`) : bandeau titre + compteur + tri, colonne de filtres 220 px,
+ *  grille 2 / 3 colonnes écart 24 px, pagination « Préc. / 1 2 / Suiv. ».
+ *  H MODE : `/boutique/:categorie` coche le type de vêtement ; tout changement de filtre repasse sur `/boutique?…`. */
 export function PageBoutique() {
   const { categorie: slugCat } = useParams()
   const categorie = slugCat ? trouverCategorie(slugCat) : undefined
   const [sp, setSp] = useSearchParams()
-  const filtres = useMemo(() => filtresDepuisURL(sp), [sp])
-  const [nb, setNb] = useState(PAR_PAGE)
+  const naviguer = useNavigate()
+  const filtres = useMemo(() => {
+    const f = filtresDepuisURL(sp)
+    return categorie && !f.categories.includes(categorie.slug) ? { ...f, categories: [categorie.slug, ...f.categories] } : f
+  }, [sp, categorie])
+  const [page, setPage] = useState(1)
   const [panneau, setPanneau] = useState(false)
-  const [dense, setDense] = useState(false)
+  const haut = useRef<HTMLDivElement>(null)
 
-  const base = useMemo(() => (categorie ? produits.filter(p => p.categorie === categorie.slug) : produits), [categorie])
-  const resultats = useMemo(() => appliquerFiltres(base, filtres), [base, filtres])
-  const fac = useMemo(() => facettesCroisees(base, filtres), [base, filtres])
+  const resultats = useMemo(() => appliquerFiltres(produits, filtres), [filtres])
+  const fac = useMemo(() => facettesCroisees(produits, filtres), [filtres])
+  useEffect(() => setPage(1), [filtres])
   if (slugCat && !categorie) return <Page404 />
 
-  const changer = (f: Filtres) => { setSp(filtresVersURL(f), { replace: true }); setNb(PAR_PAGE) }
-  const visibles = resultats.slice(0, nb)
+  const changer = (f: Filtres) => {
+    const q = filtresVersURL(f)
+    // Une seule catégorie et rien d'autre : l'adresse propre /boutique/<type>, sinon /boutique?…
+    if (f.categories.length === 1 && [...q.keys()].every(k => k === 'categorie' || k === 'tri')) {
+      q.delete('categorie')
+      naviguer({ pathname: `/boutique/${f.categories[0]}`, search: q.toString() }, { replace: true })
+    } else if (slugCat) naviguer({ pathname: '/boutique', search: q.toString() }, { replace: true })
+    else setSp(q, { replace: true })
+  }
+  const allerPage = (n: number) => { setPage(n); haut.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
+
+  const seule = filtres.categories.length === 1 ? trouverCategorie(filtres.categories[0]) : undefined
+  const nbPages = Math.max(1, Math.ceil(resultats.length / PAR_PAGE))
+  const visibles = resultats.slice((page - 1) * PAR_PAGE, page * PAR_PAGE)
   const actifs = nbFiltresActifs(filtres)
+  const tris = TRIS.filter(t => fac.prix || !t.prix)
 
   return (
-    <>
-      <EnTetePage surtitre={categorie ? 'Catégorie' : 'Boutique'} titre={categorie ? categorie.nom : 'Toute la boutique'}
-        texte={categorie ? categorie.accroche : 'Les pièces des grandes maisons, sélectionnées à Casablanca.'}
-        ariane={[{ libelle: 'Accueil', vers: '/' }, { libelle: 'Boutique', vers: '/boutique' }, ...(categorie ? [{ libelle: categorie.nom }] : [])]} />
-
-      <div className="conteneur">
-        <div className="sticky top-16 z-30 -mx-4 flex items-center justify-between gap-4 border-y border-ligne bg-nacre/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10">
-          <Bouton variante="texte" onClick={() => setPanneau(true)} className="lg:hidden" icone={<SlidersHorizontal className="h-4 w-4" strokeWidth={1.25} />}>
-            Filtres{actifs ? ` (${actifs})` : ''}
-          </Bouton>
-          <p className="label hidden text-gris lg:block" aria-live="polite">{resultats.length} pièce{resultats.length > 1 ? 's' : ''}</p>
-          <div className="flex items-center gap-4">
-            <label className="label flex items-center gap-2 text-gris">Trier
-              <select value={!fac.avecPrix && filtres.tri.startsWith('prix') ? 'pertinence' : filtres.tri} onChange={e => changer({ ...filtres, tri: e.target.value as Tri })} className="cursor-pointer bg-transparent text-encre outline-none">
-                {TRIS.filter(t => fac.avecPrix || !t.v.startsWith('prix')).map(t => <option key={t.v} value={t.v}>{t.l}</option>)}
-              </select>
-            </label>
-            <div className="hidden items-center gap-1 sm:flex" role="group" aria-label="Densité d'affichage">
-              <button type="button" aria-pressed={!dense} onClick={() => setDense(false)} className={cn('p-1.5', !dense ? 'text-encre' : 'text-gris-clair')} aria-label="Grandes vignettes"><Rows2 className="h-4 w-4" strokeWidth={1.25} /></button>
-              <button type="button" aria-pressed={dense} onClick={() => setDense(true)} className={cn('p-1.5', dense ? 'text-encre' : 'text-gris-clair')} aria-label="Petites vignettes"><LayoutGrid className="h-4 w-4" strokeWidth={1.25} /></button>
-            </div>
-          </div>
+    <div className="min-h-screen pt-20">
+      <div ref={haut} className="flex scroll-mt-20 flex-wrap items-center justify-between gap-4 border-b border-ligne px-5 py-6 md:px-14">
+        <div>
+          <h1 data-ref="boutique-titre" className="font-display text-[28px] uppercase leading-[1.5] tracking-[0.02em]">{seule ? seule.nom : 'Toute la boutique'}</h1>
+          <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-gris" aria-live="polite">{resultats.length} pièce{resultats.length > 1 ? 's' : ''}</p>
         </div>
-
-        <div className="mt-10 grid gap-12 lg:grid-cols-[240px_1fr]">
-          <aside className="hidden lg:block" aria-label="Filtres">
-            <div className="sticky top-36"><PanneauFiltres filtres={filtres} onChange={changer} facettes={fac} /></div>
-          </aside>
-          <div>
-            {actifs > 0 && <div className="mb-8"><PucesActives filtres={filtres} onChange={changer} /></div>}
-            {resultats.length === 0 ? (
-              <EtatVide titre="Aucune pièce ne correspond" texte="Essayez de retirer un filtre ou explorez toute la boutique."
-                action={<Bouton variante="contour" onClick={() => changer({ ...filtres, marques: [], coloris: [], tailles: [], collections: [], disponibles: false })}>Réinitialiser les filtres</Bouton>} />
-            ) : (
-              <>
-                <ul className={cn('grid gap-x-4 gap-y-12 sm:gap-x-6', dense ? 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4' : 'grid-cols-2 xl:grid-cols-3')}>
-                  {visibles.map((p, i) => (
-                    <Fragment key={p.slug}>
-                      {i === 6 && actifs === 0 && <li className="col-span-2 hidden md:block"><Encart index={0} /></li>}
-                      <li><Revelation delai={(i % 3) * 0.08}><CarteProduit produit={p} prioritaire={i < 2} /></Revelation></li>
-                    </Fragment>
-                  ))}
-                </ul>
-                <div className="mt-16 flex flex-col items-center gap-5">
-                  <p className="label text-gris">{visibles.length} sur {resultats.length}</p>
-                  <div className="h-px w-48 bg-ligne"><div className="h-px bg-encre transition-[width] duration-700 ease-maison" style={{ width: `${(visibles.length / resultats.length) * 100}%` }} /></div>
-                  {visibles.length < resultats.length && <Bouton variante="contour" onClick={() => setNb(n => n + PAR_PAGE)}>Voir plus</Bouton>}
-                </div>
-              </>
-            )}
-          </div>
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={() => setPanneau(true)} className={cn(pilule, 'flex items-center gap-2 border-encre text-encre transition-colors hover:bg-encre hover:text-fond md:hidden')}>
+            <SlidersHorizontal className="h-3.5 w-3.5" strokeWidth={1.75} />Filtres{actifs ? ` (${actifs})` : ''}
+          </button>
+          <select aria-label="Trier" value={tris.some(t => t.v === filtres.tri) ? filtres.tri : 'pertinence'} onChange={e => changer({ ...filtres, tri: e.target.value as Tri })}
+            className={cn(pilule, 'cursor-pointer border-ligne bg-transparent text-encre outline-none focus-visible:border-encre')}>
+            {tris.map(t => <option key={t.v} value={t.v}>{t.l}</option>)}
+          </select>
         </div>
       </div>
 
-      <Tiroir ouvert={panneau} onFermer={() => setPanneau(false)} cote="gauche" label="Filtres" titre={`Filtres${actifs ? ` · ${actifs}` : ''}`}
-        pied={<Bouton plein_largeur onClick={() => setPanneau(false)}>Voir {resultats.length} pièce{resultats.length > 1 ? 's' : ''}</Bouton>}>
+      <div className="flex gap-10 px-5 py-8 md:px-14">
+        <div className="hidden w-[220px] shrink-0 md:block">
+          <PanneauFiltres filtres={filtres} onChange={changer} facettes={fac} />
+        </div>
+        <div className="min-w-0 flex-1">
+          {actifs > 0 && <div className="mb-6 md:hidden"><PucesActives filtres={filtres} onChange={changer} /></div>}
+          {resultats.length === 0 ? (
+            <div className="flex flex-col items-center gap-4 py-20 text-center">
+              <h2 className="font-display text-[18px] uppercase tracking-[0.04em]">Aucune pièce</h2>
+              <p className="max-w-[280px] text-sm text-gris">Aucune pièce ne correspond à ces filtres. Retirez-en un pour élargir la recherche.</p>
+              <button type="button" onClick={() => changer({ ...filtres, categories: [], marques: [], coloris: [], tailles: [], collections: [], etiquettes: [], disponibles: false, prixMax: null })}
+                className={cn(pilule, 'border-encre px-6 py-3 transition-colors hover:bg-encre hover:text-fond')}>Tout effacer</button>
+            </div>
+          ) : (
+            <>
+              <ul data-ref="grille" className="grid grid-cols-2 gap-6 md:grid-cols-3">
+                {visibles.map((p, i) => <li key={p.slug}><CarteProduit produit={p} prioritaire={page === 1 && i < 3} /></li>)}
+              </ul>
+              {nbPages > 1 && (
+                <nav aria-label="Pagination" className="mt-12 flex items-center justify-center gap-2">
+                  <button type="button" disabled={page === 1} onClick={() => allerPage(page - 1)}
+                    className={cn(pilule, 'border-ligne text-encre transition-colors hover:border-encre disabled:cursor-not-allowed disabled:opacity-40')}>Préc.</button>
+                  {Array.from({ length: nbPages }, (_, i) => i + 1).map(n => (
+                    <button key={n} type="button" aria-current={n === page ? 'page' : undefined} onClick={() => allerPage(n)}
+                      className={cn('h-10 w-10 rounded-full border font-mono text-[12px] transition-all', n === page ? 'border-encre bg-encre text-fond' : 'border-ligne text-encre hover:border-encre')}>{n}</button>
+                  ))}
+                  <button type="button" disabled={page === nbPages} onClick={() => allerPage(page + 1)}
+                    className={cn(pilule, 'border-ligne text-encre transition-colors hover:border-encre disabled:cursor-not-allowed disabled:opacity-40')}>Suiv.</button>
+                </nav>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      <TiroirFiltres ouvert={panneau} onFermer={() => setPanneau(false)}>
         <PanneauFiltres filtres={filtres} onChange={changer} facettes={fac} />
-      </Tiroir>
-    </>
+      </TiroirFiltres>
+    </div>
   )
 }

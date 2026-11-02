@@ -8,5 +8,6 @@ export default defineConfig({
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   server: { host: true, port: 6011, strictPort: true },
   preview: { port: 6011 },
-  test: { environment: 'jsdom', globals: true, setupFiles: './src/test/setup.ts', css: false },
+  // Tests : jamais le vrai projet Supabase (le client est simulé dans les tests qui en ont besoin).
+  test: { environment: 'jsdom', globals: true, setupFiles: './src/test/setup.ts', css: false, env: { VITE_SUPABASE_URL: '', VITE_SUPABASE_PUBLISHABLE_KEY: '' } },
 })

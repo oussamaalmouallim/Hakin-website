@@ -5,7 +5,7 @@ import { formatDH } from '@/lib/format'
 
 export function Recapitulatif({ sousTotalDH, nbArticles, children }: { sousTotalDH: number; nbArticles: number; children?: ReactNode }) {
   return (
-    <div className="bg-sable-50 p-6 sm:p-8">
+    <div className="rounded-carte border border-ligne bg-fond-2 p-6 sm:p-8">
       <h2 className="label-large mb-6">Récapitulatif</h2>
       <dl className="flex flex-col gap-4 text-[15px]">
         <div className="flex justify-between"><dt>Sous-total · {nbArticles} article{nbArticles > 1 ? 's' : ''}</dt><dd className="tabular-nums">{formatDH(sousTotalDH)}</dd></div>

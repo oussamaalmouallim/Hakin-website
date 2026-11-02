@@ -1,13 +1,14 @@
 import { useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Check, ChevronDown } from 'lucide-react'
-import { Bouton, BoutonLien, Cadre, CaseACocher, Champ, EtatVide, IconeWhatsApp, ImageProduit, Selection, ZoneTexte } from '@/design-system'
+import { Bouton, BoutonLien, Cadre, CaseACocher, Champ, EtatVide, IconeWhatsApp, ImageProduit, PastilleCouleur, Selection, ZoneTexte } from '@/design-system'
 import { EnTetePage } from '@/components/EnTetePage'
 import { Recapitulatif } from '@/features/panier/Recapitulatif'
 import { lignesDetaillees, nbArticles, sousTotal, usePanier } from '@/state/panier'
 import { useCompte } from '@/state/compte'
 import { formatDH, genererReference, telephoneMarocValide } from '@/lib/format'
-import { boutique, estPackshot } from '@/lib/catalogue'
+import { boutique, estPackshot, trouverProduit } from '@/lib/catalogue'
+import { ligneDirecte } from '@/lib/commandeDirecte'
 import { lienWhatsApp, messageCommande } from '@/lib/whatsapp'
 import type { CoordonneesClient } from '@/lib/types'
 
@@ -42,7 +43,11 @@ function Etape({ n, titre, children }: { n: number; titre: string; children: Rea
 
 export function PageCommande() {
   const naviguer = useNavigate()
-  const lignes = usePanier(s => s.lignes)
+  const [sp] = useSearchParams()
+  const panier = usePanier(s => s.lignes)
+  // Commande directe (`?article=…`) : cette seule pièce, le panier reste intact.
+  const directe = sp.has('article') ? ligneDirecte(sp) : null
+  const lignes = directe ? [directe] : panier
   const details = lignesDetaillees(lignes)
   const { profil, adresses } = useCompte()
   const parDefaut = adresses.find(a => a.parDefaut)
@@ -54,6 +59,11 @@ export function PageCommande() {
   const reference = useMemo(() => genererReference(), [])
   const maj = (k: keyof CoordonneesClient) => (e: { target: { value: string } }) => { setC(x => ({ ...x, [k]: e.target.value })); setErreurs(x => ({ ...x, [k]: undefined })) }
 
+  if (sp.has('article') && !details.length) {
+    const p = trouverProduit(sp.get('article') ?? '')
+    return (<><EnTetePage titre="Commande" /><EtatVide titre="Variante indisponible" texte="Cette pièce n'est pas disponible dans la taille, la couleur ou la quantité demandée."
+      action={<BoutonLien to={p ? `/produit/${p.slug}` : '/boutique'}>{p ? 'Revenir à la pièce' : 'Découvrir la boutique'}</BoutonLien>} /></>)
+  }
   if (!details.length) {
     return (<><EnTetePage titre="Commande" /><EtatVide titre="Votre panier est vide" texte="Ajoutez des pièces avant de passer commande." action={<BoutonLien to="/boutique">Découvrir la boutique</BoutonLien>} /></>)
   }
@@ -67,7 +77,7 @@ export function PageCommande() {
           <li key={l.cle} className="flex items-center gap-4">
             <div className="relative w-14 shrink-0"><Cadre compact className="aspect-[4/5]"><ImageProduit src={l.produit.images[0].src} alt="" packshot={estPackshot(l.produit)} className="absolute inset-0" tailles="56px" /></Cadre>
               <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-encre text-[10px] text-nacre" aria-label={`Quantité ${l.quantite}`}>{l.quantite}</span></div>
-            <div className="min-w-0 flex-1 text-[14px]"><p className="truncate">{l.produit.nom}</p><p className="capitalize text-gris">{l.coloris} · {l.taille}</p></div>
+            <div className="min-w-0 flex-1 text-[14px]"><p className="truncate">{l.produit.nom}</p><p className="flex items-center gap-2 text-gris"><PastilleCouleur nom={l.coloris} /><span aria-hidden>·</span>{l.taille}</p></div>
           </li>
         ))}
       </ul>
@@ -86,13 +96,13 @@ export function PageCommande() {
     const msg = messageCommande(reference, details.map(l => ({ nom: `${l.produit.marque} — ${l.produit.nom}`, coloris: l.coloris, taille: l.taille, quantite: l.quantite, prixDH: l.prixDH })), c)
     const lien = lienWhatsApp(msg)
     window.open(lien, '_blank', 'noopener,noreferrer')
-    naviguer('/commande/confirmation', { state: { reference, client: c, lien } })
+    naviguer('/commande/confirmation', { state: { reference, client: c, lien, ...(directe && { directe: [directe] }) } })
   }
 
   return (
     <>
       <EnTetePage surtitre="Commande" titre="Finaliser votre commande" texte="Votre commande est transmise sur WhatsApp, où nous la confirmons avec vous. Paiement à la livraison."
-        ariane={[{ libelle: 'Panier', vers: '/panier' }, { libelle: 'Commande' }]} />
+        ariane={directe ? [{ libelle: details[0].produit.nom, vers: `/produit/${directe.slug}` }, { libelle: 'Commande' }] : [{ libelle: 'Panier', vers: '/panier' }, { libelle: 'Commande' }]} />
       <div className="conteneur grid gap-12 lg:grid-cols-[1fr_400px] lg:gap-20">
         <details className="group -mb-12 border-t border-ligne lg:hidden">
           <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">

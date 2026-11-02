@@ -23,7 +23,7 @@ export function FournisseurNotifications({ children }: { children: ReactNode }) 
   return (
     <Ctx.Provider value={v}>
       {children}
-      <div className="pointer-events-none fixed inset-x-0 top-4 z-[90] flex flex-col items-center gap-2 px-4 sm:bottom-8 sm:top-auto sm:items-end sm:px-8" aria-live="polite" role="status">
+      <div className="pointer-events-none fixed inset-x-0 top-4 z-[450] flex flex-col items-center gap-2 px-4 sm:bottom-8 sm:top-auto sm:items-end sm:px-8" aria-live="polite" role="status">
         <AnimatePresence initial={false}>
           {liste.map(n => {
             const I = ICONES[n.ton]
@@ -31,7 +31,7 @@ export function FournisseurNotifications({ children }: { children: ReactNode }) 
               <motion.div key={n.id} layout initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 12 }}
                 transition={{ duration: 0.5, ease: EASE_MAISON }}
                 className="pointer-events-auto flex w-full max-w-sm items-center gap-3 bg-encre px-5 py-4 text-[14px] text-nacre shadow-flottant">
-                <I className={cn('h-4 w-4 shrink-0', n.ton === 'erreur' ? 'text-[#E8A598]' : 'text-or')} aria-hidden />
+                <I className={cn('h-4 w-4 shrink-0', n.ton === 'erreur' ? 'text-danger' : 'text-or')} aria-hidden />
                 <div className="flex-1">{n.message}</div>
                 {n.action && <button type="button" onClick={() => { n.action!.onClick(); fermer(n.id) }} className="label underline underline-offset-4 hover:text-or">{n.action.libelle}</button>}
                 <button type="button" onClick={() => fermer(n.id)} aria-label="Fermer la notification" className="text-nacre/60 hover:text-nacre"><X className="h-4 w-4" /></button>

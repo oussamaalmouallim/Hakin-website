@@ -1,45 +1,42 @@
 import { Link } from 'react-router-dom'
-import { Logotype, Signature } from '@/design-system'
-import { boutique, categoriesActives } from '@/lib/catalogue'
+import { boutique } from '@/lib/catalogue'
 import { useAnimations } from '@/state/animations'
-import { LiensReseaux } from './Reseaux'
 
-const COLONNES = [
-  { titre: 'Boutique', liens: [{ vers: '/boutique', l: 'Toute la boutique' }, { vers: '/collections', l: 'Collections' }] },
-  { titre: 'Aide', liens: [{ vers: '/contact', l: 'Contact' }, { vers: '/livraison-retours', l: 'Livraison & retours' }, { vers: '/guide-des-tailles', l: 'Guide des tailles' }, { vers: '/faq', l: 'Questions fréquentes' }] },
-  { titre: 'La Maison', liens: [{ vers: '/maison', l: 'Notre histoire' }, { vers: '/compte', l: 'Mon compte' }, { vers: '/mentions-legales', l: 'Mentions légales' }, { vers: '/confidentialite', l: 'Confidentialité' }, { vers: '/cgv', l: 'Conditions de vente' }] },
-]
+const lienPied = 'text-gris no-underline transition-colors hover:text-encre'
 
+/** cloneme: C-03 — pied de la référence : une ligne mono 11 px capitales (© · faits du centre en encre · liens).
+ *  Ajout H MODE (Approximé) : une seconde ligne garde l'accès aux pages d'aide et légales, et le réglage des animations. */
 export function PiedDePage() {
   const { animations, basculer } = useAnimations()
-  const colonnes = [{ ...COLONNES[0], liens: [...COLONNES[0].liens, ...categoriesActives().map(c => ({ vers: `/boutique/${c.slug}`, l: c.nom }))] }, ...COLONNES.slice(1)]
+  const faits = [boutique.paiement, 'Commande WhatsApp', boutique.ville.split(',')[0]]
   return (
-    <footer className="mt-32 bg-encre text-nacre">
-      <div className="conteneur py-20">
-        <div className="grid gap-14 lg:grid-cols-[1.3fr_repeat(3,1fr)]">
-          <div className="flex flex-col gap-6">
-            <Logotype clair />
-            <p className="max-w-xs text-[15px] text-nacre/65">Boutique de vêtements premium homme · {boutique.ville}. Commande sur WhatsApp, {boutique.paiement.toLowerCase()}.</p>
-            <LiensReseaux clair />
-          </div>
-          {colonnes.map(c => (
-            <div key={c.titre}>
-              <p className="label mb-6 text-or">{c.titre}</p>
-              <ul className="flex flex-col gap-3">
-                {c.liens.map(l => <li key={l.vers}><Link to={l.vers} className="text-[15px] text-nacre/75 transition-colors hover:text-nacre">{l.l}</Link></li>)}
-              </ul>
-            </div>
+    <footer data-ref="pied" className="border-t border-ligne px-5 py-5 font-mono text-[11px] uppercase tracking-[0.18em] text-gris md:px-14 md:py-7">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <span>© {new Date().getFullYear()} {boutique.nom}</span>
+        <div className="hidden flex-1 text-center md:block">
+          {faits.map((f, i) => (
+            <span key={f}>{i > 0 && <span className="mx-3 opacity-50">·</span>}<span className="text-encre">{f}</span></span>
           ))}
         </div>
-        <Signature className="mt-20 [&_p]:text-nacre/50" />
-      </div>
-      <div className="border-t border-nacre/10">
-        <div className="conteneur flex flex-col items-center justify-between gap-3 py-6 text-[12px] text-nacre/50 sm:flex-row">
-          <span>© {new Date().getFullYear()} H MODE — {boutique.ville}</span>
-          <button type="button" onClick={basculer} className="label hover:text-nacre" aria-pressed={!animations}>
-            Animations : {animations ? 'activées' : 'désactivées'}
-          </button>
+        <div className="flex gap-5">
+          <Link to="/boutique" className={lienPied}>Boutique</Link>
+          <Link to="/compte" className={lienPied}>Compte</Link>
+          <a href={boutique.instagram.url} target="_blank" rel="noopener noreferrer" className={lienPied} aria-label="Instagram">IG</a>
+          <a href={boutique.facebook.url} target="_blank" rel="noopener noreferrer" className={lienPied} aria-label="Facebook">FB</a>
         </div>
+      </div>
+      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-ligne pt-4 text-[10px]">
+        <Link to="/contact" className={lienPied}>Contact</Link>
+        <Link to="/livraison-retours" className={lienPied}>Livraison & retours</Link>
+        <Link to="/guide-des-tailles" className={lienPied}>Guide des tailles</Link>
+        <Link to="/faq" className={lienPied}>FAQ</Link>
+        <Link to="/maison" className={lienPied}>La Maison</Link>
+        <Link to="/mentions-legales" className={lienPied}>Mentions légales</Link>
+        <Link to="/confidentialite" className={lienPied}>Confidentialité</Link>
+        <Link to="/cgv" className={lienPied}>CGV</Link>
+        <button type="button" onClick={basculer} className={`${lienPied} uppercase tracking-[0.18em] md:ml-auto`} aria-pressed={!animations}>
+          Animations : {animations ? 'activées' : 'désactivées'}
+        </button>
       </div>
     </footer>
   )

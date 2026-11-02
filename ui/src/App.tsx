@@ -8,7 +8,7 @@ import { useCompte } from './state/compte'
 import { EnTete } from './components/EnTete'
 import { MenuMobile, MiniPanier, Recherche, useFermerSurNavigation } from './components/Panneaux'
 import { PiedDePage } from './components/PiedDePage'
-import { BandeauDemo, BoutonWhatsAppFlottant, ChargeurMarque } from './components/Ambiance'
+import { BandeauDemo, BoutonWhatsAppFlottant, ChargeurMarque, RepereLateral } from './components/Ambiance'
 import { PageAccueil } from './features/accueil/PageAccueil'
 import { PageBoutique } from './features/catalogue/PageBoutique'
 import { PageCollection, PageCollections } from './features/catalogue/PageCollections'
@@ -18,6 +18,8 @@ import { PagePanier } from './features/panier/PagePanier'
 import { PageCommande } from './features/commande/PageCommande'
 import { PageConfirmation } from './features/commande/PageConfirmation'
 import { PageCompte } from './features/compte/PageCompte'
+import { PageConnexion } from './features/compte/PageConnexion'
+import { useSession } from './state/session'
 import { PageContact } from './features/infos/PageContact'
 import { PageMaison } from './features/infos/PageMaison'
 import { PageInfo } from './features/infos/PagesInfo'
@@ -41,17 +43,23 @@ export default function App() {
   const location = useLocation()
   useFermerSurNavigation()
   useSynchroOnglets()
+  const demarrerSession = useSession(s => s.demarrer)
+  useEffect(() => { void demarrerSession() }, [demarrerSession])
+  // Page de connexion plein écran comme la référence : ni en-tête, ni pied, ni repère latéral.
+  const pleinEcran = location.pathname.startsWith('/connexion')
   return (
     <>
       <a href="#contenu" className="label sr-only z-[110] bg-encre px-4 py-3 text-nacre focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Aller au contenu</a>
       <ChargeurMarque />
-      <EnTete />
+      {!pleinEcran && <EnTete />}
       <MenuMobile />
       <Recherche />
       <MiniPanier />
+      {!pleinEcran && <RepereLateral />}
       {/* Remise en haut une fois l'ancienne page sortie : pas de saut visible pendant la transition. */}
       <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })}>
-        <motion.main id="contenu" key={location.pathname} {...transitionPage} className="min-h-[70vh]">
+        {/* /boutique et /boutique/<type> partagent la même clé : filtrer par type ne rejoue pas la transition de page. */}
+        <motion.main id="contenu" key={location.pathname.startsWith('/boutique') ? '/boutique' : location.pathname} {...transitionPage} className={pleinEcran ? undefined : 'min-h-[70vh]'}>
           <Routes location={location}>
             <Route path="/" element={<PageAccueil />} />
             <Route path="/boutique" element={<PageBoutique />} />
@@ -64,6 +72,8 @@ export default function App() {
             <Route path="/commande" element={<PageCommande />} />
             <Route path="/commande/confirmation" element={<PageConfirmation />} />
             <Route path="/compte/*" element={<PageCompte />} />
+            <Route path="/connexion" element={<PageConnexion />} />
+            <Route path="/connexion/nouveau-mot-de-passe" element={<PageConnexion recuperation />} />
             <Route path="/contact" element={<PageContact />} />
             <Route path="/maison" element={<PageMaison />} />
             <Route path="/livraison-retours" element={<PageInfo page="livraison-retours" />} />
@@ -77,8 +87,8 @@ export default function App() {
           </Routes>
         </motion.main>
       </AnimatePresence>
-      <PiedDePage />
-      <BoutonWhatsAppFlottant />
+      {!pleinEcran && <PiedDePage />}
+      {!pleinEcran && <BoutonWhatsAppFlottant />}
       <BandeauDemo />
     </>
   )

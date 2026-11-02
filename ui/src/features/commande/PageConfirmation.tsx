@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
-import { Bouton, BoutonExterne, BoutonLien, IconeWhatsApp, Monogramme, Revelation } from '@/design-system'
+import { Bouton, BoutonExterne, BoutonLien, IconeWhatsApp, Revelation } from '@/design-system'
 import { lignesDetaillees, sousTotal, usePanier } from '@/state/panier'
 import { useCompte } from '@/state/compte'
 import { formatDH } from '@/lib/format'
-import type { CoordonneesClient } from '@/lib/types'
+import { lienCommandeDirecte } from '@/lib/commandeDirecte'
+import type { CoordonneesClient, LignePanier } from '@/lib/types'
 
 /** La commande n'est validée par aucun système : elle est confirmée sur WhatsApp. Le panier n'est vidé qu'à la demande du client. */
 export function PageConfirmation() {
-  const etat = useLocation().state as { reference: string; client: CoordonneesClient; lien: string } | null
-  const lignes = usePanier(s => s.lignes)
+  const etat = useLocation().state as { reference: string; client: CoordonneesClient; lien: string; directe?: LignePanier[] } | null
+  const panier = usePanier(s => s.lignes)
+  // Commande directe : ses lignes viennent de l'état de navigation, et le panier n'est pas vidé.
+  const lignes = etat?.directe ?? panier
   const vider = usePanier(s => s.vider)
   const ajouterCommande = useCompte(s => s.ajouterCommande)
   const majProfil = useCompte(s => s.majProfil)
@@ -24,19 +27,20 @@ export function PageConfirmation() {
         lignes: details.map(l => ({ cle: l.cle, slug: l.slug, coloris: l.coloris, taille: l.taille, quantite: l.quantite, nom: l.produit.nom, prixDH: l.prixDH })) })
       majProfil({ nom: etat.client.nom, telephone: etat.client.telephone, email: etat.client.email })
     }
-    vider()
+    if (!etat.directe) vider()
     setEnvoyee(true)
   }
 
   return (
-    <section className="conteneur flex min-h-[80vh] flex-col items-center justify-center pt-[var(--nav-h)] text-center">
+    <section className="conteneur flex min-h-[80vh] flex-col items-center justify-center pt-20 text-center">
       <Revelation className="flex max-w-xl flex-col items-center">
-        <Monogramme className="h-16" />
-        <p className="label mt-8 text-bronze">Référence {etat.reference}</p>
+        {/* cloneme: C-24 — confirmation : pastille jaune, référence en mono, titre Archivo Black. */}
+        <span className="grid h-16 w-16 place-items-center rounded-full bg-accent text-encre"><IconeWhatsApp className="h-7 w-7" /></span>
+        <p className="mt-8 font-mono text-[11px] uppercase tracking-[0.22em] text-gris">Référence {etat.reference}</p>
         {envoyee ? (
           <>
-            <h1 className="titre-1 mt-4">Merci, {etat.client.nom.split(' ')[0]}</h1>
-            <p className="mt-6 text-[17px] text-gris">Nous confirmons votre commande avec vous sur WhatsApp, au {etat.client.telephone}. Vous la retrouvez dans votre compte.</p>
+            <h1 className="mt-4 font-display text-[clamp(36px,5vw,56px)] uppercase leading-[0.92] tracking-[-0.02em]">Merci, {etat.client.nom.split(' ')[0]}</h1>
+            <p className="mt-6 text-[15px] leading-[1.55] text-gris">Nous confirmons votre commande avec vous sur WhatsApp, au {etat.client.telephone}. Vous la retrouvez dans votre compte.</p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <BoutonLien to="/compte/commandes">Mes commandes</BoutonLien>
               <BoutonLien to="/boutique" variante="contour">Continuer mes achats</BoutonLien>
@@ -44,12 +48,12 @@ export function PageConfirmation() {
           </>
         ) : (
           <>
-            <h1 className="titre-1 mt-4">Plus qu'une étape</h1>
-            <p className="mt-6 text-[17px] text-gris">WhatsApp s'est ouvert avec votre commande{details.length ? ` (${formatDH(total)})` : ''}. Appuyez sur « Envoyer » dans WhatsApp : nous vous répondons pour confirmer la livraison.</p>
+            <h1 className="mt-4 font-display text-[clamp(36px,5vw,56px)] uppercase leading-[0.92] tracking-[-0.02em]">Plus qu'une étape</h1>
+            <p className="mt-6 text-[15px] leading-[1.55] text-gris">WhatsApp s'est ouvert avec votre commande{details.length ? ` (${formatDH(total)})` : ''}. Appuyez sur « Envoyer » dans WhatsApp : nous vous répondons pour confirmer la livraison.</p>
             <div className="mt-10 flex flex-col items-center gap-4">
               <Bouton onClick={confirmer} taille="lg">J'ai envoyé ma commande</Bouton>
               <BoutonExterne href={etat.lien} variante="texte" icone={<IconeWhatsApp className="h-4 w-4 text-whatsapp" />}>WhatsApp ne s'est pas ouvert ? Réessayer</BoutonExterne>
-              <BoutonLien to="/commande" variante="texte">Modifier ma commande</BoutonLien>
+              <BoutonLien to={etat.directe ? lienCommandeDirecte(etat.directe[0].slug, etat.directe[0].coloris, etat.directe[0].taille, etat.directe[0].quantite) : '/commande'} variante="texte">Modifier ma commande</BoutonLien>
             </div>
           </>
         )}

@@ -1,0 +1,54 @@
+/* Tokens de la boutique : miroir exact de palette.md (racine du dépôt). Changer palette.md, puis ce fichier.
+   Direction : Original Fit (fonds, encre, accent jaune, typographie) + touche beige H MODE. */
+:root {
+  /* Couleurs relevées sur la référence */
+  --fond: #f5f4f0;
+  --fond-2: #efede7;
+  --fond-3: #e8e5dc;
+  --encre: #0a0a0a;
+  --encre-douce: #1c1c1a;
+  --gris: #8a8a8a;
+  --gris-clair: #b4b2ac;
+  --accent: #f5d000;
+  --accent-doux: #ffe875;
+  --danger: #c8341b;
+  --filigrane: #e8e6e0;
+  --ligne: #0a0a0a1a;
+  --ligne-forte: #0a0a0a38;
+  --blanc: #ffffff;
+
+  /* Touche H MODE */
+  --beige: #e4d0b7;
+  --beige-clair: #ede3d5;
+  --beige-pale: #f4ede3;
+  --beige-fonce: #836240;
+  --beige-tres-fonce: #5f4831;
+  --beige-moyen: #9c8366;
+
+  /* États (H MODE) */
+  --succes: #5b6b3a;
+  --alerte: #a9742a;
+  --whatsapp: #25d366;
+
+  /* Polices */
+  --police-titre: "Archivo Black", "Arial Black", sans-serif;
+  --police-texte: "Space Grotesk", system-ui, sans-serif;
+  --police-mono: "JetBrains Mono", ui-monospace, monospace;
+  --police-marque: "Cormorant Garamond", Georgia, serif;
+
+  /* Formes */
+  --rayon-carte: 20px;
+  --rayon-bloc: 14px;
+  --ombre-carte-survol: 0 22px 36px -22px rgba(10, 10, 10, 0.22);
+  --ombre-flottant: 0 24px 60px -28px rgba(10, 10, 10, 0.35);
+
+  /* Mouvement */
+  --courbe-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --courbe-maison: cubic-bezier(0.16, 1, 0.3, 1);
+  --courbe-panneau: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* En-tête */
+  --voile-entete: #f5f4f0b8;
+  --ligne-entete: #0a0a0a14;
+  --ombre-tiroir: -30px 0 60px -20px #0a0a0a2e;
+}

@@ -7,10 +7,10 @@ import { EASE_MAISON } from '@/lib/animations'
 export function FilAriane({ elements }: { elements: { libelle: string; vers?: string }[] }) {
   return (
     <nav aria-label="Fil d'Ariane">
-      <ol className="label flex flex-wrap items-center gap-2 text-gris">
+      <ol className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-gris">
         {elements.map((e, i) => (
           <li key={i} className="flex items-center gap-2">
-            {i > 0 && <span aria-hidden className="text-or">/</span>}
+            {i > 0 && <span aria-hidden>/</span>}
             {e.vers && i < elements.length - 1 ? <Link to={e.vers} className="hover:text-encre">{e.libelle}</Link>
               : <span aria-current={i === elements.length - 1 ? 'page' : undefined} className="text-encre">{e.libelle}</span>}
           </li>
@@ -42,6 +42,7 @@ export function Accordeon({ titre, children, ouvertParDefaut = false }: { titre:
 }
 
 export function Badge({ children, ton = 'clair' }: { children: ReactNode; ton?: 'clair' | 'sombre' | 'or' }) {
-  const s = { clair: 'bg-nacre/90 text-encre', sombre: 'bg-encre text-nacre', or: 'bg-or text-encre' }[ton]
-  return <span className={`label inline-flex items-center px-2.5 py-1 text-[10px] ${s}`}>{children}</span>
+  // Pastille de la référence : mono 10 px .16em, `px-2 py-1`, rayon plein ; `or` = jaune (`tag-hot`).
+  const s = { clair: 'bg-fond/90 text-encre', sombre: 'bg-encre text-fond', or: 'bg-accent text-encre' }[ton]
+  return <span className={`inline-flex items-center rounded-full px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] ${s}`}>{children}</span>
 }

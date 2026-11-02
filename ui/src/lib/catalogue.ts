@@ -3,6 +3,7 @@ import demoJson from '@/data/produits.demo.json'
 import categoriesJson from '@/data/categories.json'
 import collectionsJson from '@/data/collections.json'
 import boutiqueJson from '@/data/boutique.json'
+import fondsClairsJson from '@/data/fonds-clairs.json'
 import type { Boutique, Categorie, Collection, Produit } from './types'
 
 /** Mode démo : prix et tailles FICTIFS pour tester le panier en local. Activé seulement par VITE_DEMO=1. */
@@ -19,6 +20,8 @@ export const categoriesActives = () => categories.filter(c => c.actif)
 export const trouverProduit = (slug: string) => produits.find(p => p.slug === slug)
 export const trouverCategorie = (slug: string) => categories.find(c => c.slug === slug && c.actif)
 export const trouverCollection = (slug: string) => collections.find(c => c.slug === slug)
+/** Teinte de chaque coloris, par nom (première occurrence du catalogue) : pastilles du panier, des filtres et des commandes. */
+export const HEX_COLORIS: Record<string, string> = Object.fromEntries(produits.flatMap(p => p.coloris).reverse().map(c => [c.nom, c.hex]))
 export const produitsDeCollection = (slug: string) => produits.filter(p => p.collections.includes(slug))
 
 /** Un produit va au panier seulement s'il a un prix réel et au moins une taille disponible. */
@@ -30,8 +33,10 @@ export function produitsLies(p: Produit, n = 4): Produit[] {
   return produits.filter(q => q.slug !== p.slug).sort((a, b) => score(b) - score(a)).slice(0, n)
 }
 
-/** Photo d'objet seul (packshot) : affichée entière, centrée, sans recadrage. */
-export const estPackshot = (p: Produit) => p.categorie === 'sneakers'
+/** Photos sur fond clair uni, repérées par `npm run images` (src/data/fonds-clairs.json). */
+const FONDS_CLAIRS = new Set<string>(fondsClairsJson as string[])
+/** Photo d'objet seul sur fond clair (packshot) : affichée entière, centrée, détourée sur le disque de la carte. */
+export const estPackshot = (p: Produit) => p.categorie === 'sneakers' || FONDS_CLAIRS.has(p.images[0]?.src)
 
 /** srcset WebP à partir d'un chemin sans suffixe. */
 export const srcImage = (src: string, l: 480 | 960 = 960) => `${src}-${l}.webp`

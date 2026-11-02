@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-// Charte H MODE : prolonge le site actuel (crème, noir, or, Cormorant) et la maquette Template/hero.png (sable, bronze).
+// Charte : direction Original Fit + touche beige H MODE. Toutes les valeurs viennent de src/styles/tokens.css (miroir de palette.md).
+// Les anciens noms (nacre, sable, bronze, or…) pointent vers les nouveaux rôles le temps de ré-habiller chaque page.
+const v = nom => `color-mix(in srgb, var(--${nom}) calc(<alpha-value> * 100%), transparent)`
+
 export default {
   // Survols (hover:, group-hover:) seulement sur pointeur fin : pas d'état « collé » après un toucher en mobile.
   future: { hoverOnlyWhenSupported: true },
@@ -8,32 +11,41 @@ export default {
     screens: { xs: '375px', sm: '640px', md: '768px', lg: '1024px', xl: '1280px', '2xl': '1536px' },
     extend: {
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        sans: ['Jost', 'system-ui', 'sans-serif'],
+        display: 'var(--police-titre)',
+        sans: 'var(--police-texte)',
+        mono: 'var(--police-mono)',
+        marque: 'var(--police-marque)',
       },
       colors: {
-        nacre: '#FBF9F5',
-        neige: '#FFFFFF',
-        sable: { 50: '#F4EDE3', 100: '#EDE3D5', 200: '#E4D0B7', 300: '#D6C2A8', 400: '#CAB59B' },
-        bronze: { DEFAULT: '#836240', fonce: '#5F4831', clair: '#9C8366' },
-        or: { DEFAULT: '#C8A96E', clair: '#E8D9B8' },
-        encre: { DEFAULT: '#0E0E0D', douce: '#1A1A18' },
-        gris: { DEFAULT: '#6F6C66', clair: '#A9A59D' },
-        ligne: '#E8E2D8',
-        succes: '#5B6B3A',
-        erreur: '#9A3B2E',
-        alerte: '#A9742A',
-        whatsapp: '#25D366',
+        fond: { DEFAULT: v('fond'), 2: v('fond-2'), 3: v('fond-3') },
+        accent: { DEFAULT: v('accent'), doux: v('accent-doux') },
+        beige: { DEFAULT: v('beige'), clair: v('beige-clair'), pale: v('beige-pale'), fonce: v('beige-fonce') },
+        filigrane: v('filigrane'),
+        blanc: v('blanc'),
+        danger: v('danger'),
+        // Rôles hérités
+        nacre: v('fond'),
+        neige: v('blanc'),
+        sable: { 50: v('fond-2'), 100: v('fond-3'), 200: v('beige'), 300: v('beige-clair'), 400: v('beige-moyen') },
+        bronze: { DEFAULT: v('beige-fonce'), fonce: v('beige-tres-fonce'), clair: v('beige-moyen') },
+        or: { DEFAULT: v('accent'), clair: v('accent-doux') },
+        encre: { DEFAULT: v('encre'), douce: v('encre-douce') },
+        gris: { DEFAULT: v('gris'), clair: v('gris-clair') },
+        ligne: { DEFAULT: v('ligne'), forte: v('ligne-forte') },
+        succes: v('succes'),
+        erreur: v('danger'),
+        alerte: v('alerte'),
+        whatsapp: v('whatsapp'),
       },
-      letterSpacing: { label: '0.22em', large: '0.32em' },
-      borderRadius: { fin: '2px', doux: '4px' },
+      letterSpacing: { label: '0.18em', large: '0.2em', titre: '0.02em' },
+      borderRadius: { fin: '2px', doux: '4px', carte: 'var(--rayon-carte)', bloc: 'var(--rayon-bloc)' },
       boxShadow: {
-        carte: '0 30px 60px -40px rgba(14,14,13,0.25)',
-        flottant: '0 24px 70px -30px rgba(14,14,13,0.35)',
-        fin: '0 1px 0 rgba(14,14,13,0.06)',
-        cadre: '0 1px 2px rgba(14,14,13,0.04), 0 22px 44px -30px rgba(14,14,13,0.24)',
+        carte: 'var(--ombre-carte-survol)',
+        flottant: 'var(--ombre-flottant)',
+        fin: '0 1px 0 var(--ligne)',
+        cadre: 'var(--ombre-carte-survol)',
       },
-      transitionTimingFunction: { maison: 'cubic-bezier(0.16, 1, 0.3, 1)' },
+      transitionTimingFunction: { maison: 'var(--courbe-maison)', standard: 'var(--courbe-standard)' },
       maxWidth: { site: '1440px' },
       keyframes: {
         defiler: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },

@@ -1,7 +1,7 @@
 [
   {
     "nom": "hero-scene",
-    "source": "hero3-scene.jpg",
+    "source": "hero4-scene.jpg",
     "rect": {
       "left": 0,
       "top": 0,
@@ -22,7 +22,7 @@
       "width": 1060,
       "height": 1536
     },
-    "source": "hero3-retouche.jpg",
+    "source": "hero4-scene.jpg",
     "largeurs": [
       640,
       1280
@@ -37,5 +37,19 @@
       "height": 520
     },
     "source": "hero.png"
+  },
+  {
+    "nom": "maison-modele",
+    "rect": {
+      "left": 1590,
+      "top": 0,
+      "width": 1060,
+      "height": 1536
+    },
+    "source": "hero3-retouche.jpg",
+    "largeurs": [
+      640,
+      1280
+    ]
   }
 ]

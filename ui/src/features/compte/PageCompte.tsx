@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
-import { NavLink, Route, Routes } from 'react-router-dom'
+import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import { Heart, MapPin, Package, Trash2, User } from 'lucide-react'
-import { Bouton, BoutonLien, CaseACocher, Champ, EtatVide, Modale, Prix, Selection, ZoneTexte, useNotifier } from '@/design-system'
+import { Bouton, BoutonLien, CaseACocher, Champ, EtatVide, Modale, PastilleCouleur, Prix, Selection, ZoneTexte, useNotifier } from '@/design-system'
 import { EnTetePage } from '@/components/EnTetePage'
 import { CarteProduit } from '@/components/CarteProduit'
 import { useCompte, type Adresse } from '@/state/compte'
@@ -11,6 +11,8 @@ import { trouverProduit } from '@/lib/catalogue'
 import { formatDH, telephoneMarocValide } from '@/lib/format'
 import { VILLES } from '@/features/commande/PageCommande'
 import { cn } from '@/lib/utils'
+import { supabaseActif } from '@/lib/supabase'
+import { useSession } from '@/state/session'
 
 const ONGLETS = [
   { vers: '/compte', l: 'Profil', Icone: User, fin: true },
@@ -69,7 +71,7 @@ function Commandes() {
             <p className="text-[14px] text-gris">{new Date(c.date).toLocaleDateString('fr-MA', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
           </div>
           <ul className="mt-4 flex flex-col gap-1 text-[15px]">
-            {c.lignes.map(l => <li key={l.cle} className="flex justify-between gap-4"><span>{l.nom} <span className="capitalize text-gris">— {l.coloris}, {l.taille} × {l.quantite}</span></span><span className="tabular-nums">{formatDH(l.prixDH * l.quantite)}</span></li>)}
+            {c.lignes.map(l => <li key={l.cle} className="flex justify-between gap-4"><span>{l.nom} <span className="inline-flex items-center gap-1.5 text-gris">— <PastilleCouleur nom={l.coloris} /> {l.taille} × {l.quantite}</span></span><span className="tabular-nums">{formatDH(l.prixDH * l.quantite)}</span></li>)}
           </ul>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-ligne pt-4">
             <p>Sous-total <Prix prixDH={c.sousTotalDH} className="ml-2" /></p>
@@ -106,7 +108,7 @@ function Adresses() {
           <ul className="grid gap-4 sm:grid-cols-2">
             {adresses.map(a => (
               <li key={a.id} className={cn('flex flex-col gap-2 border bg-neige p-6', a.parDefaut ? 'border-encre' : 'border-ligne')}>
-                <p className="label">{a.libelle}{a.parDefaut && <span className="ml-3 text-bronze">Par défaut</span>}</p>
+                <p className="label">{a.libelle}{a.parDefaut && <span className="ml-3 rounded-full bg-accent px-2 py-0.5 text-[10px] text-encre">Par défaut</span>}</p>
                 <p>{a.adresse}</p><p className="text-gris">{a.ville}</p>
                 <div className="mt-3 flex gap-5">
                   <button type="button" className="label underline underline-offset-4" onClick={() => setEdition(a)}>Modifier</button>
@@ -142,6 +144,29 @@ function Favoris() {
   return <ul className="grid grid-cols-2 gap-x-4 gap-y-12 sm:gap-x-6 lg:grid-cols-3">{liste.map(p => <li key={p.slug}><CarteProduit produit={p} /></li>)}</ul>
 }
 
+/** Bandeau de session : connecté (e-mail + déconnexion) ou invitation à se connecter. Les données du compte passent en base au lot 6. */
+function BandeauSession() {
+  const { utilisateur, pret, deconnexion } = useSession()
+  const naviguer = useNavigate()
+  const notifier = useNotifier()
+  if (!supabaseActif || !pret) return null
+  return utilisateur ? (
+    <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-bloc border border-ligne bg-fond-2 px-5 py-4">
+      <p className="text-[14px]"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-gris">Connecté · </span>{utilisateur.email}</p>
+      <button type="button" onClick={async () => { await deconnexion(); notifier({ ton: 'info', message: 'Vous êtes déconnecté.' }); naviguer('/connexion', { replace: true }) }}
+        className="rounded-full border border-encre px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-encre transition-colors hover:bg-encre hover:text-fond">Se déconnecter</button>
+    </div>
+  ) : (
+    <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-bloc border border-ligne bg-fond-2 px-5 py-4">
+      <p className="text-[14px] text-gris">Connectez-vous pour retrouver vos commandes et votre panier sur tous vos appareils.</p>
+      <div className="flex gap-2">
+        <Link to="/connexion?retour=/compte" className="rounded-full bg-encre px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-fond">Connexion</Link>
+        <Link to="/connexion?mode=inscription&retour=/compte" className="rounded-full border border-encre px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-encre transition-colors hover:bg-encre hover:text-fond">Créer un compte</Link>
+      </div>
+    </div>
+  )
+}
+
 export function PageCompte() {
   const nom = useCompte(s => s.profil.nom)
   return (
@@ -158,6 +183,7 @@ export function PageCompte() {
           ))}
         </nav>
         <div>
+          <BandeauSession />
           <Routes>
             <Route index element={<Profil />} />
             <Route path="commandes" element={<Commandes />} />

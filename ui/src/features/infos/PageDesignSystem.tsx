@@ -10,16 +10,16 @@ import { BandeauDefilant } from '@/components/Ambiance'
 import { produits } from '@/lib/catalogue'
 
 /** Référence interne du design system (non liée dans le menu) : tokens + composants dans leurs états. */
-const COULEURS: [string, string, string][] = [
-  ['nacre', '#FBF9F5', 'Fond principal'], ['neige', '#FFFFFF', 'Cartes, modales'], ['sable-50', '#F4EDE3', 'Sections alternées'],
-  ['sable-200', '#E4D0B7', 'Ambiance (maquette)'], ['sable-400', '#CAB59B', 'Séparateurs marqués'], ['bronze', '#836240', 'Monogramme, accents'],
-  ['bronze-fonce', '#5F4831', 'Survol accents'], ['or', '#C8A96E', 'Filets, étoile ✦'], ['encre', '#0E0E0D', 'Texte, boutons'],
-  ['gris', '#6F6C66', 'Texte secondaire (AA)'], ['ligne', '#E8E2D8', 'Bordures fines'], ['succes', '#5B6B3A', 'Succès'],
-  ['erreur', '#9A3B2E', 'Erreur'], ['alerte', '#A9742A', 'Alerte'],
+/** Couleurs lues dans tokens.css (miroir de palette.md) : la valeur affichée est la valeur calculée, jamais recopiée. */
+const COULEURS: [string, string][] = [
+  ['--fond', 'Fond des pages et des cartes'], ['--fond-2', 'Zone image, sections alternées'], ['--fond-3', 'Survols, champs'],
+  ['--encre', 'Texte, boutons pleins, blocs sombres'], ['--gris', 'Étiquettes mono, textes secondaires'], ['--accent', 'Pastilles, gros boutons'],
+  ['--accent-doux', 'Survol de l’accent'], ['--danger', 'Erreurs, survol du cœur'], ['--beige', 'Touche H MODE'], ['--beige-fonce', 'Monogramme'],
+  ['--ligne', 'Bordures fines'], ['--whatsapp', 'Commande WhatsApp'],
 ]
 
 function Bloc({ titre, children }: { titre: string; children: ReactNode }) {
-  return <section className="border-t border-ligne py-14"><h2 className="label-large mb-10 text-bronze">{titre}</h2>{children}</section>
+  return <section className="border-t border-ligne py-14"><h2 className="surtitre mb-10 text-gris">{titre}</h2>{children}</section>
 }
 
 export function PageDesignSystem() {
@@ -31,10 +31,10 @@ export function PageDesignSystem() {
   const [qte, setQte] = useState(1)
   const p = produits[7]
   return (
-    <div className="conteneur pt-32">
-      <p className="label text-bronze">Interne</p>
-      <h1 className="titre-1 mt-3">Design system H MODE</h1>
-      <p className="mt-4 max-w-xl text-gris">Référence de validation des tokens et composants. Source : <code>tailwind.config.js</code>, <code>src/styles/index.css</code>, <code>src/design-system/</code>.</p>
+    <div className="conteneur pt-28">
+      <p className="surtitre text-gris">Interne</p>
+      <h1 className="font-display text-[clamp(36px,5vw,56px)] uppercase leading-[0.92] tracking-[-0.02em]">Design system H MODE</h1>
+      <p className="mt-4 max-w-xl text-gris">Direction Original Fit + touche beige H MODE. Source : <code>palette.md</code> → <code>src/styles/tokens.css</code>, <code>src/design-system/</code>.</p>
 
       <Bloc titre="Marque">
         <div className="flex flex-wrap items-end gap-12"><Monogramme className="h-24" /><Logotype /><div className="bg-encre p-6"><Logotype clair /></div><Signature /></div>
@@ -43,8 +43,8 @@ export function PageDesignSystem() {
 
       <Bloc titre="Couleurs">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
-          {COULEURS.map(([n, hex, usage]) => (
-            <div key={n}><div className="aspect-square border border-ligne" style={{ background: hex }} /><p className="label mt-3">{n}</p><p className="text-[12px] text-gris">{hex} · {usage}</p></div>
+          {COULEURS.map(([n, usage]) => (
+            <div key={n}><div className="aspect-square rounded-bloc border border-ligne" style={{ background: `var(${n})` }} /><p className="label mt-3">{n}</p><p className="text-[12px] text-gris">{usage}</p></div>
           ))}
         </div>
       </Bloc>
@@ -80,8 +80,8 @@ export function PageDesignSystem() {
         <div className="flex flex-col gap-8">
           <SelecteurTaille tailles={[{ taille: 'S', disponible: true }, { taille: 'M', disponible: true }, { taille: 'L', disponible: true }, { taille: 'XXL', disponible: false }]} valeur={taille} onChange={setTaille} />
           <SelecteurColoris coloris={p.coloris} valeur={coloris} onChange={setColoris} />
-          <div className="flex items-center gap-8"><Quantite valeur={qte} onChange={setQte} /><Quantite petit valeur={qte} onChange={setQte} /><PastillesColoris coloris={p.coloris} /></div>
-          <div className="flex items-center gap-8"><Prix prixDH={590} prixBarreDH={690} grand /><Prix prixDH={null} /><AConfirmer /><Badge>Nouveau</Badge><Badge ton="sombre">Épuisé</Badge><Badge ton="or">Édition</Badge></div>
+          <div className="flex flex-wrap items-center gap-8"><Quantite valeur={qte} onChange={setQte} /><Quantite petit valeur={qte} onChange={setQte} /><PastillesColoris coloris={p.coloris} /></div>
+          <div className="flex flex-wrap items-center gap-8"><Prix prixDH={590} prixBarreDH={690} grand /><Prix prixDH={null} /><AConfirmer /><Badge>Nouveau</Badge><Badge ton="sombre">Épuisé</Badge><Badge ton="or">Édition</Badge></div>
         </div>
       </Bloc>
 

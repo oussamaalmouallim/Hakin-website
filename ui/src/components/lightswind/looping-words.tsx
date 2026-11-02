@@ -1,6 +1,6 @@
 /**
  * Adapté de Lightswind UI — « looping-words » (licence MIT, https://lightswind.com).
- * Ré-habillé H MODE : Cormorant, équerres d'or autour du mot affiché, fondu vers la couleur du fond (prop `fond`).
+ * Ré-habillé H MODE (direction Original Fit) : Archivo Black capitales, équerres jaunes autour du mot affiché, fondu vers la couleur du fond (prop `fond`, une variable de tokens.css).
  * Animations coupées : premier mot affiché, immobile. Lecteurs d'écran : liste complète en texte caché.
  */
 import { useEffect, useRef, useState } from 'react'
@@ -8,7 +8,7 @@ import { motion, useAnimationControls } from 'framer-motion'
 import { useAnimationsActives } from '@/state/animations'
 import { cn } from '@/lib/utils'
 
-export function LoopingWords({ words, className, fond = '#FBF9F5', classeMot = 'text-encre', intervalle = 2400 }: {
+export function LoopingWords({ words, className, fond = 'var(--fond)', classeMot = 'text-encre', intervalle = 2400 }: {
   words: string[]; className?: string; fond?: string; classeMot?: string; intervalle?: number
 }) {
   const actives = useAnimationsActives()
@@ -31,7 +31,7 @@ export function LoopingWords({ words, className, fond = '#FBF9F5', classeMot = '
     return () => clearInterval(id)
   }, [actives, controls, words.length, doubles.length, intervalle])
 
-  const equerre = 'absolute h-[0.14em] w-[0.14em] border-or'
+  const equerre = 'absolute h-[0.14em] w-[0.14em] border-accent'
   return (
     <div className={cn('flex items-center justify-center', className)}>
       <span className="sr-only">{words.join(', ')}</span>
@@ -39,7 +39,7 @@ export function LoopingWords({ words, className, fond = '#FBF9F5', classeMot = '
         <motion.ul className="m-0 flex list-none flex-col items-center p-0" animate={controls} initial={{ y: '0%' }}>
           {doubles.map((w, i) => (
             <li key={i} ref={el => { refs.current[i] = el }} className="flex h-[0.9em] items-center justify-center">
-              <span className={cn('font-display uppercase tracking-[0.06em]', classeMot)}>{w}</span>
+              <span className={cn('font-display uppercase tracking-[-0.01em]', classeMot)}>{w}</span>
             </li>
           ))}
         </motion.ul>

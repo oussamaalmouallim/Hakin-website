@@ -48,7 +48,7 @@ const PAGES: Record<Cle, { surtitre: string; titre: string; intro?: string; cont
 
 function Gabarit({ sections }: { sections: string[] }) {
   return <>
-    <p className="mb-6 bg-sable-50 p-5 text-[14px] text-gris">Texte juridique en cours de rédaction : il doit être fourni ou validé par la boutique.</p>
+    <p className="mb-6 rounded-bloc border border-ligne bg-fond-2 p-5 text-[14px] text-gris">Texte juridique en cours de rédaction : il doit être fourni ou validé par la boutique.</p>
     {sections.map(s => <Accordeon key={s} titre={s}><A /></Accordeon>)}
   </>
 }

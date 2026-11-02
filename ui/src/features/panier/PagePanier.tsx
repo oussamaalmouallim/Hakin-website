@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ShoppingBag, X } from 'lucide-react'
-import { BoutonLien, Cadre, EtatVide, ImageProduit, Prix, Quantite, useNotifier } from '@/design-system'
+import { BoutonLien, Cadre, EtatVide, ImageProduit, PastilleCouleur, Prix, Quantite, useNotifier } from '@/design-system'
 import { estPackshot } from '@/lib/catalogue'
 import { EnTetePage } from '@/components/EnTetePage'
 import { lignesDetaillees, nbArticles, sousTotal, usePanier } from '@/state/panier'
@@ -34,8 +34,8 @@ export function PagePanier() {
                   <Link to={`/produit/${l.slug}`}><Cadre compact className="aspect-[4/5]"><ImageProduit src={l.produit.images[0].src} alt={l.produit.images[0].alt} packshot={estPackshot(l.produit)} className="absolute inset-0" tailles="120px" /></Cadre></Link>
                   <div className="flex flex-col gap-1.5">
                     <p className="label text-gris">{l.produit.marque}</p>
-                    <Link to={`/produit/${l.slug}`} className="font-display text-[21px] leading-tight hover:text-bronze">{l.produit.nom}</Link>
-                    <p className="text-[14px] capitalize text-gris">{l.coloris} · Taille {l.taille}</p>
+                    <Link to={`/produit/${l.slug}`} className="font-display text-[17px] uppercase leading-tight hover:underline">{l.produit.nom}</Link>
+                    <p className="flex items-center gap-2 text-[14px] text-gris"><PastilleCouleur nom={l.coloris} /><span aria-hidden>·</span>Taille {l.taille}</p>
                     <p className="text-[14px] text-gris">Prix unitaire : <Prix prixDH={l.prixDH} /></p>
                     <div className="mt-auto flex items-center gap-4 pt-3 sm:gap-6">
                       <Quantite petit valeur={l.quantite} onChange={n => changerQuantite(l.cle, n)} libelle={`Quantité de ${l.produit.nom}`} />

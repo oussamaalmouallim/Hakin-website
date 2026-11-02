@@ -17,11 +17,11 @@ export function SqueletteCarte() {
 
 export function EtatVide({ titre, texte, action, icone }: { titre: string; texte?: ReactNode; action?: ReactNode; icone?: ReactNode }) {
   return (
-    <div className="mx-auto flex max-w-md flex-col items-center gap-5 py-20 text-center">
-      {icone && <div className="text-bronze">{icone}</div>}
-      <p className="filet-etoile" aria-hidden>✦</p>
-      <h2 className="titre-2">{titre}</h2>
-      {texte && <p className="texte-doux">{texte}</p>}
+    // État vide de la référence (panier vide) : rond 64 px encre 5 %, titre Archivo Black 18 px capitales, texte gris 14 px max 280 px.
+    <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-20 text-center">
+      {icone && <div className="mb-2 grid h-16 w-16 place-items-center rounded-full bg-encre/5 text-encre">{icone}</div>}
+      <h2 className="font-display text-[18px] uppercase tracking-[0.04em]">{titre}</h2>
+      {texte && <p className="max-w-[280px] text-sm leading-relaxed text-gris">{texte}</p>}
       {action}
     </div>
   )

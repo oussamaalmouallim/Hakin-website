@@ -21,11 +21,18 @@
     "image": "/images/produits/veste-tech-windrunner-nike/1"
   },
   {
-    "slug": "pantalons",
-    "nom": "Pantalons & jeans",
-    "accroche": "Jeans, pantalons slim et pantalons de survêtement.",
+    "slug": "jeans",
+    "nom": "Jeans",
+    "accroche": "Jean slim cinq poches et jean noir.",
     "actif": true,
     "image": "/images/produits/jean-slim-cinq-poches-kiabi/1"
+  },
+  {
+    "slug": "pantalons",
+    "nom": "Pantalons",
+    "accroche": "Pantalons slim, de survêtement en fleece et pantalon technique.",
+    "actif": true,
+    "image": "/images/produits/pantalon-slim-defacto/1"
   },
   {
     "slug": "sneakers",

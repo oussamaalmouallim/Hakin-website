@@ -12,7 +12,7 @@ import { rechercher, suggestions } from '@/lib/recherche'
 import { formatDH } from '@/lib/format'
 import { DUREE_MENU, DUREE_PANNEAU, EASE_MAISON, EASE_PANNEAU } from '@/lib/animations'
 import { LiensReseaux } from './Reseaux'
-import { LIENS_PRINCIPAUX } from './EnTete'
+import { LIENS_PRINCIPAUX, lienActif } from './EnTete'
 
 /** Ferme tout panneau ouvert quand l'adresse change. */
 export function useFermerSurNavigation() {
@@ -100,7 +100,7 @@ export function MenuMobile() {
           </button>
           <nav aria-label="Menu mobile" className="flex flex-col gap-5">
             {liens.map(l => (
-              <Link key={l.vers} to={l.vers} aria-current={pathname + search === l.vers ? 'page' : undefined}
+              <Link key={l.vers} to={l.vers} aria-current={lienActif(l.vers, pathname, search) ? 'page' : undefined}
                 className={`font-display text-[clamp(28px,9vw,36px)] leading-none tracking-[-0.01em] ${l.solde ? 'text-danger' : 'text-encre'} aria-[current=page]:underline aria-[current=page]:decoration-accent aria-[current=page]:decoration-[3px] aria-[current=page]:underline-offset-4`}>{l.libelle}</Link>
             ))}
           </nav>

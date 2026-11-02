@@ -117,6 +117,17 @@ describe('filtres et recherche', () => {
     expect(filtresDepuisURL(filtresVersURL(g))).toEqual(g)
     expect(filtresDepuisURL(new URLSearchParams('genre=autre')).genre).toBeNull()
   })
+  it('menu : un seul lien souligné (Hommes, Femmes, Soldes, Boutique, Accueil)', async () => {
+    const { lienActif, LIENS_PRINCIPAUX } = await import('@/components/EnTete')
+    const actifs = (chemin: string, requete = '') => LIENS_PRINCIPAUX.filter(l => lienActif(l.vers, chemin, requete)).map(l => l.libelle)
+    expect(actifs('/boutique', '?genre=homme')).toEqual(['Hommes'])
+    expect(actifs('/boutique', '?genre=femme&tri=nom')).toEqual(['Femmes'])
+    expect(actifs('/boutique', '?solde=1')).toEqual(['Soldes'])
+    expect(actifs('/boutique', '?marque=Nike')).toEqual(['Boutique'])
+    expect(actifs('/boutique/t-shirts')).toEqual(['Boutique'])
+    expect(actifs('/')).toEqual(['Accueil'])
+    expect(actifs('/panier')).toEqual([])
+  })
   it('recherche sans accents ni casse, tous les mots requis', () => {
     expect(rechercher(produits, 'ete').map(p => p.slug)).toEqual(['a'])
     expect(rechercher(produits, 'CASABLANCA rose').map(p => p.slug)).toEqual(['b'])

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Heart, Search, ShoppingBag } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Logotype } from '@/design-system'
@@ -11,7 +11,7 @@ import { SEUIL_ENTETE } from '@/lib/animations'
 import { cn } from '@/lib/utils'
 
 /** Menu principal de la référence : Boutique · Hommes · Femmes · Soldes (`/shop`, `?g=men`, `?g=women`, `?sale=1`), précédé d'Accueil.
- *  « Soldes » en rouge (Relevé `.nav-link-underline.sale`). Le lien actif suit le chemin seul, comme la référence. */
+ *  « Soldes » en rouge (Relevé `.nav-link-underline.sale`). Un seul lien souligné à la fois (`lienActif`). */
 export const LIENS_PRINCIPAUX: { vers: string; libelle: string; solde?: boolean }[] = [
   { vers: '/', libelle: 'Accueil' },
   { vers: '/boutique', libelle: 'Boutique' },
@@ -19,6 +19,19 @@ export const LIENS_PRINCIPAUX: { vers: string; libelle: string; solde?: boolean 
   { vers: '/boutique?genre=femme', libelle: 'Femmes' },
   { vers: '/boutique?solde=1', libelle: 'Soldes', solde: true },
 ]
+
+/** Un seul lien souligné : Hommes sur `?genre=homme`, Femmes sur `?genre=femme`, Soldes sur `?solde=1`,
+ *  Boutique sur la boutique hors de ces rayons, Accueil sur `/`. */
+export function lienActif(vers: string, pathname: string, search: string) {
+  const [chemin, requete] = vers.split('?')
+  const sp = new URLSearchParams(search)
+  if (requete) {
+    const [cle, valeur] = requete.split('=')
+    return pathname === chemin && sp.get(cle) === valeur
+  }
+  if (chemin === '/boutique') return pathname.startsWith('/boutique') && !sp.has('genre') && !sp.has('solde')
+  return pathname === chemin
+}
 
 /** Bouton rond 38 px de la référence (survol : fond encre 6 %). */
 function BoutonRond({ label, onClick, vers, children, compteur, className }: { label: string; onClick?: () => void; vers?: string; children: ReactNode; compteur?: number; className?: string }) {
@@ -36,6 +49,7 @@ function BoutonRond({ label, onClick, vers, children, compteur, className }: { l
 /** cloneme: C-01, A-07, A-11 — en-tête fixe de la référence : logo · liens soulignés au survol · actions.
  *  Transparent en haut de page ; au-delà de 50 px : voile flouté, filet bas, padding réduit à 14 px. */
 export function EnTete() {
+  const { pathname, search } = useLocation()
   const ouvrir = useInterface(s => s.ouvrir)
   const menuOuvert = useInterface(s => s.panneau === 'menu')
   const fermer = useInterface(s => s.fermer)
@@ -59,7 +73,8 @@ export function EnTete() {
         <ul className="flex gap-6 whitespace-nowrap xl:gap-[42px]">
           {LIENS_PRINCIPAUX.map(l => (
             <li key={l.vers}>
-              <NavLink to={l.vers} end className={({ isActive }) => cn('lien-nav text-[13px] font-medium uppercase tracking-[0.14em] text-encre xl:text-[14px] xl:tracking-[0.16em]', l.solde && 'solde', isActive && !l.vers.includes('?') && 'actif')}>{l.libelle}</NavLink>
+              <Link to={l.vers} aria-current={lienActif(l.vers, pathname, search) ? 'page' : undefined}
+                className={cn('lien-nav text-[13px] font-medium uppercase tracking-[0.14em] text-encre xl:text-[14px] xl:tracking-[0.16em]', l.solde && 'solde', lienActif(l.vers, pathname, search) && 'actif')}>{l.libelle}</Link>
             </li>
           ))}
         </ul>

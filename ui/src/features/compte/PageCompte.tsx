@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import { Heart, MapPin, Package, Trash2, User } from 'lucide-react'
 import { Bouton, BoutonLien, CaseACocher, Champ, EtatVide, Modale, PastilleCouleur, Prix, Selection, ZoneTexte, useNotifier } from '@/design-system'
@@ -13,6 +13,10 @@ import { VILLES } from '@/features/commande/PageCommande'
 import { cn } from '@/lib/utils'
 import { supabaseActif } from '@/lib/supabase'
 import { useSession } from '@/state/session'
+import { rafraichirCommandes, viderFileSynchro } from '@/state/synchroCompte'
+
+/** Connecté à un compte Supabase : les données vivent dans le compte, pas seulement sur cet appareil. */
+const useConnecte = () => useSession(s => Boolean(s.utilisateur))
 
 const ONGLETS = [
   { vers: '/compte', l: 'Profil', Icone: User, fin: true },
@@ -28,10 +32,12 @@ function Profil() {
   const [p, setP] = useState(profil)
   const [erreur, setErreur] = useState<string>()
   const [confirmer, setConfirmer] = useState(false)
+  const connecte = useConnecte()
+  useEffect(() => setP(profil), [profil])
   const enregistrer = (e: FormEvent) => {
     e.preventDefault()
     if (p.telephone && !telephoneMarocValide(p.telephone)) { setErreur('Numéro marocain attendu.'); return }
-    majProfil(p); notifier({ ton: 'succes', message: 'Profil enregistré sur cet appareil.' })
+    majProfil(p); notifier({ ton: 'succes', message: connecte ? 'Profil enregistré dans votre compte.' : 'Profil enregistré sur cet appareil.' })
   }
   return (
     <div className="max-w-xl">
@@ -41,11 +47,11 @@ function Profil() {
         <Champ label="E-mail" type="email" facultatif autoComplete="email" value={p.email} onChange={e => setP({ ...p, email: e.target.value })} />
         <div><Bouton type="submit">Enregistrer</Bouton></div>
       </form>
-      <div className="mt-16 border-t border-ligne pt-8">
+      {!connecte && <div className="mt-16 border-t border-ligne pt-8">
         <p className="label mb-2">Vos données</p>
         <p className="text-[14px] text-gris">Votre compte est enregistré uniquement dans ce navigateur, sur cet appareil. Rien n'est envoyé à un serveur.</p>
         <Bouton variante="texte" className="mt-4 text-erreur" onClick={() => setConfirmer(true)}>Effacer mes données</Bouton>
-      </div>
+      </div>}
       <Modale ouvert={confirmer} onFermer={() => setConfirmer(false)} titre="Effacer vos données ?">
         <p className="text-gris">Profil, adresses, historique des commandes et favoris seront supprimés de cet appareil. Votre panier est conservé.</p>
         <div className="mt-8 flex gap-3">
@@ -61,7 +67,9 @@ function Commandes() {
   const commandes = useCompte(s => s.commandes)
   const ajouter = usePanier(s => s.ajouter)
   const notifier = useNotifier()
-  if (!commandes.length) return <EtatVide titre="Aucune commande" texte="Les commandes envoyées depuis cet appareil apparaîtront ici." action={<BoutonLien to="/boutique" variante="contour">Découvrir la boutique</BoutonLien>} />
+  const connecte = useConnecte()
+  useEffect(() => { if (connecte) void rafraichirCommandes() }, [connecte])
+  if (!commandes.length) return <EtatVide titre="Aucune commande" texte={connecte ? 'Les commandes passées avec votre compte apparaîtront ici.' : 'Les commandes envoyées depuis cet appareil apparaîtront ici.'} action={<BoutonLien to="/boutique" variante="contour">Découvrir la boutique</BoutonLien>} />
   return (
     <ul className="flex flex-col gap-6">
       {commandes.map(c => (
@@ -146,17 +154,18 @@ function Favoris() {
 
 /** Bandeau de session : connecté (e-mail + déconnexion) ou invitation à se connecter. Les données du compte passent en base au lot 6. */
 function BandeauSession() {
-  const { utilisateur, pret, deconnexion } = useSession()
+  const { utilisateur, pret, deconnexion, erreurSynchro } = useSession()
   const naviguer = useNavigate()
   const notifier = useNotifier()
   if (!supabaseActif || !pret) return null
-  return utilisateur ? (
+  return utilisateur ? (<>
+    {erreurSynchro && <p role="alert" className="mb-4 rounded-bloc border border-danger/40 bg-danger/[0.06] px-5 py-3 text-[14px] text-danger">{erreurSynchro}</p>}
     <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-bloc border border-ligne bg-fond-2 px-5 py-4">
       <p className="text-[14px]"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-gris">Connecté · </span>{utilisateur.email}</p>
-      <button type="button" onClick={async () => { await deconnexion(); notifier({ ton: 'info', message: 'Vous êtes déconnecté.' }); naviguer('/connexion', { replace: true }) }}
+      <button type="button" onClick={async () => { await viderFileSynchro(); await deconnexion(); notifier({ ton: 'info', message: 'Vous êtes déconnecté.' }); naviguer('/connexion', { replace: true }) }}
         className="rounded-full border border-encre px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-encre transition-colors hover:bg-encre hover:text-fond">Se déconnecter</button>
     </div>
-  ) : (
+  </>) : (
     <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-bloc border border-ligne bg-fond-2 px-5 py-4">
       <p className="text-[14px] text-gris">Connectez-vous pour retrouver vos commandes et votre panier sur tous vos appareils.</p>
       <div className="flex gap-2">
@@ -169,9 +178,10 @@ function BandeauSession() {
 
 export function PageCompte() {
   const nom = useCompte(s => s.profil.nom)
+  const connecte = useConnecte()
   return (
     <>
-      <EnTetePage surtitre="Mon compte" titre={nom ? `Bonjour, ${nom.split(' ')[0]}` : 'Mon compte'} texte="Vos informations restent sur cet appareil et pré-remplissent vos commandes."
+      <EnTetePage surtitre="Mon compte" titre={nom ? `Bonjour, ${nom.split(' ')[0]}` : 'Mon compte'} texte={connecte ? 'Votre profil, vos adresses, votre panier et vos commandes sont enregistrés dans votre compte.' : 'Vos informations restent sur cet appareil et pré-remplissent vos commandes.'}
         ariane={[{ libelle: 'Accueil', vers: '/' }, { libelle: 'Mon compte' }]} />
       <div className="conteneur grid gap-12 lg:grid-cols-[220px_1fr] lg:gap-20">
         <nav aria-label="Sections du compte" className="defilement-masque -mx-4 flex gap-6 overflow-x-auto overscroll-x-contain border-b border-ligne px-4 lg:mx-0 lg:flex-col lg:gap-1 lg:border-0 lg:px-0">

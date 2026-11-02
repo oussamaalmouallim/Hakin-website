@@ -20,6 +20,7 @@ import { PageConfirmation } from './features/commande/PageConfirmation'
 import { PageCompte } from './features/compte/PageCompte'
 import { PageConnexion } from './features/compte/PageConnexion'
 import { useSession } from './state/session'
+import { brancherSynchroCompte } from './state/synchroCompte'
 import { PageContact } from './features/infos/PageContact'
 import { PageMaison } from './features/infos/PageMaison'
 import { PageInfo } from './features/infos/PagesInfo'
@@ -45,6 +46,7 @@ export default function App() {
   useSynchroOnglets()
   const demarrerSession = useSession(s => s.demarrer)
   useEffect(() => { void demarrerSession() }, [demarrerSession])
+  useEffect(() => brancherSynchroCompte(), [])
   // Page de connexion plein écran comme la référence : ni en-tête, ni pied, ni repère latéral.
   const pleinEcran = location.pathname.startsWith('/connexion')
   return (

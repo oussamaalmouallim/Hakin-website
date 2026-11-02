@@ -2,13 +2,16 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { CommandeEnvoyee } from '@/lib/types'
 
-/** Compte LOCAL : tout reste dans le navigateur de cet appareil (aucun serveur). */
+/** Compte affiché par le site. Visiteur : gardé dans ce navigateur. Connecté : miroir du compte Supabase,
+ *  chargé et enregistré par `state/synchroCompte.ts` (ADR 0005). */
 export interface Adresse { id: string; libelle: string; ville: string; adresse: string; instructions: string; parDefaut: boolean }
 
 interface EtatCompte {
   profil: { nom: string; telephone: string; email: string }
   adresses: Adresse[]
   commandes: CommandeEnvoyee[]
+  /** Compte Supabase dont ces données sont le miroir (`null` = visiteur, données locales). */
+  proprietaire: string | null
   majProfil: (p: Partial<EtatCompte['profil']>) => void
   enregistrerAdresse: (a: Omit<Adresse, 'id'> & { id?: string }) => void
   supprimerAdresse: (id: string) => void
@@ -16,7 +19,7 @@ interface EtatCompte {
   toutEffacer: () => void
 }
 
-const VIDE = { profil: { nom: '', telephone: '', email: '' }, adresses: [] as Adresse[], commandes: [] as CommandeEnvoyee[] }
+const VIDE = { profil: { nom: '', telephone: '', email: '' }, adresses: [] as Adresse[], commandes: [] as CommandeEnvoyee[], proprietaire: null as string | null }
 
 export const useCompte = create<EtatCompte>()(persist(set => ({
   ...VIDE,

@@ -12,6 +12,8 @@ interface EtatSession {
   pret: boolean
   /** Arrivée depuis le lien « mot de passe oublié » : la page propose de choisir un nouveau mot de passe. */
   recuperation: boolean
+  /** Dernière erreur d'enregistrement du compte (panier, profil, adresses) ; `null` si tout est à jour. */
+  erreurSynchro: string | null
   demarrer: () => Promise<void>
   connexion: (email: string, motDePasse: string, souvenir: boolean) => Promise<Resultat>
   inscription: (d: { prenom: string; nom: string; email: string; motDePasse: string }) => Promise<Resultat & { confirmationRequise?: boolean }>
@@ -54,6 +56,7 @@ export const useSession = create<EtatSession>()((set) => ({
   utilisateur: null,
   pret: !supabaseActif,
   recuperation: false,
+  erreurSynchro: null,
 
   demarrer: async () => {
     if (demarre) return

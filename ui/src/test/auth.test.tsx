@@ -19,7 +19,11 @@ const auth = {
   resend: vi.fn(async () => ({ error: null })),
 }
 const memoriserSession = vi.fn()
-vi.mock('@/lib/supabase', () => ({ supabaseActif: true, memoriserSession, obtenirSupabase: async () => ({ auth }) }))
+// Tables vides : la synchro du compte (lot 6) lit et écrit sans erreur.
+const requete: Record<string, unknown> = {}
+for (const m of ['select', 'eq', 'in', 'order', 'maybeSingle', 'update', 'upsert', 'delete']) requete[m] = () => requete
+requete.then = (ok: (v: unknown) => unknown) => Promise.resolve({ data: null, error: null }).then(ok)
+vi.mock('@/lib/supabase', () => ({ supabaseActif: true, memoriserSession, obtenirSupabase: async () => ({ auth, from: () => requete }) }))
 
 window.scrollTo = vi.fn() as never
 class IO { observe() {} unobserve() {} disconnect() {} }

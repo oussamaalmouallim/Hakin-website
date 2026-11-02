@@ -1,7 +1,8 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type InputHTMLAttributes, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { Logotype, useNotifier } from '@/design-system'
+import { ChampLigne as ChampAuth } from '@/components/ChampLigne'
 import { boutique, estPackshot, produits, srcImage } from '@/lib/catalogue'
 import { formatDH } from '@/lib/format'
 import { supabaseActif } from '@/lib/supabase'
@@ -12,34 +13,6 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MDP_MIN = 8
 /** Retour après connexion : chemin interne seulement (jamais `//autre-site`). */
 export const retourSur = (v: string | null) => (v && v.startsWith('/') && !v.startsWith('//') ? v : '/compte')
-
-/** cloneme: C-26 — champ de la page d'authentification de la référence : libellé mono 10 px .2em gris, champ `px-4 py-3`
- *  rayon 10 px, filet fort puis encre au focus ; erreur = filet rouge + message mono 10 px .15em rouge en capitales. */
-function ChampAuth({ label, erreur, motDePasse, ...p }: { label: string; erreur?: string; motDePasse?: boolean } & InputHTMLAttributes<HTMLInputElement>) {
-  const id = useId()
-  const [visible, setVisible] = useState(false)
-  const champ = (
-    <input id={id} {...p} type={motDePasse ? (visible ? 'text' : 'password') : p.type}
-      aria-invalid={erreur ? true : undefined} aria-describedby={erreur ? `${id}-e` : undefined}
-      className={cn('w-full rounded-[10px] border bg-transparent px-4 py-3 text-[15px] text-encre outline-none transition-colors',
-        motDePasse && 'pr-12', erreur ? 'border-danger' : 'border-ligne-forte focus:border-encre')} />
-  )
-  return (
-    <div>
-      <label htmlFor={id} className="mb-1 block font-mono text-[10px] uppercase tracking-[0.2em] text-gris">{label}</label>
-      {motDePasse ? (
-        <div className="relative">
-          {champ}
-          <button type="button" onClick={() => setVisible(v => !v)} aria-label={visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} aria-pressed={visible}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gris transition-colors hover:text-encre">
-            {visible ? <EyeOff className="h-[18px] w-[18px]" strokeWidth={1.75} /> : <Eye className="h-[18px] w-[18px]" strokeWidth={1.75} />}
-          </button>
-        </div>
-      ) : champ}
-      {erreur && <p id={`${id}-e`} className="mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreur}</p>}
-    </div>
-  )
-}
 
 /** Bouton principal de la référence : pleine largeur, encre, Archivo Black 13 px, grossit de 2 % au survol, 60 % pendant l'envoi. */
 function BoutonEnvoi({ envoi, children }: { envoi: boolean; children: ReactNode }) {

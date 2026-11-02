@@ -1,15 +1,20 @@
-import { useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { Check, ChevronDown } from 'lucide-react'
-import { Bouton, BoutonLien, Cadre, CaseACocher, Champ, EtatVide, IconeWhatsApp, ImageProduit, PastilleCouleur, Selection, ZoneTexte } from '@/design-system'
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { ArrowLeft, Banknote, Loader2 } from 'lucide-react'
+import { AConfirmer, BoutonLien, EtatVide, ImageProduit, PastilleCouleur } from '@/design-system'
 import { EnTetePage } from '@/components/EnTetePage'
-import { Recapitulatif } from '@/features/panier/Recapitulatif'
-import { lignesDetaillees, nbArticles, sousTotal, usePanier } from '@/state/panier'
+import { ChampLigne, SelectionLigne, ZoneLigne } from '@/components/ChampLigne'
+import { lignesDetaillees, nbArticles, usePanier } from '@/state/panier'
 import { useCompte } from '@/state/compte'
+import { useSession } from '@/state/session'
+import { rafraichirCommandes } from '@/state/synchroCompte'
 import { formatDH, genererReference, telephoneMarocValide } from '@/lib/format'
-import { boutique, estPackshot, trouverProduit } from '@/lib/catalogue'
+import { MODE_DEMO, boutique, estPackshot, trouverProduit } from '@/lib/catalogue'
 import { ligneDirecte } from '@/lib/commandeDirecte'
+import { enregistrerCommande } from '@/lib/commandes'
+import { supabaseActif } from '@/lib/supabase'
 import { lienWhatsApp, messageCommande } from '@/lib/whatsapp'
+import { cn } from '@/lib/utils'
 import type { CoordonneesClient } from '@/lib/types'
 
 export const VILLES = ['Casablanca', 'Rabat', 'Marrakech', 'Tanger', 'Fès', 'Agadir', 'Meknès', 'Oujda', 'Kénitra', 'Tétouan', 'El Jadida', 'Mohammédia', 'Autre ville']
@@ -26,38 +31,52 @@ export function validerCommande(c: CoordonneesClient, cgv: boolean): Erreurs {
   return e
 }
 
-function Etape({ n, titre, children }: { n: number; titre: string; children: ReactNode }) {
+/** cloneme: C-28 — section numérotée du checkout de la référence : titre Archivo Black 18 px .04em, pastille jaune 28 px chiffre mono 12 px. */
+function Section({ n, titre, children }: { n: number; titre: string; children: ReactNode }) {
   return (
-    // Bordure portée par le conteneur : sur un <fieldset>, la <legend> se poserait sur le filet.
-    <div className="border-t border-ligne py-10">
-      <fieldset className="min-w-0">
-        <legend className="flex items-center gap-4">
-          <span className="grid h-8 w-8 place-items-center rounded-full border border-encre font-display text-[15px]">{n}</span>
-          <span className="titre-3">{titre}</span>
-        </legend>
-        <div className="mt-8 grid gap-7 sm:grid-cols-2">{children}</div>
-      </fieldset>
-    </div>
+    <section aria-labelledby={`etape-${n}`}>
+      <h2 id={`etape-${n}`} className="mb-6 flex items-center gap-3 font-display text-[18px] uppercase tracking-[0.04em]">
+        <span aria-hidden className="grid h-7 w-7 place-items-center rounded-full bg-accent font-mono text-[12px]">{n}</span>{titre}
+      </h2>
+      {children}
+    </section>
   )
 }
 
+/** cloneme: P-05 — checkout de la référence (`/checkout`) : retour mono + « Commander » 32 px, grille 1fr / 440 px écart 48 px ;
+ *  à gauche 3 sections (adresse, livraison, paiement), à droite récapitulatif noir collant (C-29).
+ *  H MODE : paiement à la livraison uniquement (pas d'avance), frais et délai « À confirmer », pas de code promo ;
+ *  commande enregistrée dans Supabase (`passer_commande`) puis envoyée sur WhatsApp. */
 export function PageCommande() {
   const naviguer = useNavigate()
+  const { pathname, search } = useLocation()
   const [sp] = useSearchParams()
   const panier = usePanier(s => s.lignes)
+  const vider = usePanier(s => s.vider)
   // Commande directe (`?article=…`) : cette seule pièce, le panier reste intact.
   const directe = sp.has('article') ? ligneDirecte(sp) : null
   const lignes = directe ? [directe] : panier
   const details = lignesDetaillees(lignes)
-  const { profil, adresses } = useCompte()
+  const { profil, adresses, majProfil, enregistrerAdresse, ajouterCommande } = useCompte()
+  const utilisateur = useSession(s => s.utilisateur)
   const parDefaut = adresses.find(a => a.parDefaut)
   const [c, setC] = useState<CoordonneesClient>({ nom: profil.nom, telephone: profil.telephone, email: profil.email,
     ville: parDefaut?.ville ?? '', adresse: parDefaut?.adresse ?? '', instructions: parDefaut?.instructions ?? '' })
   const [cgv, setCgv] = useState(false)
+  const [memoriser, setMemoriser] = useState(true)
   const [erreurs, setErreurs] = useState<Erreurs>({})
+  const [envoi, setEnvoi] = useState(false)
+  const [alerte, setAlerte] = useState<string | null>(null)
   const formulaire = useRef<HTMLFormElement>(null)
-  const reference = useMemo(() => genererReference(), [])
+  // Démo (prix fictifs) : la commande est bien enregistrée, mais repérable et supprimable par la boutique.
+  const reference = useMemo(() => `${MODE_DEMO ? 'DEMO-' : ''}${genererReference()}`, [])
   const maj = (k: keyof CoordonneesClient) => (e: { target: { value: string } }) => { setC(x => ({ ...x, [k]: e.target.value })); setErreurs(x => ({ ...x, [k]: undefined })) }
+
+  // Compte chargé après l'arrivée sur la page (connexion, actualisation) : on complète seulement les champs encore vides.
+  useEffect(() => {
+    setC(x => ({ nom: x.nom || profil.nom, telephone: x.telephone || profil.telephone, email: x.email || profil.email,
+      ville: x.ville || parDefaut?.ville || '', adresse: x.adresse || parDefaut?.adresse || '', instructions: x.instructions || parDefaut?.instructions || '' }))
+  }, [profil, parDefaut])
 
   if (sp.has('article') && !details.length) {
     const p = trouverProduit(sp.get('article') ?? '')
@@ -68,83 +87,188 @@ export function PageCommande() {
     return (<><EnTetePage titre="Commande" /><EtatVide titre="Votre panier est vide" texte="Ajoutez des pièces avant de passer commande." action={<BoutonLien to="/boutique">Découvrir la boutique</BoutonLien>} /></>)
   }
 
-  const total = sousTotal(lignes)
-  const nb = nbArticles(lignes)
-  const resume = (
-    <>
-      <ul className="mb-6 flex flex-col gap-4">
-        {details.map(l => (
-          <li key={l.cle} className="flex items-center gap-4">
-            <div className="relative w-14 shrink-0"><Cadre compact className="aspect-[4/5]"><ImageProduit src={l.produit.images[0].src} alt="" packshot={estPackshot(l.produit)} className="absolute inset-0" tailles="56px" /></Cadre>
-              <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-encre text-[10px] text-nacre" aria-label={`Quantité ${l.quantite}`}>{l.quantite}</span></div>
-            <div className="min-w-0 flex-1 text-[14px]"><p className="truncate">{l.produit.nom}</p><p className="flex items-center gap-2 text-gris"><PastilleCouleur nom={l.coloris} /><span aria-hidden>·</span>{l.taille}</p></div>
-          </li>
-        ))}
-      </ul>
-      <Recapitulatif sousTotalDH={total} nbArticles={nb} />
-    </>
-  )
+  const total = details.reduce((s, l) => s + l.totalDH, 0)
+  const nb = nbArticles(details)
+  const adresseConnue = adresses.some(a => a.ville === c.ville && a.adresse.trim() === c.adresse.trim())
+  const retour = directe ? { vers: `/produit/${directe.slug}`, libelle: 'Retour à la pièce' } : { vers: '/panier', libelle: 'Retour au panier' }
 
-  const envoyer = (ev: FormEvent) => {
+  const envoyer = async (ev: FormEvent) => {
     ev.preventDefault()
+    if (envoi) return
+    setAlerte(null)
     const e = validerCommande(c, cgv)
     setErreurs(e)
     if (Object.keys(e).length) {
       window.setTimeout(() => formulaire.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(), 0)
       return
     }
+    const aCommander = details.map(l => ({ slug: l.slug, nom: l.produit.nom, coloris: l.coloris, taille: l.taille, quantite: l.quantite, prixDH: l.prixDH }))
     const msg = messageCommande(reference, details.map(l => ({ nom: `${l.produit.marque} — ${l.produit.nom}`, coloris: l.coloris, taille: l.taille, quantite: l.quantite, prixDH: l.prixDH })), c)
     const lien = lienWhatsApp(msg)
-    window.open(lien, '_blank', 'noopener,noreferrer')
-    naviguer('/commande/confirmation', { state: { reference, client: c, lien, ...(directe && { directe: [directe] }) } })
+
+    // Site sans serveur : fonctionnement d'origine (ADR 0001), la commande part sur WhatsApp et le client confirme l'envoi.
+    if (!supabaseActif) {
+      window.open(lien, '_blank', 'noopener,noreferrer')
+      naviguer('/commande/confirmation', { state: { reference, client: c, lien, ...(directe && { directe: [directe] }) } })
+      return
+    }
+
+    // Onglet ouvert pendant le clic (sinon bloqué par le navigateur), dirigé vers WhatsApp une fois la commande enregistrée.
+    const onglet = window.open('', '_blank')
+    setEnvoi(true)
+    const r = await enregistrerCommande(reference, c, aCommander)
+    setEnvoi(false)
+    if (r.statut !== 'enregistree') {
+      onglet?.close()
+      setAlerte(r.statut === 'erreur' ? r.message : 'Les commandes ne peuvent pas être enregistrées pour le moment.')
+      return
+    }
+    if (onglet) { onglet.opener = null; onglet.location.href = lien }
+
+    // Commande enregistrée : le panier est vidé (pas pour une commande directe), les coordonnées complètent le compte.
+    if (!directe) vider()
+    majProfil({ nom: profil.nom || c.nom.trim(), telephone: profil.telephone || c.telephone.trim(), email: profil.email || c.email.trim() })
+    if (utilisateur && memoriser && !adresseConnue) {
+      enregistrerAdresse({ libelle: c.ville, ville: c.ville, adresse: c.adresse.trim(), instructions: c.instructions.trim(), parDefaut: adresses.length === 0 })
+    }
+    if (utilisateur) void rafraichirCommandes()
+    else ajouterCommande({ reference: r.reference, date: new Date().toISOString(), sousTotalDH: total, client: c,
+      lignes: aCommander.map(l => ({ ...l, cle: `${l.slug}|${l.coloris}|${l.taille}` })) })
+    naviguer('/commande/confirmation', { replace: true, state: { reference: r.reference, client: c, lien, enregistree: true, lignes: aCommander, totalDH: total } })
   }
 
+  const etiquetteRecap = 'font-mono text-[10px] uppercase tracking-[0.16em] text-fond/50'
   return (
-    <>
-      <EnTetePage surtitre="Commande" titre="Finaliser votre commande" texte="Votre commande est transmise sur WhatsApp, où nous la confirmons avec vous. Paiement à la livraison."
-        ariane={directe ? [{ libelle: details[0].produit.nom, vers: `/produit/${directe.slug}` }, { libelle: 'Commande' }] : [{ libelle: 'Panier', vers: '/panier' }, { libelle: 'Commande' }]} />
-      <div className="conteneur grid gap-12 lg:grid-cols-[1fr_400px] lg:gap-20">
-        <details className="group -mb-12 border-t border-ligne lg:hidden">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
-            <span className="label inline-flex items-center gap-2">Votre commande · {nb} article{nb > 1 ? 's' : ''}
-              <ChevronDown className="h-3.5 w-3.5 transition-transform duration-300 group-open:rotate-180" aria-hidden /></span>
-            <span className="tabular-nums">{formatDH(total)}</span>
-          </summary>
-          <div className="pb-6">{resume}</div>
-        </details>
-        <form ref={formulaire} noValidate onSubmit={envoyer} aria-label="Formulaire de commande">
-          <Etape n={1} titre="Vos coordonnées">
-            <Champ label="Nom complet" autoComplete="name" value={c.nom} onChange={maj('nom')} erreur={erreurs.nom} required />
-            <Champ label="Téléphone (WhatsApp)" type="tel" inputMode="tel" autoComplete="tel" placeholder="06 12 34 56 78" value={c.telephone} onChange={maj('telephone')} erreur={erreurs.telephone} required />
-            <div className="sm:col-span-2"><Champ label="E-mail" type="email" autoComplete="email" facultatif value={c.email} onChange={maj('email')} erreur={erreurs.email} /></div>
-          </Etape>
-          <Etape n={2} titre="Livraison">
-            <Selection label="Ville" value={c.ville} onChange={maj('ville')} erreur={erreurs.ville} required>
-              <option value="">Choisir…</option>{VILLES.map(v => <option key={v}>{v}</option>)}
-            </Selection>
-            <Champ label="Adresse" autoComplete="street-address" value={c.adresse} onChange={maj('adresse')} erreur={erreurs.adresse} required />
-            <div className="sm:col-span-2"><ZoneTexte label="Instructions de livraison" facultatif rows={2} value={c.instructions} onChange={maj('instructions')} placeholder="Étage, repère, horaires…" /></div>
-          </Etape>
-          <Etape n={3} titre="Paiement">
-            <div className="sm:col-span-2">
-              <div className="flex items-center gap-4 border border-encre p-5">
-                <span className="grid h-5 w-5 place-items-center rounded-full bg-encre text-nacre"><Check className="h-3 w-3" /></span>
-                <div><p className="font-display text-[19px]">{boutique.paiement}</p><p className="text-[14px] text-gris">Vous réglez à la réception de votre commande.</p></div>
+    <div className="min-h-screen pt-20">
+      <div className="px-5 py-8 md:px-14">
+        <Link to={retour.vers} className="mb-6 flex w-fit items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-gris transition-colors hover:text-encre">
+          <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} />{retour.libelle}
+        </Link>
+        <div className="mb-8 flex flex-wrap items-baseline justify-between gap-4">
+          <h1 className="font-display text-[32px] uppercase tracking-[0.02em]">Commander</h1>
+          {supabaseActif && !utilisateur && (
+            <Link to={`/connexion?retour=${encodeURIComponent(pathname + search)}`} className="font-mono text-[11px] uppercase tracking-[0.18em] text-gris underline underline-offset-4 hover:text-encre">
+              Déjà client ? Se connecter
+            </Link>
+          )}
+        </div>
+
+        <form ref={formulaire} noValidate onSubmit={envoyer} aria-label="Formulaire de commande" className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_440px]">
+          <div className="flex min-w-0 flex-col gap-10">
+            <Section n={1} titre="Adresse de livraison">
+              {utilisateur && adresses.length > 0 && (
+                <div className="mb-5 flex flex-wrap gap-2" role="group" aria-label="Adresses enregistrées">
+                  {adresses.map(a => {
+                    const choisie = a.ville === c.ville && a.adresse === c.adresse
+                    return (
+                      <button key={a.id} type="button" aria-pressed={choisie} onClick={() => { setC(x => ({ ...x, ville: a.ville, adresse: a.adresse, instructions: a.instructions })); setErreurs(x => ({ ...x, ville: undefined, adresse: undefined })) }}
+                        className={cn('rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors', choisie ? 'border-encre bg-encre text-fond' : 'border-ligne-forte text-encre hover:border-encre')}>
+                        {a.libelle || a.ville}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+              <div className="grid gap-4">
+                <ChampLigne label="Nom complet" autoComplete="name" value={c.nom} onChange={maj('nom')} erreur={erreurs.nom} />
+                <ChampLigne label="Téléphone (WhatsApp)" type="tel" inputMode="tel" autoComplete="tel" placeholder="06 12 34 56 78" value={c.telephone} onChange={maj('telephone')} erreur={erreurs.telephone} />
+                <ChampLigne label="E-mail" type="email" autoComplete="email" facultatif value={c.email} onChange={maj('email')} erreur={erreurs.email} />
+                <SelectionLigne label="Ville" value={c.ville} onChange={maj('ville')} erreur={erreurs.ville}>
+                  <option value="">Choisir…</option>{VILLES.map(v => <option key={v}>{v}</option>)}
+                </SelectionLigne>
+                <ChampLigne label="Adresse" autoComplete="street-address" value={c.adresse} onChange={maj('adresse')} erreur={erreurs.adresse} />
+                <ZoneLigne label="Instructions de livraison" facultatif rows={2} value={c.instructions} onChange={maj('instructions')} placeholder="Étage, repère, horaires…" />
+                {utilisateur && !adresseConnue && c.adresse.trim().length >= 6 && (
+                  <label className="flex cursor-pointer items-center gap-2">
+                    <input type="checkbox" checked={memoriser} onChange={() => setMemoriser(v => !v)} className="accent-encre" />
+                    <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-gris">Enregistrer cette adresse dans mon compte</span>
+                  </label>
+                )}
+              </div>
+            </Section>
+
+            <Section n={2} titre="Livraison">
+              {/* Référence : carte filet encre rayon 14 px fond --fond-2. Frais et délai non communiqués par la boutique : « À confirmer ». */}
+              <div className="flex flex-wrap items-center gap-4 rounded-[14px] border border-encre bg-fond-2 p-4">
+                <div className="flex-1">
+                  <p className="font-display text-[14px] uppercase tracking-[0.04em]">Livraison à domicile</p>
+                  <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-gris">{boutique.livraison.delai ?? 'Délai confirmé sur WhatsApp'}{boutique.livraison.zones ? ` · ${boutique.livraison.zones}` : ''}</p>
+                </div>
+                {boutique.livraison.fraisDH !== null ? <span className="font-display text-[16px]">{boutique.livraison.fraisDH === 0 ? 'Offerte' : formatDH(boutique.livraison.fraisDH)}</span> : <AConfirmer>Frais à confirmer</AConfirmer>}
+              </div>
+            </Section>
+
+            <Section n={3} titre="Méthode de paiement">
+              {/* Référence : carte filet 2 px encre rayon 18 px, icône sur carré encre 48 px, bouton radio plein, coches jaunes. Sans avance chez H MODE. */}
+              <div className="rounded-[18px] border-2 border-encre bg-fond-2 p-6">
+                <div className="mb-4 flex items-center gap-4">
+                  <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-encre text-fond"><Banknote className="h-5 w-5" strokeWidth={1.75} /></div>
+                  <div>
+                    <p className="font-display text-[16px] uppercase tracking-[0.04em]">{boutique.paiement}</p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-gris">Vous réglez à la réception</p>
+                  </div>
+                  <span aria-hidden className="ml-auto grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 border-encre"><span className="h-3 w-3 rounded-full bg-encre" /></span>
+                </div>
+                <ul className="flex flex-col gap-2">
+                  {['Aucune carte bancaire requise', 'Rien à payer en ligne', 'Commande confirmée avec vous sur WhatsApp'].map(t => (
+                    <li key={t} className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-gris"><span className="font-display text-[14px] text-accent">✓</span>{t}</li>
+                  ))}
+                </ul>
+              </div>
+            </Section>
+          </div>
+
+          {/* cloneme: C-29 — récapitulatif de la référence : bloc encre rayon 24 px `p-8` collant, vignettes 56 px, totaux à filets,
+              encart jaune, bouton jaune « Passer la commande » (+2 % au survol), mention mono 9 px. */}
+          <aside className="self-start rounded-3xl bg-encre p-8 text-fond md:sticky md:top-[100px]">
+            <h2 className="mb-6 font-display text-[18px] uppercase tracking-[0.04em]">Récapitulatif</h2>
+            <ul className="mb-6 flex flex-col gap-4">
+              {details.map(l => (
+                <li key={l.cle} className="flex items-center gap-3">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-[10px] bg-fond/[0.06]">
+                    <ImageProduit src={l.produit.images[0].src} alt="" packshot={estPackshot(l.produit)} className="absolute inset-0" tailles="56px" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-display text-[13px]">{l.produit.nom}</p>
+                    <p className={cn(etiquetteRecap, 'mt-0.5 flex items-center gap-1.5')}>Taille {l.taille}<span aria-hidden>·</span><PastilleCouleur nom={l.coloris} /><span aria-hidden>·</span>Qté {l.quantite}</p>
+                  </div>
+                  <span className="shrink-0 font-display text-[14px] tabular-nums">{formatDH(l.totalDH)}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mb-6 flex flex-col gap-2 border-t border-fond/10 pt-4">
+              <div className="flex justify-between text-[13px] text-fond/60"><span>Sous-total · {nb} article{nb > 1 ? 's' : ''}</span><span className="tabular-nums">{formatDH(total)}</span></div>
+              <div className="flex justify-between text-[13px] text-fond/60"><span>Livraison</span><span>{boutique.livraison.fraisDH === null ? 'À confirmer' : boutique.livraison.fraisDH === 0 ? 'Offerte' : formatDH(boutique.livraison.fraisDH)}</span></div>
+              <div className="mt-2 flex items-baseline justify-between border-t border-fond/10 pt-2">
+                <span className="font-display text-[15px] uppercase tracking-[0.08em]">Total</span>
+                <span className="font-display text-[26px] tabular-nums">{formatDH(total)}</span>
               </div>
             </div>
-            <div className="sm:col-span-2">
-              <CaseACocher checked={cgv} onChange={() => { setCgv(v => !v); setErreurs(x => ({ ...x, cgv: undefined })) }} erreur={erreurs.cgv}
-                label={<>J'accepte les <Link to="/cgv" target="_blank" className="underline underline-offset-4">conditions de vente</Link>.</>} />
+            <div className="mb-6 rounded-[18px] bg-accent p-5 text-encre">
+              <div className="flex items-start justify-between gap-3">
+                <p className="font-display text-[14px] uppercase leading-[1.25] tracking-[0.04em]">À payer à la livraison</p>
+                <p className="whitespace-nowrap font-display text-[24px] leading-none tabular-nums">{formatDH(total)}</p>
+              </div>
+              <p className="mt-3 text-[13px] leading-[1.5]">Rien à payer en ligne. {boutique.livraison.fraisDH === null && 'Les frais de livraison vous sont confirmés sur WhatsApp.'}</p>
             </div>
-          </Etape>
-          <div className="border-t border-ligne pt-10">
-            <p className="mb-5 flex items-baseline justify-between text-[17px]"><span>Total estimé · {nb} article{nb > 1 ? 's' : ''}</span><span className="tabular-nums">{formatDH(total)}</span></p>
-            <Bouton type="submit" taille="lg" plein_largeur icone={<IconeWhatsApp className="h-4 w-4 text-whatsapp" />}>Envoyer ma commande sur WhatsApp</Bouton>
-            <p className="mt-4 text-center text-[13px] text-gris">WhatsApp s'ouvre avec votre commande pré-remplie (réf. {reference}). Il vous suffit d'appuyer sur « Envoyer ».</p>
-          </div>
+            <label className="mb-4 flex cursor-pointer items-start gap-2">
+              <input type="checkbox" checked={cgv} onChange={() => { setCgv(v => !v); setErreurs(x => ({ ...x, cgv: undefined })) }} aria-invalid={erreurs.cgv ? true : undefined} className="mt-[2px] accent-accent" />
+              <span className="font-mono text-[10px] uppercase leading-[1.5] tracking-[0.16em] text-fond/70">
+                J'accepte les <Link to="/cgv" target="_blank" className="text-fond underline underline-offset-2">conditions de vente</Link> et la <Link to="/confidentialite" target="_blank" className="text-fond underline underline-offset-2">politique de confidentialité</Link>
+              </span>
+            </label>
+            {erreurs.cgv && <p className="-mt-2 mb-4 font-mono text-[10px] uppercase tracking-[0.15em] text-accent">{erreurs.cgv}</p>}
+            {alerte && <p role="alert" className="mb-4 rounded-[10px] border border-danger/50 bg-danger/20 px-4 py-3 text-[13px] leading-[1.5] text-fond">{alerte}</p>}
+            <button type="submit" disabled={envoi} aria-busy={envoi}
+              className="flex w-full items-center justify-center gap-3 rounded-full bg-accent py-4 font-display text-[13px] uppercase tracking-[0.16em] text-encre transition-all hover:scale-[1.02] hover:bg-accent-doux disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100">
+              {envoi && <Loader2 className="h-4 w-4 animate-spin" aria-hidden />}{envoi ? 'Enregistrement…' : 'Passer la commande'}
+            </button>
+            <p className="mt-3 text-center font-mono text-[9px] uppercase tracking-[0.18em] text-fond/40">
+              {supabaseActif ? `Réf. ${reference} · enregistrée puis envoyée sur WhatsApp` : `Réf. ${reference} · envoyée sur WhatsApp, pré-remplie`}
+            </p>
+          </aside>
         </form>
-        <aside className="hidden lg:sticky lg:top-28 lg:block lg:self-start">{resume}</aside>
       </div>
-    </>
+    </div>
   )
 }

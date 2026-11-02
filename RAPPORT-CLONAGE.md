@@ -16,6 +16,7 @@
 | P-03 | `/product` | `/produit/:slug` | clonée | Onglets sans « Avis ». Commande sur WhatsApp. |
 | — | `/shop?g=men`, `?g=women`, `?sale=1` | — | non reprise | Aucune donnée genre ni solde chez H MODE. |
 | P-04 | `/auth` | `/connexion` | clonée (02/11) | Comptes Supabase (ADR 0005). Sans Google ni inscription aux « drops » ; panneau noir aux contenus réels. |
+| P-05 | `/checkout` | `/commande` | clonée (02/11) | Paiement à la livraison seul (pas d'avance), sans code promo, frais « À confirmer ». Commande enregistrée (Supabase) puis WhatsApp. |
 | — | (panier, commande, compte, infos) | `/panier`, `/commande`, `/compte`, `/contact`, `/maison`, `/faq`… | adaptées | Composants partagés de la référence (C-06, C-19, C-22, C-23, C-24). Leurs pages de commande et de compte ne sont pas visibles sans connexion. |
 
 ## Ce qui a été testé

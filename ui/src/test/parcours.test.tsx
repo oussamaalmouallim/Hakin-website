@@ -58,7 +58,7 @@ describe('parcours d\'achat', () => {
     const ouvrir = vi.spyOn(window, 'open').mockReturnValue(null)
     usePanier.getState().ajouter('a', 'noir', 'M', 1)
     monter('/commande')
-    await u.click(await screen.findByRole('button', { name: /Envoyer ma commande/ }))
+    await u.click(await screen.findByRole('button', { name: 'Passer la commande' }))
     expect(screen.getByText('Indiquez votre nom complet.')).toBeInTheDocument()
     expect(ouvrir).not.toHaveBeenCalled()
     await u.type(screen.getByLabelText('Nom complet'), 'Ali Benani')
@@ -66,7 +66,7 @@ describe('parcours d\'achat', () => {
     await u.selectOptions(screen.getByLabelText('Ville'), 'Casablanca')
     await u.type(screen.getByLabelText('Adresse'), '12 rue de la Liberté')
     await u.click(screen.getByRole('checkbox'))
-    await u.click(screen.getByRole('button', { name: /Envoyer ma commande/ }))
+    await u.click(screen.getByRole('button', { name: 'Passer la commande' }))
     expect(ouvrir).toHaveBeenCalledOnce()
     const url = decodeURIComponent(String(ouvrir.mock.calls[0][0])).replace(/\u00a0/g, ' ')
     expect(url).toContain('Dior — T-shirt Été — noir, taille M × 1 = 500 DH')
@@ -86,7 +86,7 @@ describe('parcours d\'achat', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Veuillez choisir une taille')
     await u.click(screen.getByRole('radio', { name: 'Taille M' }))
     await u.click(screen.getByRole('button', { name: 'Commander · Paiement à la livraison' }))
-    expect(await screen.findByRole('button', { name: /Envoyer ma commande/ })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Passer la commande' })).toBeInTheDocument()
     expect(screen.getAllByText('500 DH', { normalizer: t => t.replace(/\u00a0/g, ' ') }).length).toBeGreaterThan(0)
     await u.clear(screen.getByLabelText('Nom complet')) // pré-rempli par le profil du test précédent
     await u.type(screen.getByLabelText('Nom complet'), 'Sara Alaoui')
@@ -95,7 +95,7 @@ describe('parcours d\'achat', () => {
     await u.selectOptions(screen.getByLabelText('Ville'), 'Rabat')
     await u.type(screen.getByLabelText('Adresse'), '4 avenue Mohammed V')
     await u.click(screen.getByRole('checkbox'))
-    await u.click(screen.getByRole('button', { name: /Envoyer ma commande/ }))
+    await u.click(screen.getByRole('button', { name: 'Passer la commande' }))
     const url = decodeURIComponent(String(ouvrir.mock.calls[0][0])).replace(/\u00a0/g, ' ')
     expect(url).toContain('noir, taille M × 1 = 500 DH')
     await u.click(await screen.findByRole('button', { name: "J'ai envoyé ma commande" }))
@@ -105,7 +105,7 @@ describe('parcours d\'achat', () => {
   it('commande directe : variante indisponible dans l\'adresse → refusée', async () => {
     monter('/commande?article=a&coloris=noir&taille=XL&qte=1')
     expect(await screen.findByText('Variante indisponible')).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Envoyer ma commande/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Passer la commande' })).not.toBeInTheDocument()
   })
 
   it('recherche : saisie, résultats, raccourci marque, état vide, accès à la fiche', async () => {

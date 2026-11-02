@@ -29,7 +29,7 @@ export async function ecrirePanier(sb: SupabaseClient, uid: string, lignes: Lign
 interface LigneAdresse { id: string; libelle: string; ville: string; adresse: string; instructions: string; par_defaut: boolean }
 export async function lireAdresses(sb: SupabaseClient): Promise<Adresse[]> {
   const lignes = verifier(await sb.from('adresses').select('id, libelle, ville, adresse, instructions, par_defaut').order('cree_le')) as LigneAdresse[]
-  return lignes.map(a => ({ id: a.id, libelle: a.libelle, ville: a.ville, adresse: a.adresse, instructions: a.instructions, parDefaut: a.par_defaut }))
+  return (lignes ?? []).map(a => ({ id: a.id, libelle: a.libelle, ville: a.ville, adresse: a.adresse, instructions: a.instructions, parDefaut: a.par_defaut }))
 }
 /** Enregistre toutes les adresses (création ou mise à jour par id) et retire celles qui ont disparu. */
 export async function ecrireAdresses(sb: SupabaseClient, uid: string, adresses: Adresse[], retirees: string[] = []) {
@@ -48,7 +48,7 @@ export async function lireCommandes(sb: SupabaseClient): Promise<CommandeEnvoyee
   const lignes = verifier(await sb.from('commandes')
     .select('reference, cree_le, sous_total_dh, nom, telephone, email, ville, adresse, instructions, lignes_commande(slug, nom, coloris, taille, quantite, prix_dh)')
     .order('cree_le', { ascending: false })) as LigneCommande[]
-  return lignes.map(c => ({
+  return (lignes ?? []).map(c => ({
     reference: c.reference, date: c.cree_le, sousTotalDH: c.sous_total_dh,
     client: { nom: c.nom, telephone: c.telephone, email: c.email, ville: c.ville, adresse: c.adresse, instructions: c.instructions },
     lignes: c.lignes_commande.map(l => ({ cle: cleLigne(l.slug, l.coloris, l.taille), slug: l.slug, coloris: l.coloris, taille: l.taille, quantite: l.quantite, nom: l.nom, prixDH: l.prix_dh })),

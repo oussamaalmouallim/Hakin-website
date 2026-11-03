@@ -18,7 +18,7 @@ Changer une valeur ici, puis demander « applique palette.md » : le code suit.
 | `--fond-3` | `#e8e5dc` | Relevé `:root --bg-3` | survols, champs |
 | `--encre` | `#0a0a0a` | Relevé `:root --ink` | texte, boutons pleins, sections sombres |
 | `--encre-douce` | `#1c1c1a` | Approximé | cartes sur fond sombre |
-| `--gris` | `#8a8a8a` | Relevé `:root --muted` | étiquettes mono, prix barré, textes secondaires |
+| `--gris` | `#6b6b6b` | Approximé — choix H MODE du 03/11 pour l'accessibilité (4,8:1 sur `--fond`, 4,55:1 sur `--fond-2`) ; source : `#8a8a8a` Relevé `:root --muted` (3,1:1) | étiquettes mono, prix barré, textes secondaires |
 | `--gris-clair` | `#b4b2ac` | Approximé | textes désactivés, placeholders |
 | `--accent` | `#f5d000` | Relevé `:root --accent` | pastilles « Nouveau », bouton d'appel, sélection |
 | `--accent-doux` | `#ffe875` | Relevé `:root --accent-soft` | survol de l'accent |

@@ -35,7 +35,7 @@
 
 ### En-tête
 - `header` padding `22px 56px`, hauteur 104 px, fond transparent (Mesuré).
-- Logo : pastille noire ronde + nom Archivo Black + sous-ligne mono 11 px `#8a8a8a`, interlettrage 1.98 px (Mesuré).
+- Logo : pastille noire ronde + nom Archivo Black + sous-ligne mono 11 px `--gris` (`#6b6b6b` ; source `#8a8a8a`), interlettrage 1.98 px (Mesuré).
 - Liens : Space Grotesk 14 px / 500, capitales, interlettrage 2.24 px, padding `6px 0`, actif souligné (Mesuré).
 - Pilule « Connexion » : mono 11 px, bordure `--ligne-forte`, padding `8px 16px`, rayon plein (Mesuré).
 

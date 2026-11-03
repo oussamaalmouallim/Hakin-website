@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Suspense, lazy, useEffect, type ComponentType } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { transitionPage } from './lib/animations'
@@ -11,21 +11,55 @@ import { PiedDePage } from './components/PiedDePage'
 import { BoutonWhatsAppFlottant, ChargeurMarque, RepereLateral } from './components/Ambiance'
 import { PageAccueil } from './features/accueil/PageAccueil'
 import { PageBoutique } from './features/catalogue/PageBoutique'
-import { PageCollection, PageCollections } from './features/catalogue/PageCollections'
-import { PageRecherche } from './features/catalogue/PageRecherche'
 import { PageProduit } from './features/produit/PageProduit'
-import { PagePanier } from './features/panier/PagePanier'
-import { PageCommande } from './features/commande/PageCommande'
-import { PageConfirmation } from './features/commande/PageConfirmation'
-import { PageCompte } from './features/compte/PageCompte'
-import { PageConnexion } from './features/compte/PageConnexion'
 import { useSession } from './state/session'
 import { brancherSynchroCompte } from './state/synchroCompte'
-import { PageContact } from './features/infos/PageContact'
-import { PageMaison } from './features/infos/PageMaison'
-import { PageInfo } from './features/infos/PagesInfo'
-import { Page404 } from './features/infos/Page404'
-import { PageDesignSystem } from './features/infos/PageDesignSystem'
+
+/** Chargement par page. Accueil, boutique et fiche produit restent dans le paquet principal : ce sont les pages
+ *  d'arrivée (liens Insta, FB, WhatsApp), leur première image ne doit pas attendre un second fichier (mesuré : LCP mobile
+ *  +0,7 s et décalage 0,26 sinon). Chaque autre page devient un fichier à part, préchargé quand le navigateur est libre. */
+const pages = {
+  collections: () => import('./features/catalogue/PageCollections'),
+  recherche: () => import('./features/catalogue/PageRecherche'),
+  panier: () => import('./features/panier/PagePanier'),
+  commande: () => import('./features/commande/PageCommande'),
+  confirmation: () => import('./features/commande/PageConfirmation'),
+  compte: () => import('./features/compte/PageCompte'),
+  connexion: () => import('./features/compte/PageConnexion'),
+  contact: () => import('./features/infos/PageContact'),
+  maison: () => import('./features/infos/PageMaison'),
+  info: () => import('./features/infos/PagesInfo'),
+  introuvable: () => import('./features/infos/Page404'),
+  designSystem: () => import('./features/infos/PageDesignSystem'),
+}
+// Les pages exportent des fonctions nommées : on garde leur type (et donc leurs props) pour `lazy`.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const differee = <M, K extends keyof M>(charger: () => Promise<M>, nom: K) =>
+  lazy(async () => ({ default: (await charger())[nom] as M[K] & ComponentType<any> }))
+
+const PageCollections = differee(pages.collections, 'PageCollections')
+const PageCollection = differee(pages.collections, 'PageCollection')
+const PageRecherche = differee(pages.recherche, 'PageRecherche')
+const PagePanier = differee(pages.panier, 'PagePanier')
+const PageCommande = differee(pages.commande, 'PageCommande')
+const PageConfirmation = differee(pages.confirmation, 'PageConfirmation')
+const PageCompte = differee(pages.compte, 'PageCompte')
+const PageConnexion = differee(pages.connexion, 'PageConnexion')
+const PageContact = differee(pages.contact, 'PageContact')
+const PageMaison = differee(pages.maison, 'PageMaison')
+const PageInfo = differee(pages.info, 'PageInfo')
+const Page404 = differee(pages.introuvable, 'Page404')
+const PageDesignSystem = differee(pages.designSystem, 'PageDesignSystem')
+
+/** Précharge toutes les pages une fois la première affichée : la navigation suivante reste instantanée. */
+function usePrechargementPages() {
+  useEffect(() => {
+    const lancer = () => Object.values(pages).forEach(charger => { void charger() })
+    const w = window as Window & { requestIdleCallback?: (f: () => void) => number }
+    if (w.requestIdleCallback) w.requestIdleCallback(lancer)
+    else window.setTimeout(lancer, 1500)
+  }, [])
+}
 
 /** Synchronise panier, favoris et compte entre onglets. */
 function useSynchroOnglets() {
@@ -44,6 +78,7 @@ export default function App() {
   const location = useLocation()
   useFermerSurNavigation()
   useSynchroOnglets()
+  usePrechargementPages()
   const demarrerSession = useSession(s => s.demarrer)
   useEffect(() => { void demarrerSession() }, [demarrerSession])
   useEffect(() => brancherSynchroCompte(), [])
@@ -62,6 +97,8 @@ export default function App() {
       <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })}>
         {/* /boutique et /boutique/<type> partagent la même clé : filtrer par type ne rejoue pas la transition de page. */}
         <motion.main id="contenu" key={location.pathname.startsWith('/boutique') ? '/boutique' : location.pathname} {...transitionPage} className={pleinEcran ? undefined : 'min-h-[70vh]'}>
+          {/* Attente plein écran : le pied reste sous la ligne de flottaison, aucun décalage visible. */}
+          <Suspense fallback={<div className="min-h-[100svh]" aria-busy="true" />}>
           <Routes location={location}>
             <Route path="/" element={<PageAccueil />} />
             <Route path="/boutique" element={<PageBoutique />} />
@@ -87,6 +124,7 @@ export default function App() {
             <Route path="/design-system" element={<PageDesignSystem />} />
             <Route path="*" element={<Page404 />} />
           </Routes>
+          </Suspense>
         </motion.main>
       </AnimatePresence>
       {!pleinEcran && <PiedDePage />}

@@ -7,7 +7,7 @@
   --fond-3: #e8e5dc;
   --encre: #0a0a0a;
   --encre-douce: #1c1c1a;
-  --gris: #8a8a8a;
+  --gris: #6b6b6b; /* source #8a8a8a (3,1:1) foncé pour WCAG AA : 4,8:1 sur --fond */
   --gris-clair: #b4b2ac;
   --accent: #f5d000;
   --accent-doux: #ffe875;

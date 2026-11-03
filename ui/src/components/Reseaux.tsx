@@ -20,7 +20,7 @@ export function LiensReseaux({ className, clair, avecTexte }: { className?: stri
               clair ? 'border-nacre/25 group-hover:border-nacre' : 'border-encre/15 group-hover:border-encre')}>
               <Icone className="h-[17px] w-[17px]" />
             </span>
-            {avecTexte && <span className="flex flex-col leading-tight"><span className="label">{nom}</span><span className="text-[13px] opacity-70">{detail}</span></span>}
+            {avecTexte && <span className="flex flex-col leading-tight"><span className="label">{nom}</span>{/* Sur fond clair, encre 70 % suffit (≈ 8:1) ; l'opacité en plus tombait sous 4,5:1. */}<span className={cn('text-[13px]', clair && 'opacity-70')}>{detail}</span></span>}
           </a>
         </li>
       ))}

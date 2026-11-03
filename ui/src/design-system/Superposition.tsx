@@ -23,7 +23,9 @@ export function usePiegeFocus(ouvert: boolean, onFermer: () => void) {
       const els = [...ref.current.querySelectorAll<HTMLElement>(FOCUSABLES)]
       if (!els.length) return
       const [premier, dernier] = [els[0], els[els.length - 1]]
-      if (e.shiftKey && document.activeElement === premier) { e.preventDefault(); dernier.focus() }
+      // Focus encore hors du panneau (Tab pressé avant la mise au point, clic sur le voile) : on le ramène dedans.
+      if (!ref.current.contains(document.activeElement)) { e.preventDefault(); (e.shiftKey ? dernier : premier).focus() }
+      else if (e.shiftKey && document.activeElement === premier) { e.preventDefault(); dernier.focus() }
       else if (!e.shiftKey && document.activeElement === dernier) { e.preventDefault(); premier.focus() }
     }
     document.addEventListener('keydown', clavier)

@@ -32,7 +32,7 @@ function Galerie({ produit }: { produit: Produit }) {
     <div>
       <div className="grid grid-cols-2 gap-3">
         {principales.map((img, i) => (
-          <button key={img.src} type="button" onClick={() => setZoom(i)} aria-label={`Agrandir : ${img.alt}`}
+          <button key={img.src} type="button" onClick={() => setZoom(i)} aria-label={`${i === 0 && pastille ? `${pastille} — ` : ''}Agrandir : ${img.alt}`}
             className={cn('group relative aspect-square cursor-zoom-in overflow-hidden rounded-carte bg-fond-2', (principales.length === 1 || (principales.length === 3 && i === 0)) && 'col-span-2')}>
             {i === 0 && pastille && (
               <span className="absolute left-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-encre px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-fond">

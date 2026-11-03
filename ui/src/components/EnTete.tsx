@@ -67,7 +67,7 @@ export function EnTete() {
   return (
     <header data-ref="entete" className={cn('fixed inset-x-0 top-0 z-[100] flex items-center justify-between border-b px-5 py-4 transition-all duration-300 md:px-14 md:py-[22px]',
       defile ? 'border-[var(--ligne-entete)] bg-[var(--voile-entete)] !py-3.5 backdrop-blur-[18px] backdrop-saturate-[1.4]' : 'border-transparent')}>
-      <Link to="/" aria-label="H MODE — accueil" className="flex shrink-0 items-center gap-2.5"><Logotype /></Link>
+      <Link to="/" className="flex shrink-0 items-center gap-2.5"><Logotype /><span className="sr-only"> — accueil</span></Link>
       <nav aria-label="Navigation principale" className="hidden lg:block">
         {/* Référence : 14 px, .16em, écart 42 px (Mesuré) dès 1280 px. Entre 1024 et 1280 px : 13 px, écart 24 px. Sous 1024 px, nos 5 liens ne tiennent pas : menu burger (mêmes liens). */}
         <ul className="flex gap-6 whitespace-nowrap xl:gap-[42px]">

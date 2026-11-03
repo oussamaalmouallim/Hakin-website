@@ -13,7 +13,7 @@ function Cadre({ id, label, erreur, aide, facultatif, children }: Commun & { id:
   return (
     <div className="flex flex-col gap-1">
       <label htmlFor={id} className="block font-mono text-[10px] uppercase tracking-[0.2em] text-gris">
-        {label}{facultatif && <span className="ml-2 normal-case tracking-normal text-gris-clair">(facultatif)</span>}
+        {label}{facultatif && <span className="ml-2 normal-case tracking-normal text-gris">(facultatif)</span>}
       </label>
       {children}
       {erreur ? <p id={`${id}-erreur`} role="alert" className="ml-1 mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreur}</p>

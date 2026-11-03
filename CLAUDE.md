@@ -5,6 +5,7 @@
 - Un seul serveur : `./start.sh` → http://localhost:6013 (prix de démo, Supabase de `ui/.env`) · Arrêt : `./stop.sh`. Ne jamais lancer d'autre serveur de dev (plus de 6011 / 6012).
 - Dans `ui/` : Tests : `npm test` · Types : `npm run lint` · Build : `npm run build` · Images WebP : `npm run images`
 - Test d'un seul fichier : `cd ui && npx vitest run src/test/logique.test.ts`
+- Navigateur réel : `cd ui && npm run test:e2e` (Playwright, serveur de test 6014 sans Supabase, lancé et arrêté seul) · Lighthouse : `npm run qualite:lighthouse` (build de prod temporaire) → rapports dans `ui/rapports/` (non versionné)
 - Production locale (Docker/nginx) : `./deploy.sh` → http://localhost:6111
 - Tests avec vrais comptes (ponctuel, puis arrêter) : `npx supabase start -x studio,imgproxy,storage-api,edge-runtime,logflare,vector,realtime,postgres-meta,supavisor` à la racine → `cd ui && npm run test:supabase` → `npx supabase stop`. E-mails reçus : http://127.0.0.1:54324
 

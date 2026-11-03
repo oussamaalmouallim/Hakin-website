@@ -137,7 +137,7 @@ export function PageConnexion({ recuperation: routeRecuperation }: { recuperatio
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
       <div className="flex flex-col items-center justify-center bg-fond px-6 py-12 md:px-16 md:py-16">
         <div className="w-full max-w-[400px]">
-          <Link to="/" aria-label="H MODE — accueil" className="mb-10 flex w-fit"><Logotype /></Link>
+          <Link to="/" className="mb-10 flex w-fit"><Logotype /><span className="sr-only"> — accueil</span></Link>
 
           {(vue === 'connexion' || vue === 'inscription') && (
             <div role="tablist" aria-label="Compte" className="mb-8 inline-flex rounded-full bg-fond-2 p-1">
@@ -248,7 +248,7 @@ function PanneauMembre() {
   const piece = produits.find(p => p.misEnAvant && p.prixDH !== null) ?? produits.find(p => p.misEnAvant)
   const avantages = ['Commandes suivies', 'Panier synchronisé', 'Adresses enregistrées', 'Coordonnées pré-remplies']
   return (
-    <div aria-hidden className="relative hidden flex-col justify-between overflow-hidden bg-encre p-16 text-fond md:flex">
+    <div aria-hidden data-decoratif className="relative hidden flex-col justify-between overflow-hidden bg-encre p-16 text-fond md:flex">
       {/* cloneme: A-06 — filigrane qui défile */}
       <div className="pointer-events-none absolute inset-0 flex items-center overflow-hidden opacity-[0.06]">
         <div className="anim-filigrane whitespace-nowrap font-display text-[200px] leading-none tracking-[-0.04em]">H MODE · H MODE · H MODE · H MODE · H MODE · H MODE ·</div>

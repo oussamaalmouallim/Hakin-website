@@ -29,7 +29,7 @@ export function ChampLigne({ label, erreur, motDePasse, facultatif, ...p }: { la
         <div className="relative">
           {champ}
           <button type="button" onClick={() => setVisible(v => !v)} aria-label={visible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} aria-pressed={visible}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-gris transition-colors hover:text-encre">
+            className="absolute right-[9px] top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center text-gris transition-colors hover:text-encre">
             {visible ? <EyeOff className="h-[18px] w-[18px]" strokeWidth={1.75} /> : <Eye className="h-[18px] w-[18px]" strokeWidth={1.75} />}
           </button>
         </div>

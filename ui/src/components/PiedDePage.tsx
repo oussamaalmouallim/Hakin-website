@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import { boutique } from '@/lib/catalogue'
 import { useAnimations } from '@/state/animations'
 
-const lienPied = 'text-gris no-underline transition-colors hover:text-encre'
+// Zone cliquable de 24 px (WCAG 2.5.8) sans changer la hauteur visible de la ligne : marge négative = remplissage.
+const lienPied = 'inline-block -my-[6px] py-[6px] text-gris no-underline transition-colors hover:text-encre'
 
 /** cloneme: C-03 — pied de la référence : une ligne mono 11 px capitales (© · faits du centre en encre · liens).
  *  Ajout H MODE (Approximé) : une seconde ligne garde l'accès aux pages d'aide et légales, et le réglage des animations. */
@@ -21,11 +22,11 @@ export function PiedDePage() {
         <div className="flex gap-5">
           <Link to="/boutique" className={lienPied}>Boutique</Link>
           <Link to="/compte" className={lienPied}>Compte</Link>
-          <a href={boutique.instagram.url} target="_blank" rel="noopener noreferrer" className={lienPied} aria-label="Instagram">IG</a>
-          <a href={boutique.facebook.url} target="_blank" rel="noopener noreferrer" className={lienPied} aria-label="Facebook">FB</a>
+          <a href={boutique.instagram.url} target="_blank" rel="noopener noreferrer" className={lienPied} aria-label="IG — Instagram">IG</a>
+          <a href={boutique.facebook.url} target="_blank" rel="noopener noreferrer" className={lienPied} aria-label="FB — Facebook">FB</a>
         </div>
       </div>
-      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-ligne pt-4 text-[10px]">
+      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3 border-t border-ligne pt-4 text-[10px]">
         <Link to="/contact" className={lienPied}>Contact</Link>
         <Link to="/livraison-retours" className={lienPied}>Livraison & retours</Link>
         <Link to="/guide-des-tailles" className={lienPied}>Guide des tailles</Link>

@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 export function BandeauDefilant({ elements }: { elements: string[] }) {
   const serie = [...elements, ...elements]
   return (
-    <div data-ref="bandeau" className="overflow-hidden border-y border-encre bg-encre py-[18px] text-fond" aria-label={elements.join(' · ')}>
+    <div data-ref="bandeau" role="marquee" className="overflow-hidden border-y border-encre bg-encre py-[18px] text-fond" aria-label={elements.join(' · ')}>
       <div className="anim-bande flex w-max whitespace-nowrap font-display text-[18px] uppercase tracking-[0.04em]" aria-hidden>
         {serie.map((e, i) => (
           <span key={i} className="flex items-center gap-12 pr-12">

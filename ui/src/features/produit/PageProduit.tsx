@@ -269,7 +269,7 @@ export function PageProduit() {
       </div>
 
       {/* Barre d'achat collante (mobile), rendue dans <body> : un ancêtre transformé (transition de page) casserait position: fixed */}
-      {createPortal(<div className={cn('fixed inset-x-0 bottom-[var(--demo-h)] z-40 border-t border-ligne bg-[var(--voile-entete)] px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-[18px] pt-3 backdrop-blur transition-transform duration-500 ease-maison md:hidden', barreVisible ? 'translate-y-0' : 'translate-y-full')}
+      {createPortal(<div className={cn('fixed inset-x-0 bottom-0 z-40 border-t border-ligne bg-[var(--voile-entete)] px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-[18px] pt-3 backdrop-blur transition-transform duration-500 ease-maison md:hidden', barreVisible ? 'translate-y-0' : 'translate-y-full')}
         {...(!barreVisible && { inert: '', 'aria-hidden': true })}>
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1"><p className="truncate font-display text-[15px] uppercase">{produit.nom}</p><Prix prixDH={produit.prixDH} /></div>

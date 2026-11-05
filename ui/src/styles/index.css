@@ -7,8 +7,6 @@
   :root {
     /* Hauteur de l'en-tête de la référence : 71 px mobile, 83 px dès 768 px (Mesuré) */
     --nav-h: 71px;
-    /* Hauteur du bandeau « mode démo » (0 hors démo) : les barres fixées en bas se placent au-dessus. */
-    --demo-h: 0px;
     color-scheme: light;
   }
   @media (min-width: 768px) { :root { --nav-h: 83px; } }

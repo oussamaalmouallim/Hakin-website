@@ -9,7 +9,7 @@ import { useCompte } from '@/state/compte'
 import { useSession } from '@/state/session'
 import { rafraichirCommandes } from '@/state/synchroCompte'
 import { formatDH, genererReference, telephoneMarocValide } from '@/lib/format'
-import { MODE_DEMO, boutique, estPackshot, trouverProduit } from '@/lib/catalogue'
+import { boutique, estPackshot, trouverProduit } from '@/lib/catalogue'
 import { ligneDirecte } from '@/lib/commandeDirecte'
 import { enregistrerCommande } from '@/lib/commandes'
 import { supabaseActif } from '@/lib/supabase'
@@ -71,8 +71,7 @@ export function PageCommande() {
   const [envoi, setEnvoi] = useState(false)
   const [alerte, setAlerte] = useState<string | null>(null)
   const formulaire = useRef<HTMLFormElement>(null)
-  // Démo (prix fictifs) : la commande est bien enregistrée, mais repérable et supprimable par la boutique.
-  const reference = useMemo(() => `${MODE_DEMO ? 'DEMO-' : ''}${genererReference()}`, [])
+  const reference = useMemo(() => genererReference(), [])
   const maj = (k: keyof CoordonneesClient) => (e: { target: { value: string } }) => { setC(x => ({ ...x, [k]: e.target.value })); setErreurs(x => ({ ...x, [k]: undefined })) }
 
   // Compte chargé après l'arrivée sur la page (connexion, actualisation) : on complète seulement les champs encore vides.

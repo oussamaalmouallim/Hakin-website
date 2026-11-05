@@ -42,7 +42,7 @@ export function BoutonWhatsAppFlottant() {
   const surFiche = pathname.startsWith('/produit/')
   return (
     <a href={lienWhatsApp('Bonjour H MODE, j\'ai une question.')} target="_blank" rel="noopener noreferrer" aria-label="Écrire à H MODE sur WhatsApp"
-      className={cn('group fixed bottom-[calc(1.25rem+var(--demo-h)+env(safe-area-inset-bottom))] right-5 z-40 flex h-14 items-center gap-0 overflow-hidden rounded-full bg-encre pl-4 pr-4 text-nacre shadow-flottant ring-1 ring-nacre/20 transition-all duration-700 ease-maison hover:gap-3 hover:pr-6 sm:bottom-[calc(2rem+var(--demo-h)+env(safe-area-inset-bottom))] sm:right-8', surFiche && 'max-lg:hidden')}>
+      className={cn('group fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-5 z-40 flex h-14 items-center gap-0 overflow-hidden rounded-full bg-encre pl-4 pr-4 text-nacre shadow-flottant ring-1 ring-nacre/20 transition-all duration-700 ease-maison hover:gap-3 hover:pr-6 sm:bottom-[calc(2rem+env(safe-area-inset-bottom))] sm:right-8', surFiche && 'max-lg:hidden')}>
       <IconeWhatsApp className="h-6 w-6 shrink-0 text-whatsapp" />
       <span className="label max-w-0 overflow-hidden whitespace-nowrap transition-[max-width] duration-700 ease-maison group-hover:max-w-[10rem]">Nous écrire</span>
     </a>

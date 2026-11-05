@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 /** Tests de bout en bout dans un vrai navigateur.
- *  Serveur propre aux tests sur 6014, lancé puis arrêté par Playwright : prix de démo, clés Supabase vidées
+ *  Serveur propre aux tests sur 6014, lancé puis arrêté par Playwright : mode `e2e` (prix d'essai de `e2e/donnees/`), clés Supabase vidées
  *  (les variables déjà présentes priment sur `ui/.env`), donc parcours WhatsApp seul et aucune écriture en base.
  *  Le 6013 n'est ni utilisé ni touché. */
 const PORT = 6014
@@ -19,9 +19,9 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: `npx vite --port ${PORT} --strictPort`,
+    command: `npx vite --mode e2e --port ${PORT} --strictPort`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: false,
-    env: { VITE_DEMO: '1', VITE_SUPABASE_URL: '', VITE_SUPABASE_PUBLISHABLE_KEY: '' },
+    env: { VITE_SUPABASE_URL: '', VITE_SUPABASE_PUBLISHABLE_KEY: '' },
   },
 })

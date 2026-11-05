@@ -2,7 +2,7 @@
 <!-- Notes mainteneur : invisibles pour Claude. Plan lot par lot : plan.md · données manquantes : TODO.md -->
 
 ## Commandes
-- Un seul serveur : `./start.sh` → http://localhost:6013 (prix de démo, Supabase de `ui/.env`) · Arrêt : `./stop.sh`. Ne jamais lancer d'autre serveur de dev (plus de 6011 / 6012).
+- Un seul serveur : `./start.sh` → http://localhost:6013 (catalogue réel, Supabase de `ui/.env`) · Arrêt : `./stop.sh`. Ne jamais lancer d'autre serveur de dev (plus de 6011 / 6012).
 - Dans `ui/` : Tests : `npm test` · Types : `npm run lint` · Build : `npm run build` · Images WebP : `npm run images`
 - Test d'un seul fichier : `cd ui && npx vitest run src/test/logique.test.ts`
 - Navigateur réel : `cd ui && npm run test:e2e` (Playwright, serveur de test 6014 sans Supabase, lancé et arrêté seul) · Lighthouse : `npm run qualite:lighthouse` (build de prod temporaire) → rapports dans `ui/rapports/` (non versionné)
@@ -31,7 +31,7 @@
 - Captures du navigateur intégré : prises en cours d'animation (contenu pâle) ; panneau masqué = animations en pause.
 - Panier persistant : clé `hmode-panier`, `version: 1` (une autre version vide le panier).
 - Tests : jamais le vrai Supabase (`env` vidé dans `vite.config.ts`) ; client simulé dans `src/test/*` (fausse base à RLS dans `synchro.test.ts`).
-- Le serveur 6013 (prix de démo) écrit dans la vraie base : références de commande `DEMO-…`, à supprimer côté Supabase.
+- Aucune donnée fictive dans le site (mode démo supprimé le 04/11). Prix d'essai seulement pour Playwright : `ui/e2e/donnees/prix-test.json`, servis par `vite --mode e2e`. Le 6013 écrit dans la vraie base : n'y passer que de vraies commandes.
 - L'ancien site (`index.html`, `css/`, `js/`, `assets/`) reste en place jusqu'à la mise en ligne : ne pas le supprimer.
 - `npx lightswind add …` réécrit `ui/tailwind.config.js` (plugin `lightswind/plugin` non installé → page blanche) : sauvegarder la config avant, la restaurer après, puis ré-habiller le composant (licence MIT en tête).
 

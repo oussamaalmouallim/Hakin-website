@@ -22,5 +22,5 @@ export const test = base.extend<{ ouvertures: () => Promise<string[]> }>({
 
 export { expect }
 
-/** Pièce avec prix et tailles de démo (`produits.demo.json`). */
+/** Pièce avec prix et tailles d'essai (`e2e/donnees/prix-test.json`). */
 export const PIECE = { slug: 't-shirt-prada-graffiti', nom: 'T-shirt Prada graffiti' }

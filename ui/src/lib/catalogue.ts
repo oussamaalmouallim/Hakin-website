@@ -1,17 +1,12 @@
 import produitsJson from '@/data/produits.json'
-import demoJson from '@/data/produits.demo.json'
 import categoriesJson from '@/data/categories.json'
 import collectionsJson from '@/data/collections.json'
 import boutiqueJson from '@/data/boutique.json'
 import fondsClairsJson from '@/data/fonds-clairs.json'
 import type { Boutique, Categorie, Collection, Produit } from './types'
 
-/** Mode démo : prix et tailles FICTIFS pour tester le panier en local. Activé seulement par VITE_DEMO=1. */
-export const MODE_DEMO = import.meta.env.VITE_DEMO === '1'
-
-const demo = demoJson as Record<string, Partial<Produit>>
-export const produits: Produit[] = (produitsJson as Produit[]).map(p =>
-  MODE_DEMO && demo[p.slug] ? { ...p, ...demo[p.slug] } : p)
+/** Catalogue réel uniquement : un prix ou une taille absente reste `null` / vide (« Prix sur demande »). */
+export const produits = produitsJson as Produit[]
 export const categories = categoriesJson as Categorie[]
 export const collections = collectionsJson as Collection[]
 export const boutique = boutiqueJson as Boutique

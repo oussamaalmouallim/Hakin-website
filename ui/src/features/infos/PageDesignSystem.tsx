@@ -107,7 +107,7 @@ export function PageDesignSystem() {
       <Bloc titre="Bandeau défilant"><div className="-mx-4 sm:-mx-6 lg:-mx-10"><BandeauDefilant elements={['Maisons iconiques', 'Riviera Casablanca', 'Paiement à la livraison']} /></div></Bloc>
 
       <Modale ouvert={modale} onFermer={() => setModale(false)} titre="Modale"><p className="text-gris">Focus piégé, Échap pour fermer, défilement de page bloqué.</p></Modale>
-      <Tiroir ouvert={tiroir} onFermer={() => setTiroir(false)} titre="Tiroir" label="Tiroir de démonstration"><p className="text-gris">Panneau latéral (mini-panier, filtres, menu).</p></Tiroir>
+      <Tiroir ouvert={tiroir} onFermer={() => setTiroir(false)} titre="Tiroir" label="Exemple de tiroir"><p className="text-gris">Panneau latéral (mini-panier, filtres, menu).</p></Tiroir>
     </div>
   )
 }

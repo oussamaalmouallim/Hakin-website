@@ -1,31 +1,41 @@
 import { obtenirSupabase } from '@/lib/supabase'
-import { ecrireAdresses, ecrirePanier, ecrireProfil, lireAdresses, lireCommandes, lirePanier, lireProfil } from '@/lib/compteDistant'
+import { ecrireAdresses, ecrireFavoris, ecrirePanier, ecrireProfil, lireAdresses, lireCommandes, lireFavoris, lirePanier, lireProfil } from '@/lib/compteDistant'
+import { trouverProduit } from '@/lib/catalogue'
 import { fusionnerLignes, usePanier } from '@/state/panier'
+import { fusionnerFavoris, useFavoris } from '@/state/favoris'
 import { useCompte } from '@/state/compte'
 import { useSession, type UtilisateurSession } from '@/state/session'
 
 /** Synchronisation du compte connecté avec Supabase (ADR 0005).
- *  - Connexion : le panier du compte est chargé ; un panier visiteur est fusionné avec lui (une seule fois).
+ *  - Connexion : le panier et les favoris du compte sont chargés ; ceux du visiteur s'y ajoutent (une seule fois).
  *    Profil, adresses et commandes viennent de la base ; un profil ou des adresses saisis en visiteur complètent un compte vide.
- *  - Ensuite : chaque changement du panier, du profil ou des adresses est enregistré (regroupé sur 400 ms).
- *  - Déconnexion : panier et compte sont vidés de l'appareil (ils restent dans le compte), pour le client suivant. */
+ *  - Ensuite : chaque changement du panier, des favoris, du profil ou des adresses est enregistré (regroupé sur 400 ms).
+ *  - Déconnexion : panier, favoris et compte sont vidés de l'appareil (ils restent dans le compte), pour le client suivant. */
 const DELAI = 400
 let uid: string | null = null
 let enChargement = false
-const minuteries: Partial<Record<'panier' | 'profil' | 'adresses', number>> = {}
+type Quoi = 'panier' | 'favoris' | 'profil' | 'adresses'
+const minuteries: Partial<Record<Quoi, number>> = {}
 let adressesRetirees = new Set<string>()
+/** Favoris tels qu'enregistrés dans le compte : l'écart avec l'appareil donne les ajouts et retraits à envoyer. */
+let favorisEnBase: string[] = []
 
 const signalerErreur = (e: unknown) => {
   console.warn('[compte] synchronisation :', e)
   useSession.setState({ erreurSynchro: 'Enregistrement dans votre compte impossible pour le moment. Vos modifications restent sur cet appareil.' })
 }
 
-async function pousser(quoi: 'panier' | 'profil' | 'adresses') {
+async function pousser(quoi: Quoi) {
   const sb = await obtenirSupabase()
   const id = uid
   if (!sb || !id) return
   try {
     if (quoi === 'panier') await ecrirePanier(sb, id, usePanier.getState().lignes)
+    if (quoi === 'favoris') {
+      const slugs = useFavoris.getState().slugs
+      await ecrireFavoris(sb, id, slugs.filter(x => !favorisEnBase.includes(x)), favorisEnBase.filter(x => !slugs.includes(x)))
+      favorisEnBase = slugs
+    }
     if (quoi === 'profil') await ecrireProfil(sb, id, useCompte.getState().profil)
     if (quoi === 'adresses') {
       const retirees = [...adressesRetirees]
@@ -35,7 +45,7 @@ async function pousser(quoi: 'panier' | 'profil' | 'adresses') {
     useSession.setState({ erreurSynchro: null })
   } catch (e) { signalerErreur(e) }
 }
-function planifier(quoi: 'panier' | 'profil' | 'adresses') {
+function planifier(quoi: Quoi) {
   if (!uid || enChargement) return
   window.clearTimeout(minuteries[quoi])
   minuteries[quoi] = window.setTimeout(() => void pousser(quoi), DELAI)
@@ -52,13 +62,18 @@ async function surConnexion(u: UtilisateurSession) {
   if (!sb) return
   enChargement = true
   try {
-    const [panierDistant, profilDistant, adressesDistantes, commandes] = await Promise.all([lirePanier(sb), lireProfil(sb), lireAdresses(sb), lireCommandes(sb)])
+    const [panierDistant, favorisDistants, profilDistant, adressesDistantes, commandes] = await Promise.all([lirePanier(sb), lireFavoris(sb), lireProfil(sb), lireAdresses(sb), lireCommandes(sb)])
     const panier = usePanier.getState()
     const compte = useCompte.getState()
     // Panier : celui du compte fait foi ; un panier visiteur (sans propriétaire) s'y ajoute une seule fois.
     const visiteur = panier.proprietaire === null
     const lignes = visiteur ? fusionnerLignes(panierDistant, panier.lignes) : panierDistant
     usePanier.getState().remplacer(lignes, u.id)
+    // Favoris : même règle que le panier ; une pièce retirée du catalogue n'est pas reprise.
+    const favoris = useFavoris.getState()
+    const favorisVisiteur = favoris.proprietaire === null
+    useFavoris.getState().remplacer(fusionnerFavoris(favorisDistants, favorisVisiteur ? favoris.slugs : [], slug => !!trouverProduit(slug)), u.id)
+    favorisEnBase = favorisDistants
     // Profil et adresses : la base fait foi ; les saisies faites en visiteur complètent un compte encore vide.
     const local = compte.proprietaire === null ? compte : null
     const profil = {
@@ -71,6 +86,7 @@ async function surConnexion(u: UtilisateurSession) {
     uid = u.id
     enChargement = false
     if (visiteur && panier.lignes.length) await pousser('panier')
+    if (useFavoris.getState().slugs.join() !== favorisDistants.join()) await pousser('favoris')
     if (JSON.stringify(profil) !== JSON.stringify(profilDistant ?? null)) await pousser('profil')
     if (!adressesDistantes.length && adresses.length) await pousser('adresses')
     useSession.setState({ erreurSynchro: null })
@@ -86,7 +102,9 @@ function surDeconnexion() {
   for (const k of Object.keys(minuteries)) delete minuteries[k as keyof typeof minuteries]
   uid = null
   adressesRetirees = new Set()
+  favorisEnBase = []
   usePanier.getState().remplacer([], null)
+  useFavoris.getState().remplacer([], null)
   useCompte.getState().toutEffacer()
   useSession.setState({ erreurSynchro: null })
 }
@@ -112,6 +130,7 @@ export function brancherSynchroCompte() {
       if (s.utilisateur) void surConnexion(s.utilisateur)
     }),
     usePanier.subscribe((s, avant) => { if (s.lignes !== avant.lignes) planifier('panier') }),
+    useFavoris.subscribe((s, avant) => { if (s.slugs !== avant.slugs) planifier('favoris') }),
     useCompte.subscribe((s, avant) => {
       if (s.profil !== avant.profil) planifier('profil')
       if (s.adresses !== avant.adresses) {
@@ -122,5 +141,5 @@ export function brancherSynchroCompte() {
   ]
   const deja = useSession.getState().utilisateur
   if (deja) void surConnexion(deja)
-  return () => { arrets.forEach(f => f()); branche = false; uid = null }
+  return () => { arrets.forEach(f => f()); branche = false; uid = null; favorisEnBase = [] }
 }

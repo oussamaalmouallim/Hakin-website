@@ -17,3 +17,5 @@
   - La boutique consulte et fait évoluer les commandes (`statut`) dans le tableau Supabase (Table Editor), en attendant un écran d'administration.
   - Netlify : ajouter `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY` dans les variables d'environnement du site avant la mise en ligne.
   - Confirmation de l'e-mail à l'inscription : activée par défaut dans Supabase, à confirmer par l'utilisateur.
+
+> **05/11/2026 (lot 19)** : les favoris rejoignent le compte (table `favoris`, même règle de fusion et de RLS que le panier). Ils ne restent sur l'appareil que pour un visiteur.

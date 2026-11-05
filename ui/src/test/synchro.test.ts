@@ -9,9 +9,9 @@ vi.mock('@/data/produits.json', () => ({ default: [
 
 /** Fausse base Supabase en mémoire, avec la même règle que la RLS : chaque compte ne voit et n'écrit que ses lignes. */
 type Ligne = Record<string, unknown>
-const base: Record<string, Ligne[]> = { profils: [], paniers: [], adresses: [], commandes: [], lignes_commande: [] }
-const PROPRIETAIRE: Record<string, string> = { profils: 'id', paniers: 'utilisateur', adresses: 'utilisateur', commandes: 'utilisateur' }
-const CLE: Record<string, string> = { profils: 'id', paniers: 'utilisateur', adresses: 'id' }
+const base: Record<string, Ligne[]> = { profils: [], paniers: [], favoris: [], adresses: [], commandes: [], lignes_commande: [] }
+const PROPRIETAIRE: Record<string, string> = { profils: 'id', paniers: 'utilisateur', favoris: 'utilisateur', adresses: 'utilisateur', commandes: 'utilisateur' }
+const CLE: Record<string, string[]> = { profils: ['id'], paniers: ['utilisateur'], favoris: ['utilisateur', 'slug'], adresses: ['id'] }
 let connecte: string | null = null
 
 class Requete {
@@ -43,7 +43,7 @@ class Requete {
     if (this.mode === 'delete') { base[this.table] = t.filter(l => !visibles.includes(l)); return { data: null, error: null } }
     for (const v of [this.valeur].flat()) {
       if (v[proprio] !== connecte) return { data: null, error: { message: 'new row violates row-level security policy' } }
-      const existe = t.find(l => l[CLE[this.table]] === v[CLE[this.table]])
+      const existe = t.find(l => CLE[this.table].every(c => l[c] === v[c]))
       if (existe && existe[proprio] !== connecte) return { data: null, error: { message: 'new row violates row-level security policy' } }
       if (existe) Object.assign(existe, v); else t.push({ cree_le: new Date().toISOString(), ...v })
     }
@@ -54,6 +54,7 @@ const faux = { from: (t: string) => new Requete(t), auth: { onAuthStateChange: (
 vi.mock('@/lib/supabase', () => ({ supabaseActif: true, memoriserSession: () => {}, obtenirSupabase: async () => faux }))
 
 const { usePanier } = await import('@/state/panier')
+const { useFavoris } = await import('@/state/favoris')
 const { useCompte } = await import('@/state/compte')
 const { useSession } = await import('@/state/session')
 const { brancherSynchroCompte, viderFileSynchro } = await import('@/state/synchroCompte')
@@ -76,6 +77,7 @@ describe('compte synchronisé (Supabase simulé, RLS par compte)', () => {
     if (useSession.getState().utilisateur) await seDeconnecter()
     for (const k of Object.keys(base)) base[k] = []
     usePanier.getState().remplacer([], null)
+    useFavoris.getState().remplacer([], null)
     useCompte.getState().toutEffacer()
   })
 
@@ -155,5 +157,41 @@ describe('compte synchronisé (Supabase simulé, RLS par compte)', () => {
     usePanier.getState().ajouter('a', 'noir', 'M', 5)
     await seConnecter('sara')
     expect(contenuPanier()).toEqual(['a:10'])
+  })
+
+  it('favoris : ceux du visiteur rejoignent le compte, ajouts et retraits enregistrés, appareil vidé à la déconnexion', async () => {
+    base.favoris.push({ utilisateur: 'sara', slug: 'a', cree_le: '2026-11-01T10:00:00Z' })
+    useFavoris.getState().basculer('b')
+    useFavoris.getState().basculer('disparu')
+    await seConnecter('sara')
+    expect(useFavoris.getState().slugs).toEqual(['a', 'b']) // compte d'abord, pièce disparue écartée
+    expect(base.favoris.map(f => f.slug).sort()).toEqual(['a', 'b'])
+
+    useFavoris.getState().basculer('a') // retrait
+    await attendre(500)
+    expect(base.favoris.map(f => f.slug)).toEqual(['b'])
+
+    await seDeconnecter()
+    expect(useFavoris.getState().slugs).toEqual([])
+    await seConnecter('sara')
+    expect(useFavoris.getState().slugs).toEqual(['b'])
+  })
+
+  it('favoris : isolation entre deux comptes, actualisation sans doublon', async () => {
+    await seConnecter('sara')
+    useFavoris.getState().basculer('a')
+    await seDeconnecter()
+    await seConnecter('karim')
+    expect(useFavoris.getState().slugs).toEqual([])
+    useFavoris.getState().basculer('b')
+    await attendre(500)
+    expect(base.favoris.filter(f => f.utilisateur === 'sara').map(f => f.slug)).toEqual(['a'])
+    expect(base.favoris.filter(f => f.utilisateur === 'karim').map(f => f.slug)).toEqual(['b'])
+    // Actualisation : favoris déjà rattachés à karim → la base fait foi, rien n'est ajouté deux fois.
+    useSession.setState({ utilisateur: null }); await attendre()
+    useFavoris.getState().remplacer(['b'], 'karim')
+    await seConnecter('karim')
+    expect(useFavoris.getState().slugs).toEqual(['b'])
+    expect(base.favoris.filter(f => f.utilisateur === 'karim')).toHaveLength(1)
   })
 })

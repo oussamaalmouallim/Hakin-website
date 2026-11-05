@@ -47,6 +47,14 @@ create table if not exists public.paniers (
   maj_le timestamptz not null default now()
 );
 
+-- ── Favoris : une ligne par pièce aimée (lot 19) ──────────────────────────────────────────────────
+create table if not exists public.favoris (
+  utilisateur uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  slug text not null check (char_length(slug) between 1 and 120),
+  cree_le timestamptz not null default now(),
+  primary key (utilisateur, slug)
+);
+
 -- ── Commandes et leurs lignes ───────────────────────────────────────────────────────────────────
 create table if not exists public.commandes (
   id uuid primary key default gen_random_uuid(),
@@ -81,6 +89,7 @@ create index if not exists lignes_commande_commande on public.lignes_commande (c
 alter table public.profils enable row level security;
 alter table public.adresses enable row level security;
 alter table public.paniers enable row level security;
+alter table public.favoris enable row level security;
 alter table public.commandes enable row level security;
 alter table public.lignes_commande enable row level security;
 
@@ -97,6 +106,10 @@ drop policy if exists "panier : tout sur le sien" on public.paniers;
 create policy "panier : tout sur le sien" on public.paniers for all to authenticated
   using (utilisateur = (select auth.uid())) with check (utilisateur = (select auth.uid()));
 
+drop policy if exists "favoris : tout sur les siens" on public.favoris;
+create policy "favoris : tout sur les siens" on public.favoris for all to authenticated
+  using (utilisateur = (select auth.uid())) with check (utilisateur = (select auth.uid()));
+
 -- Commandes : lecture seule de ses propres commandes ; aucune écriture directe (voir passer_commande).
 drop policy if exists "commandes : lecture des siennes" on public.commandes;
 create policy "commandes : lecture des siennes" on public.commandes for select to authenticated using (utilisateur = (select auth.uid()));
@@ -105,7 +118,8 @@ create policy "lignes : lecture des siennes" on public.lignes_commande for selec
   using (exists (select 1 from public.commandes c where c.id = commande and c.utilisateur = (select auth.uid())));
 
 -- Droits de table : les visiteurs (anon) n'accèdent à aucune table ; les comptes n'ont que ce que la RLS filtre.
-revoke all on public.profils, public.adresses, public.paniers, public.commandes, public.lignes_commande from anon;
+revoke all on public.profils, public.adresses, public.paniers, public.favoris, public.commandes, public.lignes_commande from anon;
+revoke update on public.favoris from authenticated; -- un favori s'ajoute ou se retire, il ne se modifie pas
 revoke insert, update, delete on public.commandes, public.lignes_commande from authenticated;
 
 -- ── passer_commande : contrôle et enregistre une commande en une transaction ──────────────────────

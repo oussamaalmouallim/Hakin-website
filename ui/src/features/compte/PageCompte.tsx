@@ -181,7 +181,7 @@ export function PageCompte() {
   const connecte = useConnecte()
   return (
     <>
-      <EnTetePage surtitre="Mon compte" titre={nom ? `Bonjour, ${nom.split(' ')[0]}` : 'Mon compte'} texte={connecte ? 'Votre profil, vos adresses, votre panier et vos commandes sont enregistrés dans votre compte.' : 'Vos informations restent sur cet appareil et pré-remplissent vos commandes.'}
+      <EnTetePage surtitre="Mon compte" titre={nom ? `Bonjour, ${nom.split(' ')[0]}` : 'Mon compte'} texte={connecte ? 'Votre profil, vos adresses, votre panier, vos favoris et vos commandes sont enregistrés dans votre compte.' : 'Vos informations restent sur cet appareil et pré-remplissent vos commandes.'}
         ariane={[{ libelle: 'Accueil', vers: '/' }, { libelle: 'Mon compte' }]} />
       <div className="conteneur grid gap-12 lg:grid-cols-[220px_1fr] lg:gap-20">
         <nav aria-label="Sections du compte" className="defilement-masque -mx-4 flex gap-6 overflow-x-auto overscroll-x-contain border-b border-ligne px-4 lg:mx-0 lg:flex-col lg:gap-1 lg:border-0 lg:px-0">

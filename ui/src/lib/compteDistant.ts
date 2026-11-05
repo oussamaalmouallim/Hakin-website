@@ -26,6 +26,17 @@ export async function ecrirePanier(sb: SupabaseClient, uid: string, lignes: Lign
   verifier(await sb.from('paniers').upsert({ utilisateur: uid, lignes: brut, maj_le: new Date().toISOString() }))
 }
 
+/** Favoris du compte : une ligne par pièce, dans l'ordre d'ajout. */
+export async function lireFavoris(sb: SupabaseClient): Promise<string[]> {
+  const lignes = verifier(await sb.from('favoris').select('slug').order('cree_le')) as { slug: string }[] | null
+  return (lignes ?? []).map(l => l.slug)
+}
+/** Ajoute les nouveaux favoris (les déjà présents sont ignorés) et retire ceux qui ont été enlevés. */
+export async function ecrireFavoris(sb: SupabaseClient, uid: string, ajoutes: string[], retires: string[]) {
+  if (retires.length) verifier(await sb.from('favoris').delete().in('slug', retires))
+  if (ajoutes.length) verifier(await sb.from('favoris').upsert(ajoutes.map(slug => ({ utilisateur: uid, slug })), { onConflict: 'utilisateur,slug', ignoreDuplicates: true }))
+}
+
 interface LigneAdresse { id: string; libelle: string; ville: string; adresse: string; instructions: string; par_defaut: boolean }
 export async function lireAdresses(sb: SupabaseClient): Promise<Adresse[]> {
   const lignes = verifier(await sb.from('adresses').select('id, libelle, ville, adresse, instructions, par_defaut').order('cree_le')) as LigneAdresse[]

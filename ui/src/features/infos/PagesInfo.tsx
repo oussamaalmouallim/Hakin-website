@@ -38,7 +38,7 @@ const PAGES: Record<Cle, { surtitre: string; titre: string; intro?: string; cont
   confidentialite: {
     surtitre: 'Informations', titre: 'Confidentialité',
     contenu: <>
-      <Accordeon titre="Données enregistrées sur votre appareil" ouvertParDefaut>Le panier, les favoris et le compte sont stockés dans votre navigateur (stockage local). Ils ne sont transmis à aucun serveur et peuvent être effacés depuis « Mon compte ».</Accordeon>
+      <Accordeon titre="Données enregistrées" ouvertParDefaut>Sans compte, le panier et les favoris restent dans votre navigateur (stockage local) et peuvent être effacés depuis « Mon compte ». Avec un compte, votre profil, vos adresses, votre panier, vos favoris et vos commandes sont enregistrés dans votre compte H MODE : vous seul y avez accès, et ils sont retirés de l'appareil à la déconnexion.</Accordeon>
       <Accordeon titre="Commandes et messages">Lorsque vous envoyez une commande ou un message, son contenu est transmis via WhatsApp, selon les conditions de WhatsApp.</Accordeon>
       <Accordeon titre="Responsable du traitement et contact"><A /></Accordeon>
     </>,

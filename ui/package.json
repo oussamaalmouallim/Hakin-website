@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:admin": "playwright test -c playwright.admin.config.ts",
     "qualite:lighthouse": "node scripts/lighthouse.mjs",
     "images": "node scripts/optimiser-images.mjs",
     "test:supabase": "node --env-file=.env.supabase-local scripts/tests-supabase-local.mjs"

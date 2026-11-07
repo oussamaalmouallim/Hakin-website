@@ -14,6 +14,7 @@ import { PageBoutique } from './features/catalogue/PageBoutique'
 import { PageProduit } from './features/produit/PageProduit'
 import { useSession } from './state/session'
 import { brancherSynchroCompte } from './state/synchroCompte'
+import { chargerDonnees, useDonnees } from './lib/donnees'
 
 /** Chargement par page. Accueil, boutique et fiche produit restent dans le paquet principal : ce sont les pages
  *  d'arrivée (liens Insta, FB, WhatsApp), leur première image ne doit pas attendre un second fichier (mesuré : LCP mobile
@@ -30,6 +31,7 @@ const pages = {
   maison: () => import('./features/infos/PageMaison'),
   info: () => import('./features/infos/PagesInfo'),
   introuvable: () => import('./features/infos/Page404'),
+  admin: () => import('./features/admin/PageAdmin'),
   designSystem: () => import('./features/infos/PageDesignSystem'),
 }
 // Les pages exportent des fonctions nommées : on garde leur type (et donc leurs props) pour `lazy`.
@@ -50,16 +52,20 @@ const PageMaison = differee(pages.maison, 'PageMaison')
 const PageInfo = differee(pages.info, 'PageInfo')
 const Page404 = differee(pages.introuvable, 'Page404')
 const PageDesignSystem = differee(pages.designSystem, 'PageDesignSystem')
+const PageAdmin = differee(pages.admin, 'PageAdmin')
 
 /** Précharge toutes les pages une fois la première affichée : la navigation suivante reste instantanée. */
 function usePrechargementPages() {
   useEffect(() => {
-    const lancer = () => Object.values(pages).forEach(charger => { void charger() })
+    // L'administration n'est pas préchargée : seuls les admins l'ouvrent.
+    const lancer = () => Object.entries(pages).forEach(([nom, charger]) => { if (nom !== 'admin') void charger() })
     const w = window as Window & { requestIdleCallback?: (f: () => void) => number }
     if (w.requestIdleCallback) w.requestIdleCallback(lancer)
     else window.setTimeout(lancer, 1500)
   }, [])
 }
+
+const PAGES_FORMULAIRE = /^\/(commande|connexion|compte|contact)(\/|$)/
 
 /** Synchronise panier, favoris et compte entre onglets. */
 function useSynchroOnglets() {
@@ -82,8 +88,16 @@ export default function App() {
   const demarrerSession = useSession(s => s.demarrer)
   useEffect(() => { void demarrerSession() }, [demarrerSession])
   useEffect(() => brancherSynchroCompte(), [])
+  // Catalogue et réglages de la base (lot 20) ; en attendant, ceux livrés avec le site.
+  useEffect(() => { void chargerDonnees() }, [])
+  const versionDonnees = useDonnees(s => s.version)
   // Page de connexion plein écran comme la référence : ni en-tête, ni pied, ni repère latéral.
   const pleinEcran = location.pathname.startsWith('/connexion')
+  // Administration : application à part (sa propre coque), hors des transitions de page du site
+  // (un ancêtre transformé casserait ses barres fixées en bas).
+  if (location.pathname === '/admin' || location.pathname.startsWith('/admin/')) {
+    return <Suspense fallback={<div className="min-h-screen bg-fond" aria-busy="true" />}><Routes><Route path="/admin/*" element={<PageAdmin />} /></Routes></Suspense>
+  }
   return (
     <>
       <a href="#contenu" className="label sr-only z-[110] bg-encre px-4 py-3 text-nacre focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Aller au contenu</a>
@@ -99,7 +113,9 @@ export default function App() {
         <motion.main id="contenu" key={location.pathname.startsWith('/boutique') ? '/boutique' : location.pathname} {...transitionPage} className={pleinEcran ? undefined : 'min-h-[70vh]'}>
           {/* Attente plein écran : le pied reste sous la ligne de flottaison, aucun décalage visible. */}
           <Suspense fallback={<div className="min-h-[100svh]" aria-busy="true" />}>
-          <Routes location={location}>
+          {/* Nouvelle version du catalogue (base) : les pages du catalogue repartent avec les données à jour.
+              Les pages à formulaire gardent leur saisie (simple réaffichage) : un réseau lent ne doit rien effacer. */}
+          <Routes location={location} key={PAGES_FORMULAIRE.test(location.pathname) ? 'formulaire' : versionDonnees}>
             <Route path="/" element={<PageAccueil />} />
             <Route path="/boutique" element={<PageBoutique />} />
             <Route path="/boutique/:categorie" element={<PageBoutique />} />

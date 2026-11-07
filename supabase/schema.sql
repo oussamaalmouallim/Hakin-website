@@ -123,6 +123,7 @@ revoke update on public.favoris from authenticated; -- un favori s'ajoute ou se 
 revoke insert, update, delete on public.commandes, public.lignes_commande from authenticated;
 
 -- ── passer_commande : contrôle et enregistre une commande en une transaction ──────────────────────
+-- Version 1. Remplacée par la v2 de lot-20-admin.sql (prix lu dans la table produits), chargé juste après ce fichier.
 -- Entrée : { reference, client: {nom, telephone, email, ville, adresse, instructions},
 --            lignes: [{slug, nom, coloris, taille, quantite, prix_dh}] }
 -- Le compte connecté (s'il y en a un) est rattaché par auth.uid(), jamais par une valeur envoyée.
@@ -156,3 +157,5 @@ end $$;
 revoke all on function public.passer_commande(jsonb) from public;
 grant execute on function public.passer_commande(jsonb) to anon, authenticated;
 revoke all on function public.creer_profil() from public, anon, authenticated;
+
+-- Suite du schéma : lot-20-admin.sql (administration, catalogue et réglages en base, journal, photos).

@@ -8,6 +8,8 @@ const PORT = 6014
 
 export default defineConfig({
   testDir: './e2e',
+  // L'administration a sa propre suite, sur Supabase local : playwright.admin.config.ts (npm run test:e2e:admin).
+  testIgnore: 'admin/**',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

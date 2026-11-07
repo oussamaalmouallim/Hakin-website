@@ -11,7 +11,7 @@ import { trouverProduit } from '@/lib/catalogue'
 import { formatDH, telephoneMarocValide } from '@/lib/format'
 import { VILLES } from '@/features/commande/PageCommande'
 import { cn } from '@/lib/utils'
-import { supabaseActif } from '@/lib/supabase'
+import { obtenirSupabase, supabaseActif } from '@/lib/supabase'
 import { useSession } from '@/state/session'
 import { rafraichirCommandes, viderFileSynchro } from '@/state/synchroCompte'
 
@@ -153,8 +153,22 @@ function Favoris() {
 }
 
 /** Bandeau de session : connecté (e-mail + déconnexion) ou invitation à se connecter. Les données du compte passent en base au lot 6. */
+/** Vrai si le compte connecté est administrateur (vérifié par la base, `est_admin()`). */
+function useEstAdmin(id: string | undefined) {
+  const [admin, setAdmin] = useState(false)
+  useEffect(() => {
+    setAdmin(false)
+    if (!id) return
+    let actif = true
+    obtenirSupabase().then(sb => sb?.rpc('est_admin')).then(r => { if (actif && r && !r.error) setAdmin(Boolean(r.data)) }).catch(() => undefined)
+    return () => { actif = false }
+  }, [id])
+  return admin
+}
+
 function BandeauSession() {
   const { utilisateur, pret, deconnexion, erreurSynchro } = useSession()
+  const admin = useEstAdmin(utilisateur?.id)
   const naviguer = useNavigate()
   const notifier = useNotifier()
   if (!supabaseActif || !pret) return null
@@ -162,8 +176,11 @@ function BandeauSession() {
     {erreurSynchro && <p role="alert" className="mb-4 rounded-bloc border border-danger/40 bg-danger/[0.06] px-5 py-3 text-[14px] text-danger">{erreurSynchro}</p>}
     <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-bloc border border-ligne bg-fond-2 px-5 py-4">
       <p className="text-[14px]"><span className="font-mono text-[11px] uppercase tracking-[0.18em] text-gris">Connecté · </span>{utilisateur.email}</p>
-      <button type="button" onClick={async () => { await viderFileSynchro(); await deconnexion(); notifier({ ton: 'info', message: 'Vous êtes déconnecté.' }); naviguer('/connexion', { replace: true }) }}
-        className="rounded-full border border-encre px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-encre transition-colors hover:bg-encre hover:text-fond">Se déconnecter</button>
+      <div className="flex flex-wrap gap-2">
+        {admin && <Link to="/admin" className="rounded-full bg-accent px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-encre transition-colors hover:bg-accent-doux">Administration</Link>}
+        <button type="button" onClick={async () => { await viderFileSynchro(); await deconnexion(); notifier({ ton: 'info', message: 'Vous êtes déconnecté.' }); naviguer('/connexion', { replace: true }) }}
+          className="rounded-full border border-encre px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-encre transition-colors hover:bg-encre hover:text-fond">Se déconnecter</button>
+      </div>
     </div>
   </>) : (
     <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-bloc border border-ligne bg-fond-2 px-5 py-4">

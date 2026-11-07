@@ -1,0 +1,15 @@
+# 0006 — Administration intégrée au site, droits portés par la base
+- Date : 2026-11-07
+- Contexte : prix, tailles, photos, textes, livraison et commandes devaient pouvoir être gérés sans toucher au code (décisions D2, D9 et D14 du 03/11). Les vrais prix bloquent la mise en ligne.
+- Décision :
+  - Une route `/admin` dans la même application, avec sa propre coque (hors en-tête et transitions du site), chargée seulement quand on l'ouvre.
+  - Un admin est un compte client ordinaire inscrit dans la table `admins`, en SQL seulement. Aucune clé secrète dans le navigateur : chaque droit passe par la RLS et `est_admin()` (`supabase/lot-20-admin.sql`).
+  - Catalogue (`produits`) et réglages (`reglages` : coordonnées, livraison, retours, textes) en base. Le site lit la base au démarrage, garde une copie locale, et retombe sur les fichiers de `src/data/` si la base ne répond pas.
+  - Statut et suppression d'une commande par fonctions contrôlées ; journal écrit par déclencheurs, illisible pour un client et non modifiable.
+  - `passer_commande` prend le prix dans `produits` dès que la pièce y est : le prix envoyé par le navigateur ne compte plus.
+  - Photos préparées dans le navigateur (WebP 480/960) puis envoyées dans l'espace public `produits`, écriture admin seulement.
+- Conséquences :
+  - Le premier admin se nomme en SQL dans le tableau de bord Supabase ; retirer le droit = supprimer la ligne, effet immédiat.
+  - Coloris, tailles et photos sont des colonnes JSON de `produits` (même forme que `produits.json`) : simple à importer et à lire, mais pas de recherche SQL fine sur une taille.
+  - Catégories et collections restent dans `src/data/` (non éditables dans l'admin).
+  - Si l'admin masque toutes les pièces, le site retombe sur le catalogue des fichiers.

@@ -266,6 +266,22 @@ await B.sb.rpc('deverrouiller_admin', { cle: CLE })
 psql(`delete from public.admins where utilisateur = '${B.id}'`)
 const plusAdmin = await B.sb.rpc('est_admin')
 verdict(plusAdmin.data === false, 'admin : droit retiré en SQL, effet immédiat (même session déverrouillée)')
+
+// ── Compte admin créé par `npm run admin:sql` (e-mail + mot de passe + clé lus dans .env), comme en ligne ──
+const emailC = `admin.sql.${suffixe}@exemple.ma`, mdpC = `Admin-${suffixe}-77`
+const sqlC = execFileSync('node', ['scripts/admin-sql.mjs'], { encoding: 'utf8', env: { PATH: process.env.PATH, ADMIN_EMAIL: emailC, ADMIN_MOT_DE_PASSE: mdpC, ADMIN_CLE: CLE } })
+verdict(!sqlC.includes(mdpC) && !sqlC.includes(CLE), 'admin:sql : ni le mot de passe ni la clé en clair dans le SQL produit')
+const creeC = execFileSync('docker', ['exec', '-i', 'supabase_db_hmode', 'psql', '-U', 'postgres', '-d', 'postgres', '-v', 'ON_ERROR_STOP=1', '-tA'], { input: sqlC, encoding: 'utf8' })
+const C = client()
+const connC = await C.auth.signInWithPassword({ email: emailC, password: mdpC })
+const cleC = await C.rpc('deverrouiller_admin', { cle: CLE })
+const estAdminC = await C.rpc('est_admin')
+verdict(creeC.includes(emailC) && !connC.error && cleC.data?.ok === true && estAdminC.data === true,
+  'admin:sql : compte créé sans inscription, connexion par mot de passe puis clé, droits admin', connC.error?.message ?? JSON.stringify(cleC.data))
+const refaitC = execFileSync('docker', ['exec', '-i', 'supabase_db_hmode', 'psql', '-U', 'postgres', '-d', 'postgres', '-v', 'ON_ERROR_STOP=1', '-tA'], { input: sqlC.replaceAll(emailC, emailC), encoding: 'utf8' })
+verdict(refaitC.includes(emailC) && psql(`select count(*) from auth.users where email = '${emailC}'`) === '1', 'admin:sql : relancé, met à jour le compte sans le dupliquer')
+await C.auth.signOut()
+psql(`delete from auth.users where email = '${emailC}'`)
 psql(ancienneCle ? `update public.admin_cle set hash = '${ancienneCle}' where id = 1` : 'delete from public.admin_cle')
 
 console.log(echecs ? `\n${echecs} échec(s)` : '\nTout est vert.')

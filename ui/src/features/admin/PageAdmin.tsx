@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import { ArrowUpRight, ClipboardList, FileText, History, LayoutDashboard, LogOut, Settings, Shirt, ShieldAlert } from 'lucide-react'
 import { Bouton, BoutonLien, Champ, Logotype } from '@/design-system'
@@ -63,29 +63,22 @@ async function quitterAdmin(deconnexion: () => Promise<void>) {
   await deconnexion()
 }
 
-/** Garde de l'administration, en deux étapes et sans passer par l'espace client :
- *  1. e-mail + mot de passe d'un compte inscrit dans `admins` (créé dans Supabase, pas d'inscription ici) ;
- *  2. clé de sécurité de 12 chiffres, vérifiée par la base, qui déverrouille la session 12 h. */
+/** Garde de l'administration : un seul formulaire, trois champs — e-mail, mot de passe, clé de 12 chiffres.
+ *  Le compte admin est créé par `npm run admin:sql` (lu dans ui/.env), jamais par l'inscription du site.
+ *  Mot de passe vérifié par Supabase, clé vérifiée par la base (`deverrouiller_admin`, session ouverte 12 h). */
 export function PageAdmin() {
   const utilisateur = useSession(s => s.utilisateur)
   const pret = useSession(s => s.pret)
   const deconnexion = useSession(s => s.deconnexion)
   const { statut, recharger } = useStatutAdmin(utilisateur?.id, pret)
-  // Connexion faite depuis ce formulaire avec un compte client : on la referme aussitôt, sans ouvrir l'espace client.
-  const depuisFormulaire = useRef(false)
-  const [refus, setRefus] = useState<string | null>(null)
-  const nonAdmin = typeof statut === 'object' && !statut.admin
-  useEffect(() => {
-    if (!nonAdmin || !depuisFormulaire.current) return
-    depuisFormulaire.current = false
-    setRefus('Ce compte n\'a pas accès à l\'administration.')
-    void deconnexion()
-  }, [nonAdmin, deconnexion])
+  // Pendant l'envoi du formulaire, il reste affiché (la connexion change la session avant que la clé soit vérifiée).
+  const [envoi, setEnvoi] = useState(false)
 
   if (!supabaseActif) return <Ecran titre="Administration indisponible" texte={<>La base de données n'est pas configurée pour ce site (fichier <code>ui/.env</code>).</>} />
   if (!pret) return <EcranChargement texte="Vérification de la session…" />
-  if (!utilisateur) return <ConnexionAdmin refus={refus} onEnvoi={() => { depuisFormulaire.current = true; setRefus(null) }} />
-  if (statut === 'verification' || (nonAdmin && depuisFormulaire.current)) return <EcranChargement texte="Vérification des droits…" />
+  const aDeverrouiller = typeof statut === 'object' && statut.admin && statut.cle && !statut.deverrouille
+  if (!utilisateur || envoi || aDeverrouiller) return <ConnexionAdmin emailConnu={aDeverrouiller ? utilisateur?.email : undefined} onEnvoi={setEnvoi} onOk={recharger} />
+  if (statut === 'verification') return <EcranChargement texte="Vérification des droits…" />
   if (statut === 'erreur') return (
     <Ecran titre="Vérification impossible" texte="La base ne répond pas. Vérifiez votre connexion puis réessayez.">
       <Bouton onClick={recharger}>Réessayer</Bouton>
@@ -100,73 +93,65 @@ export function PageAdmin() {
     </Ecran>
   )
   if (!statut.cle) return (
-    <Ecran titre="Clé non définie" texte={<>Aucune clé de sécurité n'est enregistrée dans la base. Ajoutez <code>ADMIN_CLE</code> (12 chiffres) dans <code>ui/.env</code>, lancez <code>npm run admin:sql</code> dans <code>ui/</code> et collez le résultat dans le SQL Editor de Supabase.</>}>
+    <Ecran titre="Clé non définie" texte={<>Aucune clé de sécurité n'est enregistrée dans la base. Renseignez <code>ADMIN_EMAIL</code>, <code>ADMIN_MOT_DE_PASSE</code> et <code>ADMIN_CLE</code> dans <code>ui/.env</code>, lancez <code>npm run admin:sql</code> dans <code>ui/</code> et collez le résultat dans le SQL Editor de Supabase.</>}>
       <Bouton variante="contour" onClick={() => void quitterAdmin(deconnexion)}>Se déconnecter</Bouton>
     </Ecran>
   )
-  if (!statut.deverrouille) return <CleAdmin email={utilisateur.email} onOk={recharger} onQuitter={() => void quitterAdmin(deconnexion)} />
   return <CoqueAdmin email={utilisateur.email} />
 }
 
-/** Étape 1 : connexion de l'administration. Pas d'inscription ni de lien vers l'espace client.
- *  Session gardée seulement le temps de l'onglet (pas de « se souvenir de moi »). */
-function ConnexionAdmin({ refus, onEnvoi }: { refus: string | null; onEnvoi: () => void }) {
+/** Connexion de l'administration : e-mail, mot de passe et clé de 12 chiffres, sur un seul écran.
+ *  Pas d'inscription ni de lien vers l'espace client ; session gardée seulement le temps de l'onglet.
+ *  Un refus (compte client, clé fausse) referme aussitôt la session ouverte par le mot de passe. */
+function ConnexionAdmin({ emailConnu, onEnvoi, onOk }: { emailConnu?: string; onEnvoi: (v: boolean) => void; onOk: () => void }) {
   const connexion = useSession(s => s.connexion)
-  const [email, setEmail] = useState('')
-  const [motDePasse, setMotDePasse] = useState('')
-  const [erreurs, setErreurs] = useState<{ email?: string; motDePasse?: string }>({})
+  const deconnexion = useSession(s => s.deconnexion)
+  const [f, setF] = useState({ email: emailConnu ?? '', motDePasse: '', cle: '' })
+  const [erreurs, setErreurs] = useState<Partial<Record<keyof typeof f, string>>>({})
   const [alerte, setAlerte] = useState<string | null>(null)
   const [envoi, setEnvoi] = useState(false)
-  const envoyer = async (ev: FormEvent) => {
-    ev.preventDefault()
-    const e = { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ? undefined : 'Adresse e-mail invalide.', motDePasse: motDePasse ? undefined : 'Saisissez le mot de passe.' }
-    setErreurs(e); setAlerte(null)
-    if (e.email || e.motDePasse) return
-    setEnvoi(true)
-    onEnvoi()
-    const r = await connexion(email, motDePasse, false)
-    setEnvoi(false)
-    if (r.erreur) setAlerte(r.erreur)
-  }
-  const message = alerte ?? refus
-  return (
-    <Ecran titre="Connexion administrateur" icone={false} texte="Réservée à l'équipe H MODE. Les comptes administrateur sont créés par la boutique.">
-      <form onSubmit={envoyer} noValidate aria-label="Connexion administrateur" className="flex flex-col gap-5">
-        {message && <p role="alert" className="rounded-[10px] border border-danger bg-blanc px-4 py-3 text-[14px] text-danger">{message}</p>}
-        <Champ label="Adresse e-mail" type="email" autoComplete="username" value={email} erreur={erreurs.email}
-          onChange={e => { setEmail(e.target.value); setErreurs(x => ({ ...x, email: undefined })) }} />
-        <Champ label="Mot de passe" type="password" autoComplete="current-password" value={motDePasse} erreur={erreurs.motDePasse}
-          onChange={e => { setMotDePasse(e.target.value); setErreurs(x => ({ ...x, motDePasse: undefined })) }} />
-        <Bouton type="submit" chargement={envoi} plein_largeur>Se connecter</Bouton>
-      </form>
-    </Ecran>
-  )
-}
+  const maj = (k: keyof typeof f, v: string) => { setF(x => ({ ...x, [k]: v })); setErreurs(x => ({ ...x, [k]: undefined })) }
+  const refuser = async (message: string) => { await quitterAdmin(deconnexion); setAlerte(message); setF(x => ({ ...x, motDePasse: '', cle: '' })) }
 
-/** Étape 2 : clé de sécurité de 12 chiffres, comparée par la base à son empreinte. */
-function CleAdmin({ email, onOk, onQuitter }: { email: string; onOk: () => void; onQuitter: () => void }) {
-  const [cle, setCle] = useState('')
-  const [erreur, setErreur] = useState<string | null>(null)
-  const [envoi, setEnvoi] = useState(false)
   const envoyer = async (ev: FormEvent) => {
     ev.preventDefault()
-    if (cle.length !== 12) { setErreur('La clé fait 12 chiffres.'); return }
-    setEnvoi(true); setErreur(null)
+    const e = {
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim()) ? undefined : 'Adresse e-mail invalide.',
+      motDePasse: f.motDePasse ? undefined : 'Saisissez le mot de passe.',
+      cle: f.cle.length === 12 ? undefined : 'La clé fait 12 chiffres.',
+    }
+    setErreurs(e); setAlerte(null)
+    if (e.email || e.motDePasse || e.cle) return
+    setEnvoi(true); onEnvoi(true)
+    let ok = false
     try {
-      const r = await deverrouillerAdmin(cle)
-      if (r.ok) { onOk(); return }
-      setErreur(r.message ?? 'Clé incorrecte.'); setCle('')
-    } catch (e) { setErreur((e as Error).message) }
-    finally { setEnvoi(false) }
+      const r = await connexion(f.email, f.motDePasse, false)
+      if (r.erreur) { setAlerte(r.erreur); return }
+      const s = await statutAdmin()
+      if (!s.admin) { await refuser('Ce compte n\'a pas accès à l\'administration.'); return }
+      if (!s.cle) { ok = true; return } // la page explique comment poser la clé
+      const d = await deverrouillerAdmin(f.cle)
+      if (!d.ok) { await refuser(d.message ?? 'Clé incorrecte.'); return }
+      ok = true
+    } catch (err) {
+      await refuser((err as Error).message)
+    } finally {
+      setEnvoi(false); onEnvoi(false)
+      if (ok) onOk()
+    }
   }
+
   return (
-    <Ecran titre="Clé de sécurité" icone={false} texte={<>Connecté : <strong className="text-encre">{email}</strong>. Saisissez la clé de 12 chiffres de l'administration.</>}>
-      <form onSubmit={envoyer} noValidate aria-label="Clé de sécurité" className="flex flex-col gap-5">
-        <Champ label="Clé (12 chiffres)" type="password" inputMode="numeric" autoComplete="one-time-code" maxLength={12} autoFocus
-          value={cle} erreur={erreur ?? undefined} aide={`${cle.length} / 12`}
-          onChange={e => { setCle(e.target.value.replace(/\D/g, '').slice(0, 12)); setErreur(null) }} />
-        <Bouton type="submit" chargement={envoi} plein_largeur>Déverrouiller</Bouton>
-        <button type="button" onClick={onQuitter} className="label mx-auto text-encre underline underline-offset-4">Se déconnecter</button>
+    <Ecran titre="Connexion administrateur" icone={false} texte={emailConnu
+      ? 'Votre session d\'administration a expiré. Saisissez de nouveau votre mot de passe et votre clé.'
+      : 'Réservée à l\'équipe H MODE. Le compte administrateur est créé par la boutique.'}>
+      <form onSubmit={envoyer} noValidate aria-label="Connexion administrateur" className="flex flex-col gap-5">
+        {alerte && <p role="alert" className="rounded-[10px] border border-danger bg-blanc px-4 py-3 text-[14px] text-danger">{alerte}</p>}
+        <Champ label="Adresse e-mail" type="email" autoComplete="username" value={f.email} erreur={erreurs.email} onChange={e => maj('email', e.target.value)} />
+        <Champ label="Mot de passe" type="password" autoComplete="current-password" value={f.motDePasse} erreur={erreurs.motDePasse} onChange={e => maj('motDePasse', e.target.value)} />
+        <Champ label="Clé de sécurité (12 chiffres)" type="password" inputMode="numeric" autoComplete="one-time-code" maxLength={12}
+          value={f.cle} erreur={erreurs.cle} aide={`${f.cle.length} / 12`} onChange={e => maj('cle', e.target.value.replace(/\D/g, '').slice(0, 12))} />
+        <Bouton type="submit" chargement={envoi} plein_largeur>Se connecter</Bouton>
       </form>
     </Ecran>
   )

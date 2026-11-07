@@ -134,51 +134,59 @@ describe('administration : accès', () => {
     expect(screen.queryByRole('form', { name: 'Connexion' })).not.toBeInTheDocument()
   })
 
-  it('identifiants faux, puis compte client : refusé et aussitôt déconnecté', async () => {
+  const remplir = async (u: ReturnType<typeof userEvent.setup>, f: HTMLElement, email: string, mdp: string, cle: string) => {
+    for (const [label, v] of [['Adresse e-mail', email], ['Mot de passe', mdp], ['Clé de sécurité (12 chiffres)', cle]] as const) {
+      const c = within(f).getByLabelText(label); await u.clear(c); if (v) await u.type(c, v)
+    }
+    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
+  }
+
+  it('trois champs obligatoires ; mot de passe faux, puis compte client : refusés, session refermée', async () => {
     useSession.setState({ utilisateur: null, pret: true })
     const u = userEvent.setup()
     monter('/admin')
     const f = await screen.findByRole('form', { name: 'Connexion administrateur' })
     await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
     expect(await screen.findByText('Adresse e-mail invalide.')).toBeInTheDocument()
-    await u.type(within(f).getByLabelText('Adresse e-mail'), 'client@hmode.test')
-    await u.type(within(f).getByLabelText('Mot de passe'), 'faux')
-    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
-    expect(await screen.findByRole('alert', {}, { timeout: 3000 })).toHaveTextContent(/incorrect|invalide/i)
-    await u.clear(within(f).getByLabelText('Mot de passe')); await u.type(within(f).getByLabelText('Mot de passe'), 'Client-2026')
-    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
+    expect(screen.getByText('Saisissez le mot de passe.')).toBeInTheDocument()
+    expect(screen.getByText('La clé fait 12 chiffres.')).toBeInTheDocument()
+    const champCle = within(f).getByLabelText('Clé de sécurité (12 chiffres)')
+    await u.type(champCle, '12ab34')
+    expect(champCle).toHaveValue('1234')
+    await remplir(u, f, 'client@hmode.test', 'faux', CLE)
+    expect(await within(f).findByRole('alert')).toHaveTextContent(/incorrect|invalide/i)
+    await remplir(u, f, 'client@hmode.test', 'Client-2026', CLE)
     expect(await screen.findByText('Ce compte n\'a pas accès à l\'administration.')).toBeInTheDocument()
     expect(useSession.getState().utilisateur).toBeNull()
     expect(appels.rpc.map(r => r[0])).not.toContain('deverrouiller_admin')
   })
 
-  it('admin : mot de passe, puis clé de 12 chiffres (fausse refusée, bonne acceptée), puis déconnexion qui verrouille', async () => {
+  it('admin : e-mail + mot de passe + clé fausse refusés (session refermée), puis clé juste ; déconnexion qui verrouille', async () => {
     useSession.setState({ utilisateur: null, pret: true }); deverrouille = false; remplirCatalogue()
     const u = userEvent.setup()
     monter('/admin')
     const f = await screen.findByRole('form', { name: 'Connexion administrateur' })
-    await u.type(within(f).getByLabelText('Adresse e-mail'), 'admin@hmode.test')
-    await u.type(within(f).getByLabelText('Mot de passe'), 'Admin-2026')
-    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
-    const k = await screen.findByRole('form', { name: 'Clé de sécurité' })
-    expect(screen.queryByRole('navigation', { name: 'Administration' })).not.toBeInTheDocument()
-    const champ = within(k).getByLabelText('Clé (12 chiffres)')
-    await u.type(champ, '12ab34')
-    expect(champ).toHaveValue('1234')
-    await u.click(within(k).getByRole('button', { name: 'Déverrouiller' }))
-    expect(await screen.findByText('La clé fait 12 chiffres.')).toBeInTheDocument()
-    await u.clear(champ); await u.type(champ, '111122223333')
-    await u.click(within(k).getByRole('button', { name: 'Déverrouiller' }))
+    await remplir(u, f, 'admin@hmode.test', 'Admin-2026', '111122223333')
     expect(await screen.findByText('Clé incorrecte (4 essais restants).')).toBeInTheDocument()
-    expect(champ).toHaveValue('')
-    await u.type(champ, CLE)
-    await u.click(within(k).getByRole('button', { name: 'Déverrouiller' }))
+    expect(useSession.getState().utilisateur).toBeNull()
+    expect(screen.queryByRole('navigation', { name: 'Administration' })).not.toBeInTheDocument()
+    const f2 = screen.getByRole('form', { name: 'Connexion administrateur' })
+    expect(within(f2).getByLabelText('Clé de sécurité (12 chiffres)')).toHaveValue('')
+    await remplir(u, f2, 'admin@hmode.test', 'Admin-2026', CLE)
     expect(await screen.findByRole('navigation', { name: 'Administration' })).toBeInTheDocument()
     expect(appels.rpc).toContainEqual(['deverrouiller_admin', { cle: CLE }])
     await u.click(screen.getAllByRole('button', { name: /Se déconnecter|Déconnexion/ })[0])
     await waitFor(() => expect(useSession.getState().utilisateur).toBeNull())
     expect(appels.rpc.map(r => r[0])).toContain('verrouiller_admin')
     expect(deverrouille).toBe(false)
+  })
+
+  it('session admin expirée (non déverrouillée) : retour au formulaire, e-mail déjà rempli', async () => {
+    deverrouille = false; connecter()
+    monter('/admin')
+    const f = await screen.findByRole('form', { name: 'Connexion administrateur' })
+    expect(within(f).getByLabelText('Adresse e-mail')).toHaveValue('admin@hmode.test')
+    expect(screen.getByText(/session d'administration a expiré/)).toBeInTheDocument()
   })
 
   it('compte client déjà connecté sur le site : « Accès réservé », puis « Changer de compte »', async () => {

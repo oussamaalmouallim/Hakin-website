@@ -1,28 +1,51 @@
-// Prépare les deux lignes SQL qui nomment l'admin et posent sa clé de sécurité, à coller dans le SQL Editor de Supabase.
-// Lit dans ui/.env (variables SANS préfixe VITE_ : Vite ne les met jamais dans le site) :
-//   ADMIN_EMAIL=…            e-mail du compte admin (créé dans Supabase : Authentication → Users → Add user)
-//   ADMIN_CLE=123456789012   clé de 12 chiffres, choisie par vous
-// La clé n'est jamais affichée : seule son empreinte bcrypt (coût 12) sort du script.
-// Usage : cd ui && npm run admin:sql
+// Crée (ou met à jour) le compte admin et sa clé de sécurité, à partir de trois lignes de ui/.env :
+//   ADMIN_EMAIL=…              e-mail de connexion à /admin
+//   ADMIN_MOT_DE_PASSE=…       mot de passe (10 caractères au moins, lettres et chiffres)
+//   ADMIN_CLE=123456789012     clé de 12 chiffres
+// Variables SANS préfixe VITE_ : Vite ne les met jamais dans le site.
+// Le script affiche le SQL à coller dans le SQL Editor de Supabase. Mot de passe et clé n'en sortent qu'en empreinte bcrypt :
+// ni le SQL, ni la base, ni le site ne les contiennent en clair.
+// Usage : cd ui && npm run admin:sql      (relancer après tout changement des trois lignes)
 import bcrypt from 'bcryptjs'
 
 const email = (process.env.ADMIN_EMAIL ?? '').trim().toLowerCase()
+const motDePasse = process.env.ADMIN_MOT_DE_PASSE ?? ''
 const cle = (process.env.ADMIN_CLE ?? '').trim()
-const fuite = Object.keys(process.env).filter(k => k.startsWith('VITE_') && /ADMIN|CLE/i.test(k))
+const fuite = Object.keys(process.env).filter(k => k.startsWith('VITE_') && /ADMIN|CLE|MOT_DE_PASSE/i.test(k))
 
 const erreurs = []
 if (fuite.length) erreurs.push(`${fuite.join(', ')} : une variable VITE_ part dans le site, publique. Retirez le préfixe VITE_.`)
 if (!/^[^\s@']+@[^\s@']+\.[^\s@']+$/.test(email)) erreurs.push('ADMIN_EMAIL absent ou invalide dans ui/.env.')
-if (!/^\d{12}$/.test(cle)) erreurs.push('ADMIN_CLE doit faire exactement 12 chiffres dans ui/.env.')
+if (motDePasse.length < 10 || !/[a-z]/i.test(motDePasse) || !/\d/.test(motDePasse)) erreurs.push('ADMIN_MOT_DE_PASSE : 10 caractères au moins, avec des lettres et des chiffres.')
+if (!/^\d{12}$/.test(cle)) erreurs.push('ADMIN_CLE doit faire exactement 12 chiffres.')
 else if (/^(\d)\1{11}$/.test(cle) || '01234567890123456789'.includes(cle) || '98765432109876543210'.includes(cle)) erreurs.push('ADMIN_CLE trop simple (chiffres répétés ou qui se suivent).')
 if (erreurs.length) {
   console.error(erreurs.map(e => `✗ ${e}`).join('\n'))
   process.exit(1)
 }
 
-const empreinte = bcrypt.hashSync(cle, bcrypt.genSaltSync(12))
-console.log(`-- H MODE : admin ${email} et clé de sécurité (empreinte seulement). À coller dans le SQL Editor, après lot-21-admin-cle.sql.
-insert into public.admins (utilisateur) select id from auth.users where email = '${email}' on conflict do nothing;
-insert into public.admin_cle (id, hash) values (1, '${empreinte}') on conflict (id) do update set hash = excluded.hash, maj_le = now();
+function sqlAdmin(email, empreinteMdp, empreinteCle) {
+  return `-- H MODE : compte admin ${email} et clé de sécurité (empreintes seulement). À coller dans le SQL Editor, après lot-21-admin-cle.sql.
+do $admin$
+declare uid uuid;
+begin
+  select id into uid from auth.users where email = '${email}';
+  if uid is null then
+    uid := gen_random_uuid();
+    insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data,
+      created_at, updated_at, confirmation_token, recovery_token, email_change_token_new, email_change)
+    values ('00000000-0000-0000-0000-000000000000', uid, 'authenticated', 'authenticated', '${email}', '${empreinteMdp}', now(),
+      '{"provider":"email","providers":["email"]}', '{"nom":"Administration H MODE"}', now(), now(), '', '', '', '');
+    insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+    values (gen_random_uuid(), uid, uid::text, jsonb_build_object('sub', uid::text, 'email', '${email}', 'email_verified', true), 'email', now(), now(), now());
+  else
+    update auth.users set encrypted_password = '${empreinteMdp}', email_confirmed_at = coalesce(email_confirmed_at, now()), updated_at = now() where id = uid;
+  end if;
+  insert into public.admins (utilisateur) values (uid) on conflict do nothing;
+  insert into public.admin_cle (id, hash) values (1, '${empreinteCle}') on conflict (id) do update set hash = excluded.hash, maj_le = now();
+end $admin$;
 -- Vérification : doit renvoyer une ligne.
-select email from auth.users u join public.admins a on a.utilisateur = u.id where email = '${email}';`)
+select u.email from auth.users u join public.admins a on a.utilisateur = u.id where u.email = '${email}';`
+}
+
+console.log(sqlAdmin(email, bcrypt.hashSync(motDePasse, bcrypt.genSaltSync(10)), bcrypt.hashSync(cle, bcrypt.genSaltSync(12))))

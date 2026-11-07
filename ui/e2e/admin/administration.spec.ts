@@ -27,12 +27,8 @@ async function seConnecter(page: Page, axe = false) {
   if (axe) expect(await graves(page, 'connexion admin')).toEqual([])
   await f.getByLabel('Adresse e-mail').fill(email)
   await f.getByLabel('Mot de passe').fill(motDePasse)
+  await f.getByLabel('Clé de sécurité (12 chiffres)').fill(CLE_ESSAI)
   await f.getByRole('button', { name: 'Se connecter' }).click()
-  const k = page.getByRole('form', { name: 'Clé de sécurité' })
-  await expect(k).toBeVisible()
-  if (axe) expect(await graves(page, 'clé admin')).toEqual([])
-  await k.getByLabel('Clé (12 chiffres)').fill(CLE_ESSAI)
-  await k.getByRole('button', { name: 'Déverrouiller' }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Tableau de bord' })).toBeVisible()
 }
 
@@ -132,15 +128,20 @@ test('accessibilité WCAG 2.2 AA de chaque écran de l\'administration (axe)', a
   }
 })
 
-test('visiteur : écran de connexion de l\'admin, sans inscription ; mot de passe faux refusé', async ({ page }) => {
+test('visiteur : connexion admin sans inscription ; clé fausse puis mot de passe faux refusés', async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem('hmode-sans-intro', '1'))
   await page.goto('/admin/commandes')
   const f = page.getByRole('form', { name: 'Connexion administrateur' })
   await expect(f).toBeVisible()
   await expect(page.getByText(/Créer un compte/i)).toHaveCount(0)
   await f.getByLabel('Adresse e-mail').fill(compte().email)
-  await f.getByLabel('Mot de passe').fill('pas-le-bon-9')
+  await f.getByLabel('Mot de passe').fill(compte().motDePasse)
+  await f.getByLabel('Clé de sécurité (12 chiffres)').fill('111122223333')
   await f.getByRole('button', { name: 'Se connecter' }).click()
-  await expect(f.getByRole('alert')).toBeVisible()
+  await expect(f.getByRole('alert')).toContainText('Clé incorrecte')
+  await f.getByLabel('Mot de passe').fill('pas-le-bon-9')
+  await f.getByLabel('Clé de sécurité (12 chiffres)').fill(CLE_ESSAI)
+  await f.getByRole('button', { name: 'Se connecter' }).click()
+  await expect(f.getByRole('alert')).not.toContainText('Clé incorrecte')
   await expect(page.getByRole('navigation', { name: 'Administration' })).toHaveCount(0)
 })

@@ -12,10 +12,17 @@ const MESSAGES: Record<string, string> = {
   '23514': 'Une valeur ne respecte pas les règles (prix, ancien prix, adresse…).',
   P0002: 'Élément introuvable : il a peut-être été supprimé entre-temps.',
 }
+/** Erreur de la base, avec son code d'origine (utile pour distinguer une session refusée d'une panne). */
+export class ErreurBase extends Error {
+  constructor(message: string, readonly code?: string, readonly detail?: string) { super(message) }
+}
 function verifier<T>({ data, error }: { data: T; error: { message: string; code?: string } | null }): T {
-  if (error) throw new Error(MESSAGES[error.code ?? ''] ?? error.message)
+  if (error) throw new ErreurBase(MESSAGES[error.code ?? ''] ?? error.message, error.code, error.message)
   return data
 }
+/** Session refusée par la base (jeton expiré, invalide, ou d'un autre projet Supabase) : il faut se reconnecter. */
+export const sessionRefusee = (e: unknown) =>
+  e instanceof ErreurBase && (/^PGRST30/.test(e.code ?? '') || /jwt|token|session/i.test(`${e.detail ?? ''} ${e.message}`))
 async function base(): Promise<SupabaseClient> {
   const sb = await obtenirSupabase()
   if (!sb) throw new Error('Base de données non configurée (ui/.env).')
@@ -59,6 +66,16 @@ export async function supprimerProduit(slug: string) {
   verifier(await (await base()).from('produits').delete().eq('slug', slug))
 }
 /** Import initial : les pièces de `produits.json` absentes de la base y sont ajoutées, dans le même ordre. */
+/** Import automatique à la première entrée dans l'admin : seulement si la base n'a aucune pièce ET que l'admin n'a
+ *  jamais touché aux produits (journal vide côté produits). Une base vidée exprès par l'admin n'est donc jamais re-remplie. */
+export async function importInitialNecessaire(): Promise<boolean> {
+  const sb = await base()
+  const { count, error } = await sb.from('produits').select('slug', { count: 'exact', head: true })
+  if (error) throw new ErreurBase(MESSAGES[error.code ?? ''] ?? error.message, error.code, error.message)
+  if (count) return false
+  const deja = verifier(await sb.from('journal_admin').select('id').like('action', 'produit%').limit(1)) as unknown[]
+  return deja.length === 0
+}
 export async function importerCatalogue(liste: Produit[]) {
   const lignes = liste.map((p, i) => produitVersLigne(p, { publie: true, ordre: i }))
   verifier(await (await base()).from('produits').upsert(lignes, { onConflict: 'slug', ignoreDuplicates: true }))

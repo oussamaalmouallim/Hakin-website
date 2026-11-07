@@ -1,11 +1,13 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import { ArrowUpRight, ClipboardList, FileText, History, LayoutDashboard, LogOut, Settings, Shirt, ShieldAlert } from 'lucide-react'
-import { Bouton, BoutonLien, Champ, Logotype } from '@/design-system'
+import { Bouton, BoutonLien, Champ, Logotype, useNotifier } from '@/design-system'
+import { produitsFichier } from '@/lib/catalogue'
+import { chargerDonnees } from '@/lib/donnees'
 import { supabaseActif } from '@/lib/supabase'
 import { useSession } from '@/state/session'
 import { cn } from '@/lib/utils'
-import { deverrouillerAdmin, statutAdmin, verrouillerAdmin, type StatutAdmin } from './api'
+import { ErreurBase, deverrouillerAdmin, importInitialNecessaire, importerCatalogue, sessionRefusee, statutAdmin, verrouillerAdmin, type StatutAdmin } from './api'
 import { Chargement } from './commun'
 import { TableauDeBord } from './TableauDeBord'
 import { ListeProduits } from './ListeProduits'
@@ -45,16 +47,22 @@ const EcranChargement = ({ texte }: { texte: string }) => <div className="grid m
 /** État du compte connecté vis-à-vis de l'administration, lu dans la base (`admin_statut()`, lot-21-admin-cle.sql).
  *  Dépend de l'identifiant, pas de l'objet : un rafraîchissement de session ne doit ni revérifier ni démonter les écrans. */
 function useStatutAdmin(id: string | undefined, pret: boolean) {
-  const [statut, setStatut] = useState<StatutAdmin | 'verification' | 'erreur'>('verification')
+  const [statut, setStatut] = useState<StatutAdmin | 'verification' | 'erreur' | 'session-refusee'>('verification')
+  const [detail, setDetail] = useState('')
   const [tour, setTour] = useState(0)
   useEffect(() => {
     if (!pret || !id) return
     let actif = true
     setStatut('verification')
-    statutAdmin().then(s => actif && setStatut(s)).catch(() => actif && setStatut('erreur'))
+    statutAdmin().then(s => actif && setStatut(s)).catch(e => {
+      if (!actif) return
+      console.error('[admin] vérification des droits :', e)
+      setDetail(e instanceof ErreurBase ? [e.code, e.detail].filter(Boolean).join(' — ') : String((e as Error)?.message ?? e))
+      setStatut(sessionRefusee(e) ? 'session-refusee' : 'erreur')
+    })
     return () => { actif = false }
   }, [pret, id, tour])
-  return { statut, recharger: () => setTour(t => t + 1) }
+  return { statut, detail, recharger: () => setTour(t => t + 1) }
 }
 
 /** Déconnexion de l'admin : la session perd ses droits en base, puis Supabase la ferme. */
@@ -70,18 +78,33 @@ export function PageAdmin() {
   const utilisateur = useSession(s => s.utilisateur)
   const pret = useSession(s => s.pret)
   const deconnexion = useSession(s => s.deconnexion)
-  const { statut, recharger } = useStatutAdmin(utilisateur?.id, pret)
+  const { statut, detail, recharger } = useStatutAdmin(utilisateur?.id, pret)
   // Pendant l'envoi du formulaire, il reste affiché (la connexion change la session avant que la clé soit vérifiée).
   const [envoi, setEnvoi] = useState(false)
+  // Session gardée par le navigateur mais refusée par la base (expirée, ancienne, autre projet) : on la referme,
+  // et le formulaire le dit.
+  const [sessionFermee, setSessionFermee] = useState(false)
+  useEffect(() => {
+    if (statut !== 'session-refusee') return
+    setSessionFermee(true)
+    void quitterAdmin(deconnexion)
+  }, [statut, deconnexion])
 
   if (!supabaseActif) return <Ecran titre="Administration indisponible" texte={<>La base de données n'est pas configurée pour ce site (fichier <code>ui/.env</code>).</>} />
   if (!pret) return <EcranChargement texte="Vérification de la session…" />
   const aDeverrouiller = typeof statut === 'object' && statut.admin && statut.cle && !statut.deverrouille
-  if (!utilisateur || envoi || aDeverrouiller) return <ConnexionAdmin emailConnu={aDeverrouiller ? utilisateur?.email : undefined} onEnvoi={setEnvoi} onOk={recharger} />
-  if (statut === 'verification') return <EcranChargement texte="Vérification des droits…" />
+  if (!utilisateur || envoi || aDeverrouiller) return (
+    <ConnexionAdmin emailConnu={aDeverrouiller ? utilisateur?.email : undefined} onEnvoi={v => { setEnvoi(v); if (v) setSessionFermee(false) }} onOk={recharger}
+      avis={sessionFermee ? 'Votre session n\'était plus valable. Reconnectez-vous.' : undefined} />
+  )
+  if (statut === 'verification' || statut === 'session-refusee') return <EcranChargement texte="Vérification des droits…" />
   if (statut === 'erreur') return (
-    <Ecran titre="Vérification impossible" texte="La base ne répond pas. Vérifiez votre connexion puis réessayez.">
-      <Bouton onClick={recharger}>Réessayer</Bouton>
+    <Ecran titre="Vérification impossible" texte="La base a répondu par une erreur. Réessayez ; si ça continue, déconnectez-vous puis reconnectez-vous.">
+      {detail && <p className="mb-5 break-words rounded-[10px] border border-ligne-forte bg-blanc px-4 py-3 font-mono text-[12px] text-encre">Détail : {detail}</p>}
+      <div className="flex flex-wrap gap-3">
+        <Bouton onClick={recharger}>Réessayer</Bouton>
+        <Bouton variante="contour" onClick={() => void quitterAdmin(deconnexion)}>Se déconnecter</Bouton>
+      </div>
     </Ecran>
   )
   if (!statut.admin) return (
@@ -103,7 +126,7 @@ export function PageAdmin() {
 /** Connexion de l'administration : e-mail, mot de passe et clé de sécurité, sur un seul écran.
  *  Pas d'inscription ni de lien vers l'espace client ; session gardée seulement le temps de l'onglet.
  *  Un refus (compte client, clé fausse) referme aussitôt la session ouverte par le mot de passe. */
-function ConnexionAdmin({ emailConnu, onEnvoi, onOk }: { emailConnu?: string; onEnvoi: (v: boolean) => void; onOk: () => void }) {
+function ConnexionAdmin({ emailConnu, onEnvoi, onOk, avis }: { emailConnu?: string; onEnvoi: (v: boolean) => void; onOk: () => void; avis?: string }) {
   const connexion = useSession(s => s.connexion)
   const deconnexion = useSession(s => s.deconnexion)
   const [f, setF] = useState({ email: emailConnu ?? '', motDePasse: '', cle: '' })
@@ -146,7 +169,7 @@ function ConnexionAdmin({ emailConnu, onEnvoi, onOk }: { emailConnu?: string; on
       ? 'Votre session d\'administration a expiré. Saisissez de nouveau votre mot de passe et votre clé.'
       : 'Réservée à l\'équipe H MODE. Le compte administrateur est créé par la boutique.'}>
       <form onSubmit={envoyer} noValidate aria-label="Connexion administrateur" className="flex flex-col gap-5">
-        {alerte && <p role="alert" className="rounded-[10px] border border-danger bg-blanc px-4 py-3 text-[14px] text-danger">{alerte}</p>}
+        {(alerte ?? avis) && <p role="alert" className="rounded-[10px] border border-danger bg-blanc px-4 py-3 text-[14px] text-danger">{alerte ?? avis}</p>}
         <Champ label="Adresse e-mail" type="email" autoComplete="username" value={f.email} erreur={erreurs.email} onChange={e => maj('email', e.target.value)} />
         <Champ label="Mot de passe" type="password" autoComplete="current-password" value={f.motDePasse} erreur={erreurs.motDePasse} onChange={e => maj('motDePasse', e.target.value)} />
         <Champ label="Clé de sécurité" type="password" autoComplete="off" value={f.cle} erreur={erreurs.cle} onChange={e => maj('cle', e.target.value)} />
@@ -156,9 +179,39 @@ function ConnexionAdmin({ emailConnu, onEnvoi, onOk }: { emailConnu?: string; on
   )
 }
 
+/** Première entrée dans l'admin : le catalogue actuel du site est importé en base tout seul (une seule fois).
+ *  Une seule exécution à la fois (le double montage du mode strict ne lance pas deux imports). */
+let importInitial: Promise<number> | null = null
+const lancerImportInitial = () => (importInitial ??= (async () => {
+  try { return (await importInitialNecessaire()) ? await importerCatalogue(produitsFichier()) : 0 }
+  finally { importInitial = null }
+})())
+
+function useImportInitial() {
+  const notifier = useNotifier()
+  const [pret, setPret] = useState(false)
+  useEffect(() => {
+    let actif = true
+    ;(async () => {
+      try {
+        const n = await lancerImportInitial()
+        if (n) {
+          await chargerDonnees()
+          if (actif) notifier({ ton: 'succes', message: `Catalogue actuel importé automatiquement : ${n} pièces.` })
+        }
+      } catch (e) {
+        if (actif) notifier({ ton: 'erreur', message: `Import automatique impossible : ${(e as Error).message}. Utilisez « Importer » sur le tableau de bord.` })
+      } finally { if (actif) setPret(true) }
+    })()
+    return () => { actif = false }
+  }, [notifier])
+  return pret
+}
+
 function CoqueAdmin({ email }: { email: string }) {
   const deconnexion = useSession(s => s.deconnexion)
   const naviguer = useNavigate()
+  const catalogue = useImportInitial()
   const lien = ({ isActive }: { isActive: boolean }) => cn('flex shrink-0 items-center gap-3 rounded-full px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors lg:rounded-[10px]',
     isActive ? 'bg-accent text-encre' : 'text-fond/70 hover:bg-fond/10 hover:text-fond')
   return (
@@ -191,7 +244,7 @@ function CoqueAdmin({ email }: { email: string }) {
             <button type="button" onClick={async () => { await quitterAdmin(deconnexion); naviguer('/') }} className="label text-encre underline underline-offset-4">Déconnexion</button>
           </div>
         </div>
-        <Routes>
+        {!catalogue ? <Chargement texte="Préparation du catalogue…" /> : <Routes>
           <Route index element={<TableauDeBord />} />
           <Route path="produits" element={<ListeProduits />} />
           <Route path="produits/nouveau" element={<EditionProduit />} />
@@ -201,7 +254,7 @@ function CoqueAdmin({ email }: { email: string }) {
           <Route path="textes" element={<Textes />} />
           <Route path="journal" element={<Journal />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
-        </Routes>
+        </Routes>}
       </main>
     </div>
   )

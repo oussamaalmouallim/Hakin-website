@@ -20,6 +20,7 @@ const appels: { rpc: [string, unknown][]; ecritures: [string, string, unknown][]
 let admin = true
 let deverrouille = true
 let cleDefinie = true
+let erreurStatut: { code: string; message: string } | null = null
 const CLE = '482915603718'
 const COMPTES: Record<string, { id: string; mdp: string }> = { 'admin@hmode.test': { id: 'u-admin', mdp: 'Admin-2026' }, 'client@hmode.test': { id: 'u-client', mdp: 'Client-2026' } }
 const CLES: Record<string, string> = { produits: 'slug', reglages: 'cle', commandes: 'reference' }
@@ -29,8 +30,10 @@ class Requete {
   private valeur: unknown = null
   private filtres: ((l: Ligne) => boolean)[] = []
   private unique = false
+  private compte = false
   constructor(private table: string) {}
-  select() { return this }
+  select(_c?: string, o?: { count?: string; head?: boolean }) { this.compte = Boolean(o?.head); return this }
+  like(c: string, motif: string) { this.filtres.push(l => String(l[c] ?? '').startsWith(motif.replace(/%$/, ''))); return this }
   order() { return this }
   limit() { return this }
   maybeSingle() { this.unique = true; return this }
@@ -41,12 +44,13 @@ class Requete {
   update(v: unknown) { this.mode = 'update'; this.valeur = v; return this }
   upsert(v: unknown) { this.mode = 'upsert'; this.valeur = v; return this }
   delete() { this.mode = 'delete'; return this }
-  then<A, B>(ok?: ((v: { data: unknown; error: { message: string; code?: string } | null }) => A) | null, ko?: ((e: unknown) => B) | null) {
+  then<A, B>(ok?: ((v: { data: unknown; count?: number; error: { message: string; code?: string } | null }) => A) | null, ko?: ((e: unknown) => B) | null) {
     return Promise.resolve(this.executer()).then(ok, ko)
   }
   private executer() {
     const t = (base[this.table] ??= [])
     const visibles = t.filter(l => this.filtres.every(f => f(l)))
+    if (this.mode === 'select' && this.compte) return { data: null, count: visibles.length, error: null }
     if (this.mode === 'select') return { data: this.unique ? visibles[0] ?? null : visibles.map(l => ({ ...l })), error: null }
     appels.ecritures.push([this.table, this.mode, this.valeur])
     if (!admin || !deverrouille) return { data: null, error: { message: 'rls', code: '42501' } }
@@ -67,6 +71,7 @@ const faux = {
     appels.rpc.push([nom, args])
     const uid = useSession.getState().utilisateur?.id
     const estCompteAdmin = admin && uid === 'u-admin'
+    if (nom === 'admin_statut' && erreurStatut) return { data: null, error: erreurStatut }
     if (nom === 'admin_statut') return { data: { admin: estCompteAdmin, cle: cleDefinie, deverrouille: estCompteAdmin && deverrouille }, error: null }
     if (nom === 'deverrouiller_admin') {
       if (!estCompteAdmin) return { data: null, error: { message: 'Réservé à l\'administration.', code: '42501' } }
@@ -119,7 +124,7 @@ const commande = (reference: string, statut = 'nouvelle'): Ligne => ({
 beforeEach(() => {
   for (const k of Object.keys(base)) delete base[k]
   appels.rpc.length = 0; appels.ecritures.length = 0
-  admin = true; deverrouille = true; cleDefinie = true
+  admin = true; deverrouille = true; cleDefinie = true; erreurStatut = null
   sessionStorage.setItem('hmode-sans-intro', '1')
 })
 afterEach(() => useSession.setState({ utilisateur: null, pret: false }))
@@ -189,6 +194,26 @@ describe('administration : accès', () => {
     expect(screen.getByText(/session d'administration a expiré/)).toBeInTheDocument()
   })
 
+  it('session gardée par le navigateur mais refusée par la base (jeton expiré) : refermée, retour au formulaire avec un avis', async () => {
+    erreurStatut = { code: 'PGRST303', message: 'JWT expired' }; connecter()
+    monter('/admin')
+    expect(await screen.findByRole('form', { name: 'Connexion administrateur' })).toBeInTheDocument()
+    expect(screen.getByText('Votre session n\'était plus valable. Reconnectez-vous.')).toBeInTheDocument()
+    await waitFor(() => expect(useSession.getState().utilisateur).toBeNull())
+    expect(screen.queryByText('Vérification impossible')).not.toBeInTheDocument()
+  })
+
+  it('autre erreur de la base : « Vérification impossible » avec le détail, Réessayer et Se déconnecter', async () => {
+    erreurStatut = { code: '42883', message: 'function public.admin_statut() does not exist' }; connecter()
+    const u = userEvent.setup()
+    monter('/admin')
+    expect(await screen.findByRole('heading', { name: 'Vérification impossible' })).toBeInTheDocument()
+    expect(screen.getByText(/Détail : 42883 — function public.admin_statut\(\) does not exist/)).toBeInTheDocument()
+    erreurStatut = null
+    await u.click(screen.getByRole('button', { name: 'Réessayer' }))
+    expect(await screen.findByRole('navigation', { name: 'Administration' })).toBeInTheDocument()
+  })
+
   it('compte client déjà connecté sur le site : « Accès réservé », puis « Changer de compte »', async () => {
     useSession.setState({ utilisateur: { id: 'u-client', email: 'client@hmode.test', nom: '' }, pret: true })
     const u = userEvent.setup()
@@ -220,24 +245,25 @@ describe('administration : accès', () => {
 })
 
 describe('administration : catalogue', () => {
-  it('base vide : import du catalogue du site, rien d\'inventé', async () => {
+  it('première entrée dans l\'admin, base vide : catalogue actuel importé tout seul, rien d\'inventé', async () => {
     connecter()
-    const u = userEvent.setup()
     monter('/admin')
-    await u.click(await screen.findByRole('button', { name: 'Importer les 2 pièces' }))
-    await waitFor(() => expect(base.produits).toHaveLength(2))
+    expect(await screen.findByText('Catalogue actuel importé automatiquement : 2 pièces.')).toBeInTheDocument()
     expect(base.produits.map(p => [p.slug, p.prix_dh, p.publie, p.ordre])).toEqual([['a', null, true, 0], ['b', null, true, 1]])
-    expect(await screen.findByText('2 pièces importées dans la base.')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Tableau de bord' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Importer les/ })).not.toBeInTheDocument()
+    expect(appels.ecritures.filter(e => e[0] === 'produits')).toHaveLength(1) // un seul import, même en mode strict
   })
 
-  it('« Produits et prix » sur base vide : import sur place, puis la liste affiche les pièces', async () => {
+  it('base vidée exprès par l\'admin (journal) : pas de réimport automatique ; import possible à la main', async () => {
+    base.journal_admin = [{ id: 1, action: 'produit supprimé', cible: 'a', auteur_email: 'admin@hmode.test', cree_le: '2026-11-07T10:00:00Z', details: {} }]
     connecter()
     const u = userEvent.setup()
     monter('/admin/produits')
     await u.click(await screen.findByRole('button', { name: 'Importer les 2 pièces' }))
     expect(await screen.findByText('T-shirt Été')).toBeInTheDocument()
     expect(screen.getByText('Polo Riviera')).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /Importer les/ })).not.toBeInTheDocument()
+    expect(screen.queryByText(/importé automatiquement/)).not.toBeInTheDocument()
   })
 
   it('fiche : ancien prix refusé s\'il est plus bas, puis prix, solde et tailles enregistrés', async () => {

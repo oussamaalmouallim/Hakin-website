@@ -8,6 +8,9 @@ import { chargerDonnees } from '@/lib/donnees'
 import type { ProduitAdmin } from '@/lib/produitsBase'
 import type { ImageProduit } from '@/lib/types'
 import { cn } from '@/lib/utils'
+
+/** Teinte proposée pour un nouveau coloris : l'encre de la charte (token `--encre`), sans couleur écrite dans le code. */
+const teinteInitiale = () => getComputedStyle(document.documentElement).getPropertyValue('--encre').trim()
 import { creerProduit, lireProduit, listerProduits, modifierProduit, supprimerPhoto, supprimerProduit, televerserPhoto } from './api'
 import { controlerPhoto, preparerPhoto } from './photos'
 import { CarteAdmin, Chargement, Confirmation, EnTeteAdmin, ErreurAdmin, Interrupteur, useAvertirSiModifie } from './commun'
@@ -205,7 +208,7 @@ export function EditionProduit() {
           </CarteAdmin>
 
           <CarteAdmin titre="Coloris" texte="Ceux qu'on voit sur les photos. Chaque coloris s'affiche en pastille sur le site."
-            actions={<Bouton variante="contour" taille="sm" icone={<Plus className="h-3.5 w-3.5" aria-hidden />} onClick={() => maj('coloris', [...p.coloris, { nom: '', hex: '#0a0a0a' }])}>Ajouter un coloris</Bouton>}>
+            actions={<Bouton variante="contour" taille="sm" icone={<Plus className="h-3.5 w-3.5" aria-hidden />} onClick={() => maj('coloris', [...p.coloris, { nom: '', hex: teinteInitiale() }])}>Ajouter un coloris</Bouton>}>
             <div data-erreur={!!erreurs.coloris} tabIndex={erreurs.coloris ? -1 : undefined}>
               {p.coloris.length === 0 ? <p className="text-[14px] text-gris">Aucun coloris.</p> : (
                 <ul className="flex flex-col gap-3">

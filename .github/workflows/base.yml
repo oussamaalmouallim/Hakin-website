@@ -1,0 +1,40 @@
+# H MODE — applique les migrations de supabase/migrations/ au projet Supabase EN LIGNE.
+# Déclenchement manuel seulement (Actions → Base de données → Run workflow) : une base de production ne change
+# pas sans qu'on le décide. Protégeable par une approbation : Settings → Environments → production.
+# À régler une fois dans GitHub :
+#   variable  SUPABASE_PROJECT_REF   (l'identifiant du projet, visible dans son URL)
+#   secrets   SUPABASE_ACCESS_TOKEN  (Supabase → Account → Access tokens)
+#             SUPABASE_DB_PASSWORD   (mot de passe de la base du projet)
+# Jamais ici : le compte admin (npm run admin:sql, à la main).
+name: Base de données
+
+on:
+  workflow_dispatch:
+    inputs:
+      essai:
+        description: "Essai à blanc : lister ce qui serait appliqué, sans rien changer"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  migrations:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 10
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.1
+      - run: supabase link --project-ref "${{ vars.SUPABASE_PROJECT_REF }}"
+      - run: supabase migration list
+      - if: ${{ inputs.essai }}
+        run: supabase db push --dry-run
+      - if: ${{ !inputs.essai }}
+        run: supabase db push

@@ -69,8 +69,9 @@ schema_paths = []
 enabled = true
 # Specifies an ordered list of seed files to load during db reset.
 # Supports glob patterns relative to supabase directory: "./seeds/*.sql"
-# H MODE : le schéma unique (aussi collé tel quel dans le projet en ligne) est rejoué à chaque démarrage local.
-sql_paths = ["./schema.sql", "./lot-20-admin.sql", "./lot-21-admin-cle.sql"]  # lot-20 : administration (et passer_commande v2) · lot-21 : clé admin
+# H MODE : le schéma est dans migrations/ (appliquées dans l'ordre par `supabase db reset` / `db push`).
+# seed.sql : données locales seulement (aucune donnée fictive dans le site).
+sql_paths = ["./seed.sql"]
 
 [db.network_restrictions]
 # Enable management of network restrictions.

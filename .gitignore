@@ -1,9 +1,21 @@
+# Dépendances et builds
 node_modules/
 dist/
-ui/dist/
+web/.vite/
+web/test-results/
+web/playwright-report/
+*.tsbuildinfo
+
+# Secrets et réglages locaux (jamais dans git)
 .env
 .env.*
 !.env.example
+CLAUDE.local.md
+
+# Outil interne de collecte d'images (151 Mo) : reste sur le disque, hors du dépôt
+Scrapping/
+
+# Système et éditeurs
 *.log
 .DS_Store
-CLAUDE.local.md
+.vscode/

@@ -1,0 +1,53 @@
+# H MODE — tests avec de vrais comptes sur un Supabase LOCAL lancé dans la CI (jamais le projet en ligne) :
+# droits (RLS), commandes, administration, clé admin, puis Playwright de l'admin.
+# Sur main, et à la demande (Actions → Supabase local → Run workflow).
+name: Supabase local
+
+on:
+  push:
+    branches: [main]
+    paths: ['supabase/**', 'web/src/**', 'web/scripts/**', 'web/e2e/admin/**', '.github/workflows/supabase.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  comptes:
+    name: Comptes, RLS, administration
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.1
+      - name: Supabase local (migrations appliquées)
+        run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,realtime,postgres-meta,supavisor
+      - name: Variables du site de test (base locale, clé publique locale)
+        run: |
+          supabase status -o env > /tmp/statut.env
+          . /tmp/statut.env
+          {
+            echo "VITE_SUPABASE_URL=$API_URL"
+            echo "VITE_SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY:-$ANON_KEY}"
+          } > web/.env.supabase-local
+      - working-directory: web
+        run: npm ci --no-audit --no-fund
+      - working-directory: web
+        run: npm run test:supabase
+      - working-directory: web
+        run: npx playwright install --with-deps chromium
+      - working-directory: web
+        run: npm run test:e2e:admin
+      - if: always()
+        run: supabase stop --no-backup

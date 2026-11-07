@@ -1,10 +1,10 @@
 ---
 paths:
-  - "ui/src/**/*.tsx"
-  - "ui/src/styles/**/*.css"
+  - "web/src/**/*.tsx"
+  - "web/src/styles/**/*.css"
 ---
 - Importer les composants de base depuis `@/design-system` (Bouton, BoutonLien, Champ, Modale, Tiroir, Revelation…), pas de doublon local.
-- Couleurs, ombres et courbes : tokens de `ui/tailwind.config.js` (`bg-nacre`, `text-bronze`, `ease-maison`…). Classes de texte : `.titre-1/2/3`, `.label`.
+- Couleurs, ombres et courbes : tokens de `web/tailwind.config.js` (`bg-nacre`, `text-bronze`, `ease-maison`…). Classes de texte : `.titre-1/2/3`, `.label`.
 - Animer seulement `transform` et `opacity`. État initial caché → `useAnimationsActives()` (contenu visible d'emblée si animations off).
 - Élément `fixed` rendu dans une page → `createPortal` vers `document.body`.
 - Accessibilité : `aria-label` sur les boutons-icônes, `aria-pressed` sur les bascules, focus visible, pas de `<legend>` posée sur une bordure (conteneur bordé autour du `<fieldset>`).

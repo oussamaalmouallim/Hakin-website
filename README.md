@@ -1,67 +1,110 @@
-# H MODE — boutique e-commerce premium · Casablanca
+# H MODE — site vitrine et boutique · Casablanca
 
-Boutique de vêtements premium homme. Commande sur WhatsApp, paiement à la livraison.
-Plan de refonte complet, lot par lot : [`plan.md`](plan.md).
+Vêtements premium. Commande enregistrée puis confirmée sur WhatsApp, paiement à la livraison.
+Le contenu (pièces, prix, photos, textes, livraison, commandes) se gère dans l'administration `/admin`.
+
+## Architecture
+
+```
+            Visiteur                         Admin (e-mail + mot de passe + clé)
+               │                               │
+               ▼                               ▼
+   ┌─────────────────────────────────────────────────────┐
+   │ web/ — UN SEUL SITE statique (Netlify, ou image Docker)│
+   │   /  /boutique  /produit/…          /admin (à la demande)│
+   └──────────────────────┬──────────────────────────────┘
+                          │ clé publique, droits vérifiés par la base
+                          ▼
+   ┌─────────────────────────────────────────────────────┐
+   │ Supabase (hébergé) : base, comptes, photos, RLS,      │
+   │ est_admin() + clé admin, journal                      │
+   └─────────────────────────────────────────────────────┘
+```
+
+Un seul site à héberger ; Supabase est le backend, déjà en ligne. L'admin n'est pas un service à part
+(voir [`docs/decisions/0007-architecture-et-deploiement.md`](docs/decisions/0007-architecture-et-deploiement.md)).
 
 ## Arborescence
 
 ```
 Hakin-website/
-├── ui/                 ← nouvelle boutique (Vite + React + TypeScript + Tailwind + framer-motion)
-│   ├── public/images/  ← images publiées (WebP générés par `npm run images`)
-│   ├── scripts/        ← optimisation d'images (sharp) + correspondance photos sources
-│   └── src/
-│       ├── data/            produits.json · categories.json · collections.json · boutique.json
-│       ├── design-system/   tokens appliqués : Bouton, Champ, Sélecteurs, Modale, Tiroir, Notifications…
-│       ├── components/      En-tête, menus, recherche, mini-panier, pied de page, carte produit
-│       │   └── lightswind/  composants Lightswind (MIT) ré-habillés H MODE
-│       ├── features/        accueil · catalogue · produit · panier · commande · compte · infos
-│       ├── state/           panier, favoris, compte local, animations (Zustand + localStorage)
-│       └── lib/             catalogue, filtres, recherche, message WhatsApp, formats
-├── server/             ← vide (aucun backend pour l'instant)
-├── Template/           ← référence de direction artistique (hero.png)
-├── index.html, css/, js/, assets/   ← ANCIEN site statique (toujours fonctionnel, à retirer à la mise en ligne)
-├── legacy/             ← fichiers archivés (export WhatsApp Web sauvegardé par erreur)
-├── Scrapping/          ← recherche visuelle (usage interne, images non publiables)
-├── Planning/           ← documents de stratégie
-└── start.sh · stop.sh · deploy.sh · Dockerfile · docker-compose.yml · nginx.conf
+├── web/                    ← l'application : site + /admin (Vite, React 18, TypeScript, Tailwind)
+│   ├── src/
+│   │   ├── features/       une page par dossier (accueil, catalogue, produit, panier, commande, compte, infos, admin)
+│   │   ├── design-system/  composants de base de la charte
+│   │   ├── components/     coque du site (en-tête, menus, pied de page, carte produit)
+│   │   ├── lib/            logique pure et accès Supabase
+│   │   ├── state/          stores (panier, favoris, compte, session)
+│   │   ├── data/           catalogue de repli (produits.json…) et boutique.json
+│   │   └── test/           Vitest (unitaires, intégration)
+│   ├── e2e/                Playwright (site ; admin/ sur Supabase local)
+│   ├── public/  medias/  scripts/
+│   └── design.md · palette.md · animation.md   ← charte (méthode CloneMe), pilote le code
+├── supabase/
+│   ├── migrations/         schéma de la base, dans l'ordre
+│   ├── seed.sql            base locale seulement
+│   └── config.toml
+├── infra/
+│   ├── docker/             Dockerfile (build + nginx sans root), nginx.conf, securite.conf
+│   └── docker-compose.yml
+├── .github/workflows/      ci.yml · supabase.yml · image.yml · base.yml
+├── docs/
+│   ├── decisions/          ADR
+│   ├── design/             rapport CloneMe, maquettes, prompt du logo
+│   └── projet/             plan.md (lots), TODO.md, planning/
+├── archive/                ancien site statique, legacy, anciens fichiers (rien de supprimé)
+├── netlify.toml            hébergement Netlify (build de web/, en-têtes, cache)
+└── start.sh · stop.sh · deploy.sh
 ```
+
+`Scrapping/` (outil interne de collecte d'images, 151 Mo) reste sur le disque mais n'est plus dans git.
 
 ## Lancer
 
 ```bash
-./start.sh          # dev → http://localhost:6011
-./start.sh demo     # démo → http://localhost:6012 (prix et tailles FICTIFS pour tester le panier, bandeau visible)
+./start.sh     # développement → http://localhost:6013 (Supabase de web/.env)
 ./stop.sh
-./deploy.sh         # production locale Docker/nginx → http://localhost:6111
+./deploy.sh    # production locale : image Docker + nginx → http://localhost:6111 (santé : /sante)
 ```
 
-Dans `ui/` : `npm run build` · `npm run lint` (types) · `npm test` (Vitest) · `npm run images` (régénère les WebP).
+Dans `web/` :
 
-## Ajouter ou modifier un produit
+| Commande | Rôle |
+|---|---|
+| `npm run lint` · `npm test` · `npm run build` | types · tests unitaires et d'intégration · build (+ sitemap si `SITE_URL`) |
+| `npm run test:e2e` | Playwright du site (serveur de test 6014, sans Supabase) |
+| `npm run test:supabase` · `npm run test:e2e:admin` | vrais comptes et admin, sur Supabase **local** (`npx supabase start`) |
+| `npm run images` · `npm run logo` | photos WebP · logo et icônes |
+| `npm run admin:sql` | SQL qui crée le compte admin et sa clé, depuis `web/.env` (à coller dans Supabase) |
 
-1. Déposer la photo dans `ui/medias/produits/<slug>/<n>.jpg` (`n` = numéro de vue, 1 = photo de la carte). Voir `ui/medias/LISEZMOI.md`.
-2. `cd ui && npm run images`.
-3. Ajouter l'entrée dans `ui/src/data/produits.json`. Champs clés :
-   - `prixDH` : `null` affiche « Prix sur demande » et bloque l'ajout au panier ; un nombre active le panier.
-   - `tailles` : `[{ "taille": "M", "disponible": true }]`. Une taille indisponible est barrée.
-   - `disponibilite` : `disponible` | `epuise` | `a_confirmer`.
-   - `aConfirmer` : liste des informations pas encore validées (affichées « À confirmer », jamais inventées).
-4. Coordonnées, réseaux, paiement, livraison, retours : `ui/src/data/boutique.json` (source unique, notamment du numéro WhatsApp).
+## Variables d'environnement (`web/.env`, jamais dans git)
 
-## Fonctionnement de la commande
+| Variable | Où | Rôle |
+|---|---|---|
+| `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | `.env`, Netlify, variables GitHub | publiques : gravées dans le site |
+| `SITE_URL` | Netlify, variables GitHub | adresse finale, pour `sitemap.xml` |
+| `ADMIN_EMAIL`, `ADMIN_MOT_DE_PASSE`, `ADMIN_CLE` | `.env` seulement | compte admin, via `npm run admin:sql` ; jamais `VITE_` |
 
-Panier → formulaire de commande (validation des champs) → WhatsApp s'ouvre avec le récapitulatif pré-rempli
-(référence, articles, total, coordonnées, « paiement à la livraison ») → page de confirmation.
-Le panier n'est vidé que lorsque le client confirme avoir envoyé le message. **Aucun paiement en ligne,
-aucun stock temps réel, aucun compte serveur** : le compte client est enregistré dans le navigateur (voir `plan.md`, annexe G).
+Modèle : `web/.env.example`.
 
-## Mise en ligne
+## CI/CD
 
-Hébergement statique (Netlify, GitHub Pages) : publier `ui/dist/`. Le fichier `ui/public/_redirects` gère les routes
-de l'application sur Netlify. Docker/nginx est fourni pour un serveur propre.
+| Workflow | Quand | Ce qu'il fait |
+|---|---|---|
+| `ci.yml` | chaque push et pull request | types, tests, build, Playwright, image Docker de contrôle (santé, 200/404, en-têtes) |
+| `supabase.yml` | push sur `main`, à la demande | Supabase local dans la CI : comptes, RLS, admin, Playwright admin |
+| `image.yml` | push sur `main`, tag `v*` | image publiée sur `ghcr.io/<compte>/hmode-web` |
+| `base.yml` | à la demande seulement | migrations sur le Supabase en ligne (essai à blanc par défaut) |
 
-## Contacts officiels
+Mise en ligne du site : Netlify relié au dépôt (déploiement à chaque push sur `main`, aperçu pour chaque pull request).
 
-WhatsApp +212 625 490 034 · Instagram [@hmod_e2121](https://www.instagram.com/hmod_e2121/) ·
-[Facebook](https://www.facebook.com/profile.php?id=61594200016066)
+## Mise en ligne, une fois
+
+1. **Netlify** : importer le dépôt (la configuration est lue dans `netlify.toml`), puis définir `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` et `SITE_URL`.
+2. **Supabase** → Authentication → URL Configuration : Site URL = l'adresse du site, Redirect URLs = `<adresse>/**`.
+3. **GitHub** → Settings → Secrets and variables → Actions :
+   - variables : `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SITE_URL`, `SUPABASE_PROJECT_REF` ;
+   - secrets : `SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`.
+4. **Base en ligne déjà créée à la main** : marquer les migrations comme appliquées, une fois :
+   `npx supabase link --project-ref <ref>` puis
+   `npx supabase migration repair --status applied 20261102120000 20261105120000 20261107120000 20261107180000`.

@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /compte
-Disallow: /commande
-Disallow: /panier
-Disallow: /connexion
-Disallow: /design-system

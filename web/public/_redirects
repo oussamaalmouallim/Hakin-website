@@ -1,0 +1,27 @@
+# H MODE — routes de l'application (React Router). Même liste que infra/docker/nginx.conf.
+# Route connue → index.html en 200 ; adresse inconnue → index.html en 404 (la page 404 du site s'affiche, et Google la voit en 404).
+/admin                  /index.html   200
+/admin/*                /index.html   200
+/boutique               /index.html   200
+/boutique/*             /index.html   200
+/collections            /index.html   200
+/collections/*          /index.html   200
+/recherche              /index.html   200
+/produit/*              /index.html   200
+/panier                 /index.html   200
+/commande               /index.html   200
+/commande/*             /index.html   200
+/compte                 /index.html   200
+/compte/*               /index.html   200
+/connexion              /index.html   200
+/connexion/*            /index.html   200
+/contact                /index.html   200
+/maison                 /index.html   200
+/livraison-retours      /index.html   200
+/faq                    /index.html   200
+/guide-des-tailles      /index.html   200
+/mentions-legales       /index.html   200
+/confidentialite        /index.html   200
+/cgv                    /index.html   200
+/design-system          /index.html   200
+/*                      /index.html   404

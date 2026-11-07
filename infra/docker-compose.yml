@@ -1,0 +1,17 @@
+# H MODE — production locale ou sur un serveur : ./deploy.sh (build) ou image de la CI (ghcr.io).
+# Valeurs publiques lues dans web/.env par ./deploy.sh (--env-file) : VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY.
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: infra/docker/Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_PUBLISHABLE_KEY: ${VITE_SUPABASE_PUBLISHABLE_KEY:-}
+        SITE_URL: ${SITE_URL:-}
+    image: ${HMODE_IMAGE:-hmode-web:local}
+    ports: [ "${HMODE_PORT:-6111}:8080" ]
+    read_only: true
+    tmpfs: [ /tmp ]
+    security_opt: [ "no-new-privileges:true" ]
+    restart: unless-stopped

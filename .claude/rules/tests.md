@@ -1,6 +1,6 @@
 ---
 paths:
-  - "ui/src/test/**"
+  - "web/src/test/**"
 ---
 - Les tests moquent `@/data/produits.json` avec un mini-catalogue (un produit avec prix, un « prix sur demande ») : ne pas dépendre du vrai catalogue.
 - `setup.ts` remplace `localStorage`/`sessionStorage` par un stockage mémoire (Node ≥ 25) : ne pas le retirer.

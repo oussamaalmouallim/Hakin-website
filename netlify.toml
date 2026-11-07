@@ -1,14 +1,42 @@
-# Netlify construit la nouvelle boutique (ui/, Vite) au lieu de servir l'ancien site statique de la racine.
+# H MODE — hébergement Netlify : construit web/ (Vite) et le publie. Routes : web/public/_redirects.
+# Variables à définir dans Netlify (Site configuration → Environment variables), toutes publiques :
+#   VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY, et SITE_URL (adresse finale, pour sitemap.xml ;
+#   sans elle, l'adresse Netlify du déploiement est utilisée).
 [build]
-  base = "ui"
+  base = "web"
   command = "npm run build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"
 
-# Routes de l'application (React Router) : toute URL renvoie index.html (doublon de ui/public/_redirects, par sécurité).
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Sécurité, pour toutes les pages.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+# Fichiers du build (noms avec empreinte) : cache d'un an. Photos : 30 jours.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# Administration : jamais indexée.
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

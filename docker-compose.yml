@@ -1,6 +1,0 @@
-services:
-  hmode:
-    build: { context: ., dockerfile: Dockerfile }
-    image: hmode:prod
-    ports: [ "${HMODE_PORT:-6111}:80" ]
-    restart: unless-stopped

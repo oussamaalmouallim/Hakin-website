@@ -1,6 +1,19 @@
+# Contexte de build Docker : seulement ce qui sert à construire web/.
 **/node_modules
-ui/dist
-Scrapping
-legacy
-Planning
+**/dist
+**/.env
+**/.env.*
+!**/.env.example
 .git
+.github
+Scrapping
+archive
+docs
+supabase
+web/rapports
+web/test-results
+web/medias
+web/.vite
+web/.cloneme
+**/*.tsbuildinfo
+**/.DS_Store

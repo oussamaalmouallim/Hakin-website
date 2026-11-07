@@ -1,8 +1,11 @@
 import { execFileSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
+import bcrypt from 'bcryptjs'
 
-/** Compte admin jetable pour la suite : inscription, confirmation par Mailpit, droit admin donné en SQL (conteneur local). */
+/** Compte admin jetable pour la suite : inscription, confirmation par Mailpit, droit admin donné en SQL (conteneur local),
+ *  clé de sécurité d'essai posée en base (l'ancienne est rendue par le rangement). */
+export const CLE_ESSAI = '482915603718'
 export const FICHIER_COMPTE = 'rapports/playwright-admin-compte.json'
 const MAILPIT = 'http://127.0.0.1:54324'
 export const psql = (sql: string) =>
@@ -26,5 +29,7 @@ export default async function preparation() {
   if (!lien) throw new Error('e-mail de confirmation non reçu (Mailpit)')
   await fetch(lien, { redirect: 'manual' })
   psql(`insert into public.admins (utilisateur) select id from auth.users where email = '${email}' on conflict do nothing`)
-  writeFileSync(FICHIER_COMPTE, JSON.stringify({ email, motDePasse, suffixe }))
+  const ancienneCle = psql('select hash from public.admin_cle where id = 1')
+  psql(`insert into public.admin_cle (id, hash) values (1, '${bcrypt.hashSync(CLE_ESSAI, 10)}') on conflict (id) do update set hash = excluded.hash`)
+  writeFileSync(FICHIER_COMPTE, JSON.stringify({ email, motDePasse, suffixe, ancienneCle }))
 }

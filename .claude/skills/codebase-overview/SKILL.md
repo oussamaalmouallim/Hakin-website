@@ -17,13 +17,13 @@ description: Architecture, dossiers clés et flux de données de la boutique H M
 - `ui/src/design-system/` : composants de base exportés par `index.ts`. Vitrine : route `/design-system`.
 - `ui/src/components/` : coque du site — `EnTete`, `Panneaux` (mini-panier, menu mobile, recherche), `PiedDePage`, `CarteProduit`, `Ambiance` (bandeau, WhatsApp flottant, loader), `Reseaux`, `ChampLigne`, `lightswind/` (`looping-words`, `count-up`, section « La Maison »).
 - `ui/src/features/<page>/` : une page par dossier — accueil, catalogue, produit, panier, commande, compte (connexion, compte), infos (contact, maison, pages légales, 404), **admin**.
-- `ui/src/features/admin/` (`/admin`, ADR 0006) : `PageAdmin` (garde + coque + routes), `TableauDeBord`, `ListeProduits`, `EditionProduit`, `Commandes`, `Reglages`, `Textes`, `Journal` ; `api.ts` (appels Supabase, messages d'erreur), `photos.ts` (WebP 480/960 dans le navigateur), `commun.tsx` (briques + `useChargement`).
+- `ui/src/features/admin/` (`/admin`, ADR 0006) : `PageAdmin` (connexion admin, clé de 12 chiffres, coque, routes), `TableauDeBord`, `ListeProduits`, `EditionProduit`, `Commandes`, `Reglages`, `Textes`, `Journal` ; `api.ts` (appels Supabase, messages d'erreur), `photos.ts` (WebP 480/960 dans le navigateur), `commun.tsx` (briques + `useChargement`).
 - `ui/src/App.tsx` : routes, transition de page, `chargerDonnees`, pages chargées à la demande (sauf Accueil, Boutique, Produit), `/admin` hors de `motion.main`.
 - `ui/src/test/` : Vitest — `logique`, `parcours`, `commande`, `auth`, `synchro` (fausse base à RLS), `admin` + `admin-ecrans` (fausse base).
 - `ui/e2e/` : Playwright — site sans Supabase (`vite --mode e2e`, prix d'essai `donnees/prix-test.json`) ; `admin/` sur Supabase local (compte admin jetable).
-- `ui/scripts/` : `optimiser-images.mjs`, `lighthouse.mjs`, `tests-supabase-local.mjs` (vrais comptes, RLS, admin), `verifier-supabase.mjs` (contrôle sans écriture), `montage-heros.mjs`, `logo-marque.mjs` (`npm run logo` : logo du héros → profils IG/FB dans `medias/marque/`, favicon).
+- `ui/scripts/` : `optimiser-images.mjs`, `lighthouse.mjs`, `tests-supabase-local.mjs` (vrais comptes, RLS, admin), `verifier-supabase.mjs` (contrôle sans écriture), `montage-heros.mjs`, `admin-sql.mjs` (`npm run admin:sql` : SQL qui nomme l'admin et pose l'empreinte de la clé), `logo-marque.mjs` (`npm run logo` : logo du héros → profils IG/FB dans `medias/marque/`, favicon).
 - `ui/medias/` : photos originales (`produits/<slug>/<n>.jpg`, `campagne/`, `provenance.json`) → WebP dans `ui/public/images/` (généré).
-- `supabase/` : `schema.sql` (comptes, panier, commandes, favoris), `lot-19-favoris.sql`, `lot-20-admin.sql` (admin, produits, réglages, journal, stockage), `config.toml` (base locale).
+- `supabase/` : `schema.sql` (comptes, panier, commandes, favoris), `lot-19-favoris.sql`, `lot-20-admin.sql` (admin, produits, réglages, journal, stockage), `lot-21-admin-cle.sql` (clé de sécurité, sessions déverrouillées), `config.toml` (base locale).
 - Racine : `start.sh`/`stop.sh`/`deploy.sh`, Docker + nginx, `plan.md` (lots), `TODO.md`, `docs/decisions/` (ADR), `docs/logo-prompt-gemini.md`.
 - Hors appli : ancien site statique (`index.html`, `css/`, `js/`, `assets/`), `Scrapping/` (Python, interne), `legacy/`, `Template/hero.png`. `server/` : vide.
 
@@ -31,7 +31,7 @@ description: Architecture, dossiers clés et flux de données de la boutique H M
 - Données : démarrage → `chargerDonnees()` (copie locale puis base) → catalogue et réglages appliqués sur place → `useDonnees.version` remonte les pages du catalogue (pas celles à formulaire).
 - Commande : fiche (coloris + taille) → panier ou commande directe → `/commande` (`validerCommande`) → `passer_commande` (prix pris en base) → message WhatsApp → `/commande/confirmation`. Paiement à la livraison seulement. Sans `.env` : WhatsApp seul (ADR 0001).
 - Compte : connexion → `synchroCompte` charge panier, favoris, profil, adresses, commandes ; fusion du visiteur une fois.
-- Admin : compte inscrit dans `admins` (SQL) → `est_admin()` + RLS → écritures dans `produits`/`reglages`/`commandes` → journal par déclencheurs.
+- Admin : connexion `/admin` → clé (`deverrouiller_admin`, session 12 h) → `est_admin()` + RLS → écritures dans `produits`/`reglages`/`commandes` → journal par déclencheurs.
 - Pièce sans prix (`prixDH: null`) : pas de panier, bouton « Demander prix et disponibilité » (WhatsApp).
 
 # Points d'entrée par type de tâche

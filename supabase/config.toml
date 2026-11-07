@@ -70,7 +70,7 @@ enabled = true
 # Specifies an ordered list of seed files to load during db reset.
 # Supports glob patterns relative to supabase directory: "./seeds/*.sql"
 # H MODE : le schéma unique (aussi collé tel quel dans le projet en ligne) est rejoué à chaque démarrage local.
-sql_paths = ["./schema.sql", "./lot-20-admin.sql"]  # lot-20 : administration (et passer_commande v2)
+sql_paths = ["./schema.sql", "./lot-20-admin.sql", "./lot-21-admin-cle.sql"]  # lot-20 : administration (et passer_commande v2) · lot-21 : clé admin
 
 [db.network_restrictions]
 # Enable management of network restrictions.

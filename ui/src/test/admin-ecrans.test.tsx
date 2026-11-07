@@ -18,6 +18,10 @@ type Ligne = Record<string, unknown>
 const base: Record<string, Ligne[]> = {}
 const appels: { rpc: [string, unknown][]; ecritures: [string, string, unknown][] } = { rpc: [], ecritures: [] }
 let admin = true
+let deverrouille = true
+let cleDefinie = true
+const CLE = '482915603718'
+const COMPTES: Record<string, { id: string; mdp: string }> = { 'admin@hmode.test': { id: 'u-admin', mdp: 'Admin-2026' }, 'client@hmode.test': { id: 'u-client', mdp: 'Client-2026' } }
 const CLES: Record<string, string> = { produits: 'slug', reglages: 'cle', commandes: 'reference' }
 
 class Requete {
@@ -45,7 +49,7 @@ class Requete {
     const visibles = t.filter(l => this.filtres.every(f => f(l)))
     if (this.mode === 'select') return { data: this.unique ? visibles[0] ?? null : visibles.map(l => ({ ...l })), error: null }
     appels.ecritures.push([this.table, this.mode, this.valeur])
-    if (!admin) return { data: null, error: { message: 'rls', code: '42501' } }
+    if (!admin || !deverrouille) return { data: null, error: { message: 'rls', code: '42501' } }
     const cle = CLES[this.table]
     if (this.mode === 'update') { visibles.forEach(l => Object.assign(l, this.valeur)); return { data: null, error: null } }
     if (this.mode === 'delete') { base[this.table] = t.filter(l => !visibles.includes(l)); return { data: null, error: null } }
@@ -61,7 +65,16 @@ const faux = {
   from: (t: string) => new Requete(t),
   rpc: async (nom: string, args: unknown) => {
     appels.rpc.push([nom, args])
-    if (nom === 'est_admin') return { data: admin, error: null }
+    const uid = useSession.getState().utilisateur?.id
+    const estCompteAdmin = admin && uid === 'u-admin'
+    if (nom === 'admin_statut') return { data: { admin: estCompteAdmin, cle: cleDefinie, deverrouille: estCompteAdmin && deverrouille }, error: null }
+    if (nom === 'deverrouiller_admin') {
+      if (!estCompteAdmin) return { data: null, error: { message: 'Réservé à l\'administration.', code: '42501' } }
+      if ((args as { cle: string }).cle !== CLE) return { data: { ok: false, message: 'Clé incorrecte (4 essais restants).' }, error: null }
+      deverrouille = true
+      return { data: { ok: true }, error: null }
+    }
+    if (nom === 'verrouiller_admin') { deverrouille = false; return { data: null, error: null } }
     const { ref, nouveau_statut } = args as { ref: string; nouveau_statut?: string }
     const c = base.commandes?.find(x => x.reference === ref)
     if (!c) return { data: null, error: { message: 'introuvable', code: 'P0002' } }
@@ -70,7 +83,15 @@ const faux = {
     return { data: null, error: null }
   },
   storage: { from: () => ({ upload: async () => ({ data: {}, error: null }), remove: async () => ({ data: [], error: null }), getPublicUrl: (p: string) => ({ data: { publicUrl: `https://stockage.test/${p}` } }) }) },
-  auth: { onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), getSession: async () => ({ data: { session: null } }) },
+  auth: {
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), getSession: async () => ({ data: { session: null } }),
+    signInWithPassword: async ({ email, password }: { email: string; password: string }) => {
+      const c = COMPTES[email]
+      if (!c || c.mdp !== password) return { data: { user: null }, error: { name: 'AuthApiError', message: 'Invalid login credentials', code: 'invalid_credentials', status: 400 } }
+      return { data: { user: { id: c.id, email, user_metadata: { nom: '' } } }, error: null }
+    },
+    signOut: async () => ({ error: null }),
+  },
 }
 vi.mock('@/lib/supabase', () => ({ supabaseActif: true, memoriserSession: () => {}, obtenirSupabase: async () => faux }))
 
@@ -98,24 +119,84 @@ const commande = (reference: string, statut = 'nouvelle'): Ligne => ({
 beforeEach(() => {
   for (const k of Object.keys(base)) delete base[k]
   appels.rpc.length = 0; appels.ecritures.length = 0
-  admin = true
+  admin = true; deverrouille = true; cleDefinie = true
   sessionStorage.setItem('hmode-sans-intro', '1')
 })
 afterEach(() => useSession.setState({ utilisateur: null, pret: false }))
 
 describe('administration : accès', () => {
-  it('sans compte connecté : renvoi vers la connexion, avec retour vers l\'admin', async () => {
+  it('sans compte connecté : connexion propre à l\'admin, sans inscription ni lien vers l\'espace client', async () => {
     useSession.setState({ utilisateur: null, pret: true })
     monter('/admin/produits')
-    expect(await screen.findByRole('form', { name: 'Connexion' })).toBeInTheDocument()
+    const f = await screen.findByRole('form', { name: 'Connexion administrateur' })
+    expect(within(f).queryByText(/Créer un compte/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /compte/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('form', { name: 'Connexion' })).not.toBeInTheDocument()
   })
 
-  it('compte sans droits : « Accès réservé », aucune donnée chargée', async () => {
-    admin = false; connecter()
+  it('identifiants faux, puis compte client : refusé et aussitôt déconnecté', async () => {
+    useSession.setState({ utilisateur: null, pret: true })
+    const u = userEvent.setup()
+    monter('/admin')
+    const f = await screen.findByRole('form', { name: 'Connexion administrateur' })
+    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
+    expect(await screen.findByText('Adresse e-mail invalide.')).toBeInTheDocument()
+    await u.type(within(f).getByLabelText('Adresse e-mail'), 'client@hmode.test')
+    await u.type(within(f).getByLabelText('Mot de passe'), 'faux')
+    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
+    expect(await screen.findByRole('alert', {}, { timeout: 3000 })).toHaveTextContent(/incorrect|invalide/i)
+    await u.clear(within(f).getByLabelText('Mot de passe')); await u.type(within(f).getByLabelText('Mot de passe'), 'Client-2026')
+    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
+    expect(await screen.findByText('Ce compte n\'a pas accès à l\'administration.')).toBeInTheDocument()
+    expect(useSession.getState().utilisateur).toBeNull()
+    expect(appels.rpc.map(r => r[0])).not.toContain('deverrouiller_admin')
+  })
+
+  it('admin : mot de passe, puis clé de 12 chiffres (fausse refusée, bonne acceptée), puis déconnexion qui verrouille', async () => {
+    useSession.setState({ utilisateur: null, pret: true }); deverrouille = false; remplirCatalogue()
+    const u = userEvent.setup()
+    monter('/admin')
+    const f = await screen.findByRole('form', { name: 'Connexion administrateur' })
+    await u.type(within(f).getByLabelText('Adresse e-mail'), 'admin@hmode.test')
+    await u.type(within(f).getByLabelText('Mot de passe'), 'Admin-2026')
+    await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
+    const k = await screen.findByRole('form', { name: 'Clé de sécurité' })
+    expect(screen.queryByRole('navigation', { name: 'Administration' })).not.toBeInTheDocument()
+    const champ = within(k).getByLabelText('Clé (12 chiffres)')
+    await u.type(champ, '12ab34')
+    expect(champ).toHaveValue('1234')
+    await u.click(within(k).getByRole('button', { name: 'Déverrouiller' }))
+    expect(await screen.findByText('La clé fait 12 chiffres.')).toBeInTheDocument()
+    await u.clear(champ); await u.type(champ, '111122223333')
+    await u.click(within(k).getByRole('button', { name: 'Déverrouiller' }))
+    expect(await screen.findByText('Clé incorrecte (4 essais restants).')).toBeInTheDocument()
+    expect(champ).toHaveValue('')
+    await u.type(champ, CLE)
+    await u.click(within(k).getByRole('button', { name: 'Déverrouiller' }))
+    expect(await screen.findByRole('navigation', { name: 'Administration' })).toBeInTheDocument()
+    expect(appels.rpc).toContainEqual(['deverrouiller_admin', { cle: CLE }])
+    await u.click(screen.getAllByRole('button', { name: /Se déconnecter|Déconnexion/ })[0])
+    await waitFor(() => expect(useSession.getState().utilisateur).toBeNull())
+    expect(appels.rpc.map(r => r[0])).toContain('verrouiller_admin')
+    expect(deverrouille).toBe(false)
+  })
+
+  it('compte client déjà connecté sur le site : « Accès réservé », puis « Changer de compte »', async () => {
+    useSession.setState({ utilisateur: { id: 'u-client', email: 'client@hmode.test', nom: '' }, pret: true })
+    const u = userEvent.setup()
     monter('/admin')
     expect(await screen.findByRole('heading', { name: 'Accès réservé' })).toBeInTheDocument()
-    expect(screen.getByText('admin@hmode.test')).toBeInTheDocument()
+    expect(screen.getByText('client@hmode.test')).toBeInTheDocument()
     expect(screen.queryByRole('navigation', { name: 'Administration' })).not.toBeInTheDocument()
+    await u.click(screen.getByRole('button', { name: 'Changer de compte' }))
+    expect(await screen.findByRole('form', { name: 'Connexion administrateur' })).toBeInTheDocument()
+  })
+
+  it('aucune clé posée en base : l\'admin est arrêté avec la marche à suivre', async () => {
+    cleDefinie = false; deverrouille = false; connecter()
+    monter('/admin')
+    expect(await screen.findByRole('heading', { name: 'Clé non définie' })).toBeInTheDocument()
+    expect(screen.getByText('npm run admin:sql')).toBeInTheDocument()
   })
 
   it('admin : menu complet, chaque onglet ouvre son écran', async () => {

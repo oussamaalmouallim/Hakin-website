@@ -12,6 +12,7 @@ const TYPES = [
   { cle: 'produits', libelle: 'Produits', test: (e: EntreeJournal) => e.action.startsWith('produit') },
   { cle: 'commandes', libelle: 'Commandes', test: (e: EntreeJournal) => e.action.includes('commande') },
   { cle: 'reglages', libelle: 'Réglages et textes', test: (e: EntreeJournal) => e.action.startsWith('réglages') },
+  { cle: 'connexions', libelle: 'Connexions', test: (e: EntreeJournal) => e.cible === 'connexion' },
 ] as const
 
 const lienCible = (e: EntreeJournal) =>

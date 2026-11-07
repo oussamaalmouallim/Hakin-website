@@ -13,3 +13,7 @@
   - Coloris, tailles et photos sont des colonnes JSON de `produits` (même forme que `produits.json`) : simple à importer et à lire, mais pas de recherche SQL fine sur une taille.
   - Catégories et collections restent dans `src/data/` (non éditables dans l'admin).
   - Si l'admin masque toutes les pièces, le site retombe sur le catalogue des fichiers.
+- Complément du 2026-11-07 (lot 21, demande utilisateur) :
+  - Connexion admin propre à `/admin`, distincte de celle des clients ; le compte admin est créé dans Supabase (Authentication → Add user), jamais par l'inscription du site.
+  - Deuxième facteur : clé de 12 chiffres. Écartés : identifiants ou clé dans une variable `VITE_` (copiée dans le JavaScript public, donc lisible et contournable) et application d'authentification (refusée par l'utilisateur). La clé est saisie dans `ui/.env` sans préfixe `VITE_`, transformée en empreinte bcrypt par `npm run admin:sql`, vérifiée par la base (`deverrouiller_admin`), qui déverrouille la session Supabase 12 h ; `est_admin()` l'exige. 5 erreurs = 15 min de blocage.
+  - Conséquence : une clé perdue se remplace en relançant `npm run admin:sql` avec une nouvelle valeur ; pas d'autre service que Supabase.

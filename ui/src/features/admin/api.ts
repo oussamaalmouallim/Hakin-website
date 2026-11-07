@@ -22,8 +22,18 @@ async function base(): Promise<SupabaseClient> {
   return sb
 }
 
-export async function estAdmin(): Promise<boolean> {
-  return Boolean(verifier(await (await base()).rpc('est_admin')))
+/** Compte inscrit dans `admins` ? clé posée en base ? session déjà déverrouillée par la clé ? (lot-21-admin-cle.sql) */
+export interface StatutAdmin { admin: boolean; cle: boolean; deverrouille: boolean }
+export async function statutAdmin(): Promise<StatutAdmin> {
+  return verifier(await (await base()).rpc('admin_statut')) as StatutAdmin
+}
+/** Clé de 12 chiffres vérifiée par la base (empreinte bcrypt, 5 essais puis 15 min de blocage). */
+export async function deverrouillerAdmin(cle: string): Promise<{ ok: boolean; message?: string }> {
+  return verifier(await (await base()).rpc('deverrouiller_admin', { cle })) as { ok: boolean; message?: string }
+}
+/** Retire les droits de la session avant la déconnexion. */
+export async function verrouillerAdmin() {
+  verifier(await (await base()).rpc('verrouiller_admin'))
 }
 
 // ── Produits ────────────────────────────────────────────────────────────────────────────────────

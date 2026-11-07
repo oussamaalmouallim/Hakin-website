@@ -4,6 +4,7 @@
 // Usage : cd ui && node --env-file=.env.supabase-local scripts/tests-supabase-local.mjs
 import { createClient } from '@supabase/supabase-js'
 import { execFileSync } from 'node:child_process'
+import bcrypt from 'bcryptjs'
 
 const url = process.env.VITE_SUPABASE_URL
 const cle = process.env.VITE_SUPABASE_PUBLISHABLE_KEY
@@ -153,8 +154,37 @@ const devenir = await A.sb.from('admins').insert({ utilisateur: A.id })
 verdict(Boolean(devenir.error), 'admin : un client ne peut pas se nommer admin lui-même', devenir.error?.code)
 
 psql(`insert into public.admins (utilisateur) values ('${B.id}') on conflict do nothing`)
+
+// ── Clé de sécurité (lot 21) : inscrit dans `admins` ne suffit plus, la session doit être déverrouillée ──
+const CLE = '482915603718'
+const ancienneCle = psql('select hash from public.admin_cle where id = 1')
+psql(`insert into public.admin_cle (id, hash) values (1, '${bcrypt.hashSync(CLE, 10)}') on conflict (id) do update set hash = excluded.hash`)
+psql(`delete from public.admin_essais where utilisateur = '${B.id}'`)
+const statutB0 = await B.sb.rpc('admin_statut')
+const estAdminB0 = await B.sb.rpc('est_admin')
+const insAvantCle = await B.sb.from('produits').insert({ ...piece, slug: `${ESSAI}-avant-cle` })
+verdict(statutB0.data?.admin === true && statutB0.data?.cle === true && statutB0.data?.deverrouille === false && estAdminB0.data === false && Boolean(insAvantCle.error),
+  'clé : compte admin connecté par mot de passe, mais sans droit tant que la clé n\'est pas saisie', JSON.stringify(statutB0.data))
+const lectureCle = await B.sb.from('admin_cle').select('hash')
+const lectureSessions = await B.sb.from('admin_sessions').select('session')
+verdict(Boolean(lectureCle.error) && Boolean(lectureSessions.error), 'clé : empreinte et sessions illisibles depuis le site, même admin', `${lectureCle.error?.code} / ${lectureSessions.error?.code}`)
+const cleClient = await A.sb.rpc('deverrouiller_admin', { cle: CLE })
+verdict(cleClient.error?.code === '42501', 'clé : un client ne peut pas l\'essayer, même juste', cleClient.error?.code)
+const cleFausse = await B.sb.rpc('deverrouiller_admin', { cle: '111122223333' })
+verdict(cleFausse.data?.ok === false && /4 essais restants/.test(cleFausse.data?.message), 'clé : fausse refusée, essais restants annoncés', cleFausse.data?.message)
+const cleJuste = await B.sb.rpc('deverrouiller_admin', { cle: CLE })
 const estAdminB = await B.sb.rpc('est_admin')
-verdict(estAdminB.data === true, 'admin : compte nommé en SQL reconnu par est_admin()')
+verdict(cleJuste.data?.ok === true && estAdminB.data === true, 'clé : juste, la session est déverrouillée (est_admin vrai)', JSON.stringify(cleJuste.data))
+const B2 = client(); await B2.auth.signInWithPassword({ email: `karim.${suffixe}@exemple.ma`, password: MDP })
+const estAdminB2 = await B2.rpc('est_admin')
+verdict(estAdminB2.data === false, 'clé : liée à la session, une autre connexion du même compte doit la redonner')
+let derniere
+for (let i = 0; i < 5; i++) derniere = await B2.rpc('deverrouiller_admin', { cle: `00000000000${i}` })
+const bloquee = await B2.rpc('deverrouiller_admin', { cle: CLE })
+verdict(/15 min/.test(derniere.data?.message) && bloquee.data?.ok === false && /Trop d'essais/.test(bloquee.data?.message) && (await B2.rpc('est_admin')).data === false,
+  'clé : 5 erreurs de suite, bloquée 15 min (même la bonne clé est refusée)', `${derniere.data?.message} / ${bloquee.data?.message}`)
+psql(`delete from public.admin_essais where utilisateur = '${B.id}'`)
+await B2.auth.signOut()
 const insB = await B.sb.from('produits').insert(piece)
 verdict(!insB.error, 'admin : pièce créée (masquée)', insB.error?.message)
 const voitV = await visiteur.from('produits').select('slug').eq('slug', ESSAI)
@@ -226,9 +256,17 @@ verdict(supA.error?.code === '42501' && !supB.error && reste.data?.length === 0,
 const supP = await B.sb.from('produits').delete().eq('slug', ESSAI)
 const resteP = await B.sb.from('produits').select('slug').eq('slug', ESSAI)
 verdict(!supP.error && resteP.data?.length === 0, 'admin : pièce supprimée')
+const journalCle = await B.sb.from('journal_admin').select('action').eq('cible', 'connexion').eq('auteur', B.id)
+const actionsCle = (journalCle.data ?? []).map(j => j.action)
+verdict(actionsCle.includes('connexion admin') && actionsCle.includes('clé refusée 5 fois : bloquée 15 min'), 'journal : connexion admin et blocage de la clé enregistrés', actionsCle.join(', '))
+await B.sb.rpc('verrouiller_admin')
+const apresVerrou = await B.sb.rpc('est_admin')
+verdict(apresVerrou.data === false, 'clé : déconnexion de l\'admin, la session perd ses droits aussitôt')
+await B.sb.rpc('deverrouiller_admin', { cle: CLE })
 psql(`delete from public.admins where utilisateur = '${B.id}'`)
 const plusAdmin = await B.sb.rpc('est_admin')
-verdict(plusAdmin.data === false, 'admin : droit retiré en SQL, effet immédiat')
+verdict(plusAdmin.data === false, 'admin : droit retiré en SQL, effet immédiat (même session déverrouillée)')
+psql(ancienneCle ? `update public.admin_cle set hash = '${ancienneCle}' where id = 1` : 'delete from public.admin_cle')
 
 console.log(echecs ? `\n${echecs} échec(s)` : '\nTout est vert.')
 process.exit(echecs ? 1 : 0)

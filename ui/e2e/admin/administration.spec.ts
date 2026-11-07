@@ -2,25 +2,37 @@ import { readFileSync } from 'node:fs'
 import sharp from 'sharp'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
-import { FICHIER_COMPTE } from './preparation'
+import { CLE_ESSAI, FICHIER_COMPTE } from './preparation'
 
 /** Parcours réel de l'administration, de bout en bout, sur le Supabase local :
  *  connexion admin → pièce créée avec photo (stockage) → visible sur le site → mise en solde → commandée par un client
  *  au prix de la base → statut changé → journal → pièce supprimée. */
 const compte = () => JSON.parse(readFileSync(FICHIER_COMPTE, 'utf8')) as { email: string; motDePasse: string; suffixe: string }
 
-async function seConnecter(page: Page) {
+async function graves(page: Page, ecran: string) {
+  const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze()
+  return violations.filter(v => v.impact === 'serious' || v.impact === 'critical')
+    .map(v => `${ecran} ${v.id} ×${v.nodes.length} : ${v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ')}`)
+}
+
+async function seConnecter(page: Page, axe = false) {
   const { email, motDePasse } = compte()
   await page.addInitScript(() => {
     sessionStorage.setItem('hmode-sans-intro', '1')
     window.open = (() => null) as typeof window.open
   })
   await page.goto('/admin')
-  await expect(page).toHaveURL(/\/connexion\?retour=%2Fadmin/)
-  const f = page.getByRole('form', { name: 'Connexion' })
-  await f.getByRole('textbox', { name: 'Adresse email' }).fill(email)
-  await f.getByLabel('Mot de passe', { exact: true }).fill(motDePasse)
-  await f.locator('button[type=submit]').click()
+  await expect(page).toHaveURL(/\/admin$/) // connexion propre à l'admin, pas celle des clients
+  const f = page.getByRole('form', { name: 'Connexion administrateur' })
+  if (axe) expect(await graves(page, 'connexion admin')).toEqual([])
+  await f.getByLabel('Adresse e-mail').fill(email)
+  await f.getByLabel('Mot de passe').fill(motDePasse)
+  await f.getByRole('button', { name: 'Se connecter' }).click()
+  const k = page.getByRole('form', { name: 'Clé de sécurité' })
+  await expect(k).toBeVisible()
+  if (axe) expect(await graves(page, 'clé admin')).toEqual([])
+  await k.getByLabel('Clé (12 chiffres)').fill(CLE_ESSAI)
+  await k.getByRole('button', { name: 'Déverrouiller' }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Tableau de bord' })).toBeVisible()
 }
 
@@ -111,20 +123,24 @@ test('administration : de la création d\'une pièce à sa commande par un clien
 })
 
 test('accessibilité WCAG 2.2 AA de chaque écran de l\'administration (axe)', async ({ page }) => {
-  await seConnecter(page)
+  await seConnecter(page, true)
   for (const ecran of ['/admin', '/admin/produits', '/admin/produits/nouveau', '/admin/produits/t-shirt-prada-graffiti', '/admin/commandes', '/admin/reglages', '/admin/textes', '/admin/journal']) {
     await page.goto(ecran)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.waitForLoadState('networkidle')
-    const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze()
-    const graves = violations.filter(v => v.impact === 'serious' || v.impact === 'critical')
-      .map(v => `${ecran} ${v.id} ×${v.nodes.length} : ${v.nodes.slice(0, 3).map(n => n.target.join(' ')).join(' | ')}`)
-    expect(graves).toEqual([])
+    expect(await graves(page, ecran)).toEqual([])
   }
 })
 
-test('compte client sans droits : l\'administration reste fermée', async ({ page }) => {
+test('visiteur : écran de connexion de l\'admin, sans inscription ; mot de passe faux refusé', async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem('hmode-sans-intro', '1'))
   await page.goto('/admin/commandes')
-  await expect(page).toHaveURL(/\/connexion/)
+  const f = page.getByRole('form', { name: 'Connexion administrateur' })
+  await expect(f).toBeVisible()
+  await expect(page.getByText(/Créer un compte/i)).toHaveCount(0)
+  await f.getByLabel('Adresse e-mail').fill(compte().email)
+  await f.getByLabel('Mot de passe').fill('pas-le-bon-9')
+  await f.getByRole('button', { name: 'Se connecter' }).click()
+  await expect(f.getByRole('alert')).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Administration' })).toHaveCount(0)
 })

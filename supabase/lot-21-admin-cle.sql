@@ -1,7 +1,7 @@
 -- H MODE — lot 21 : clé de sécurité de l'administration. À coller une fois dans le SQL Editor, APRÈS lot-20-admin.sql.
 -- Sans danger à relancer. Ensuite : `cd ui && npm run admin:sql` donne les deux lignes qui nomment l'admin et posent la clé.
 --
--- Principe : le mot de passe ne suffit plus. Après la connexion, l'admin tape sa clé de 12 chiffres ; la base la compare à
+-- Principe : le mot de passe ne suffit plus. Après la connexion, l'admin tape sa clé (texte libre, celle de ADMIN_CLE) ; la base la compare à
 -- son empreinte bcrypt (la clé n'est jamais stockée ni envoyée au site en clair) et déverrouille CETTE session pour 12 h.
 -- `est_admin()` exige ce déverrouillage : toutes les règles du lot 20 (RLS, fonctions, stockage, journal) en profitent.
 -- 5 clés fausses de suite : la clé est refusée pendant 15 minutes.
@@ -87,7 +87,7 @@ begin
   end if;
   select u.email into email from auth.users u where u.id = uid;
 
-  if cle is null or cle !~ '^[0-9]{12}$' or extensions.crypt(cle, empreinte) <> empreinte then
+  if coalesce(cle, '') = '' or extensions.crypt(cle, empreinte) <> empreinte then
     insert into public.admin_essais (utilisateur, echecs) values (uid, 1)
       on conflict (utilisateur) do update set echecs = public.admin_essais.echecs + 1, bloque_jusqua = null;
     select * into essai from public.admin_essais where utilisateur = uid;

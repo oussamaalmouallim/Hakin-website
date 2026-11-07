@@ -63,7 +63,7 @@ async function quitterAdmin(deconnexion: () => Promise<void>) {
   await deconnexion()
 }
 
-/** Garde de l'administration : un seul formulaire, trois champs — e-mail, mot de passe, clé de 12 chiffres.
+/** Garde de l'administration : un seul formulaire, trois champs — e-mail, mot de passe, clé de sécurité.
  *  Le compte admin est créé par `npm run admin:sql` (lu dans ui/.env), jamais par l'inscription du site.
  *  Mot de passe vérifié par Supabase, clé vérifiée par la base (`deverrouiller_admin`, session ouverte 12 h). */
 export function PageAdmin() {
@@ -100,7 +100,7 @@ export function PageAdmin() {
   return <CoqueAdmin email={utilisateur.email} />
 }
 
-/** Connexion de l'administration : e-mail, mot de passe et clé de 12 chiffres, sur un seul écran.
+/** Connexion de l'administration : e-mail, mot de passe et clé de sécurité, sur un seul écran.
  *  Pas d'inscription ni de lien vers l'espace client ; session gardée seulement le temps de l'onglet.
  *  Un refus (compte client, clé fausse) referme aussitôt la session ouverte par le mot de passe. */
 function ConnexionAdmin({ emailConnu, onEnvoi, onOk }: { emailConnu?: string; onEnvoi: (v: boolean) => void; onOk: () => void }) {
@@ -118,7 +118,7 @@ function ConnexionAdmin({ emailConnu, onEnvoi, onOk }: { emailConnu?: string; on
     const e = {
       email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim()) ? undefined : 'Adresse e-mail invalide.',
       motDePasse: f.motDePasse ? undefined : 'Saisissez le mot de passe.',
-      cle: f.cle.length === 12 ? undefined : 'La clé fait 12 chiffres.',
+      cle: f.cle ? undefined : 'Saisissez la clé de sécurité.',
     }
     setErreurs(e); setAlerte(null)
     if (e.email || e.motDePasse || e.cle) return
@@ -149,8 +149,7 @@ function ConnexionAdmin({ emailConnu, onEnvoi, onOk }: { emailConnu?: string; on
         {alerte && <p role="alert" className="rounded-[10px] border border-danger bg-blanc px-4 py-3 text-[14px] text-danger">{alerte}</p>}
         <Champ label="Adresse e-mail" type="email" autoComplete="username" value={f.email} erreur={erreurs.email} onChange={e => maj('email', e.target.value)} />
         <Champ label="Mot de passe" type="password" autoComplete="current-password" value={f.motDePasse} erreur={erreurs.motDePasse} onChange={e => maj('motDePasse', e.target.value)} />
-        <Champ label="Clé de sécurité (12 chiffres)" type="password" inputMode="numeric" autoComplete="one-time-code" maxLength={12}
-          value={f.cle} erreur={erreurs.cle} aide={`${f.cle.length} / 12`} onChange={e => maj('cle', e.target.value.replace(/\D/g, '').slice(0, 12))} />
+        <Champ label="Clé de sécurité" type="password" autoComplete="off" value={f.cle} erreur={erreurs.cle} onChange={e => maj('cle', e.target.value)} />
         <Bouton type="submit" chargement={envoi} plein_largeur>Se connecter</Bouton>
       </form>
     </Ecran>

@@ -135,7 +135,7 @@ describe('administration : accès', () => {
   })
 
   const remplir = async (u: ReturnType<typeof userEvent.setup>, f: HTMLElement, email: string, mdp: string, cle: string) => {
-    for (const [label, v] of [['Adresse e-mail', email], ['Mot de passe', mdp], ['Clé de sécurité (12 chiffres)', cle]] as const) {
+    for (const [label, v] of [['Adresse e-mail', email], ['Mot de passe', mdp], ['Clé de sécurité', cle]] as const) {
       const c = within(f).getByLabelText(label); await u.clear(c); if (v) await u.type(c, v)
     }
     await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
@@ -149,10 +149,10 @@ describe('administration : accès', () => {
     await u.click(within(f).getByRole('button', { name: 'Se connecter' }))
     expect(await screen.findByText('Adresse e-mail invalide.')).toBeInTheDocument()
     expect(screen.getByText('Saisissez le mot de passe.')).toBeInTheDocument()
-    expect(screen.getByText('La clé fait 12 chiffres.')).toBeInTheDocument()
-    const champCle = within(f).getByLabelText('Clé de sécurité (12 chiffres)')
-    await u.type(champCle, '12ab34')
-    expect(champCle).toHaveValue('1234')
+    expect(screen.getByText('Saisissez la clé de sécurité.')).toBeInTheDocument()
+    const champCle = within(f).getByLabelText('Clé de sécurité')
+    await u.type(champCle, 'Ma clé-2026 !')
+    expect(champCle).toHaveValue('Ma clé-2026 !') // format libre : lettres, chiffres, espaces, symboles
     await remplir(u, f, 'client@hmode.test', 'faux', CLE)
     expect(await within(f).findByRole('alert')).toHaveTextContent(/incorrect|invalide/i)
     await remplir(u, f, 'client@hmode.test', 'Client-2026', CLE)
@@ -171,7 +171,7 @@ describe('administration : accès', () => {
     expect(useSession.getState().utilisateur).toBeNull()
     expect(screen.queryByRole('navigation', { name: 'Administration' })).not.toBeInTheDocument()
     const f2 = screen.getByRole('form', { name: 'Connexion administrateur' })
-    expect(within(f2).getByLabelText('Clé de sécurité (12 chiffres)')).toHaveValue('')
+    expect(within(f2).getByLabelText('Clé de sécurité')).toHaveValue('')
     await remplir(u, f2, 'admin@hmode.test', 'Admin-2026', CLE)
     expect(await screen.findByRole('navigation', { name: 'Administration' })).toBeInTheDocument()
     expect(appels.rpc).toContainEqual(['deverrouiller_admin', { cle: CLE }])

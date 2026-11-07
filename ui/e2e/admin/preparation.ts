@@ -3,7 +3,7 @@ import { writeFileSync } from 'node:fs'
 
 /** Compte admin jetable, créé comme en vrai : `scripts/admin-sql.mjs` (e-mail, mot de passe, clé) → SQL passé à la base
  *  locale. Pas d'inscription par le site. La clé d'avant est rendue par le rangement. */
-export const CLE_ESSAI = '482915603718'
+export const CLE_ESSAI = 'essai E2E-clé'
 export const FICHIER_COMPTE = 'rapports/playwright-admin-compte.json'
 export const psql = (sql: string) =>
   execFileSync('docker', ['exec', 'supabase_db_hmode', 'psql', '-U', 'postgres', '-d', 'postgres', '-tAc', sql], { encoding: 'utf8' }).trim()

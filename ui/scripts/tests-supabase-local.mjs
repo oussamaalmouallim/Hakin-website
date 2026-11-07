@@ -156,7 +156,7 @@ verdict(Boolean(devenir.error), 'admin : un client ne peut pas se nommer admin l
 psql(`insert into public.admins (utilisateur) values ('${B.id}') on conflict do nothing`)
 
 // ── Clé de sécurité (lot 21) : inscrit dans `admins` ne suffit plus, la session doit être déverrouillée ──
-const CLE = '482915603718'
+const CLE = 'Clé libre-2026 !' // format libre : aucune règle imposée
 const ancienneCle = psql('select hash from public.admin_cle where id = 1')
 psql(`insert into public.admin_cle (id, hash) values (1, '${bcrypt.hashSync(CLE, 10)}') on conflict (id) do update set hash = excluded.hash`)
 psql(`delete from public.admin_essais where utilisateur = '${B.id}'`)

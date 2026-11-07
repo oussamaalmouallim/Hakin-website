@@ -27,7 +27,7 @@ export interface StatutAdmin { admin: boolean; cle: boolean; deverrouille: boole
 export async function statutAdmin(): Promise<StatutAdmin> {
   return verifier(await (await base()).rpc('admin_statut')) as StatutAdmin
 }
-/** Clé de 12 chiffres vérifiée par la base (empreinte bcrypt, 5 essais puis 15 min de blocage). */
+/** Clé de sécurité vérifiée par la base (empreinte bcrypt, 5 essais puis 15 min de blocage). */
 export async function deverrouillerAdmin(cle: string): Promise<{ ok: boolean; message?: string }> {
   return verifier(await (await base()).rpc('deverrouiller_admin', { cle })) as { ok: boolean; message?: string }
 }

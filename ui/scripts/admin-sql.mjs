@@ -1,7 +1,7 @@
 // Crée (ou met à jour) le compte admin et sa clé de sécurité, à partir de trois lignes de ui/.env :
 //   ADMIN_EMAIL=…              e-mail de connexion à /admin
-//   ADMIN_MOT_DE_PASSE=…       mot de passe (10 caractères au moins, lettres et chiffres)
-//   ADMIN_CLE=123456789012     clé de 12 chiffres
+//   ADMIN_MOT_DE_PASSE=…       mot de passe
+//   ADMIN_CLE=…                clé de sécurité, au format de votre choix
 // Variables SANS préfixe VITE_ : Vite ne les met jamais dans le site.
 // Le script affiche le SQL à coller dans le SQL Editor de Supabase. Mot de passe et clé n'en sortent qu'en empreinte bcrypt :
 // ni le SQL, ni la base, ni le site ne les contiennent en clair.
@@ -16,9 +16,8 @@ const fuite = Object.keys(process.env).filter(k => k.startsWith('VITE_') && /ADM
 const erreurs = []
 if (fuite.length) erreurs.push(`${fuite.join(', ')} : une variable VITE_ part dans le site, publique. Retirez le préfixe VITE_.`)
 if (!/^[^\s@']+@[^\s@']+\.[^\s@']+$/.test(email)) erreurs.push('ADMIN_EMAIL absent ou invalide dans ui/.env.')
-if (motDePasse.length < 10 || !/[a-z]/i.test(motDePasse) || !/\d/.test(motDePasse)) erreurs.push('ADMIN_MOT_DE_PASSE : 10 caractères au moins, avec des lettres et des chiffres.')
-if (!/^\d{12}$/.test(cle)) erreurs.push('ADMIN_CLE doit faire exactement 12 chiffres.')
-else if (/^(\d)\1{11}$/.test(cle) || '01234567890123456789'.includes(cle) || '98765432109876543210'.includes(cle)) erreurs.push('ADMIN_CLE trop simple (chiffres répétés ou qui se suivent).')
+if (!motDePasse) erreurs.push('ADMIN_MOT_DE_PASSE absent dans ui/.env.')
+if (!cle) erreurs.push('ADMIN_CLE absente dans ui/.env.')
 if (erreurs.length) {
   console.error(erreurs.map(e => `✗ ${e}`).join('\n'))
   process.exit(1)

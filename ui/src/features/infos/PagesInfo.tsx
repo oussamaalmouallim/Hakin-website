@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Accordeon, AConfirmer, BoutonExterne, IconeWhatsApp, Revelation } from '@/design-system'
 import { EnTetePage } from '@/components/EnTetePage'
 import { boutique, textes } from '@/lib/catalogue'
+import { listeVilles, livraisonLimitee, villesLivrees } from '@/lib/livraison'
 import { SECTIONS_TEXTES } from '@/lib/produitsBase'
 import { lienWhatsApp } from '@/lib/whatsapp'
 
@@ -15,7 +16,7 @@ const pages = (): Record<Cle, { surtitre: string; titre: string; intro?: string;
     surtitre: 'Aide', titre: 'Livraison & retours', intro: 'Chaque commande est confirmée avec vous sur WhatsApp avant expédition.',
     contenu: <>
       <Accordeon titre="Paiement" ouvertParDefaut>{boutique.paiement}.</Accordeon>
-      <Accordeon titre="Zones de livraison">{boutique.livraison.zones ?? <A />}</Accordeon>
+      <Accordeon titre="Zones de livraison">{boutique.livraison.zones ?? (livraisonLimitee() ? listeVilles(villesLivrees()) : <A />)}</Accordeon>
       <Accordeon titre="Délais">{boutique.livraison.delai ?? <A />}</Accordeon>
       <Accordeon titre="Frais de livraison">{boutique.livraison.fraisDH != null ? `${boutique.livraison.fraisDH} DH` : <A />}</Accordeon>
       <Accordeon titre="Échanges et retours">{boutique.retours ?? <A />}</Accordeon>
@@ -28,7 +29,7 @@ const pages = (): Record<Cle, { surtitre: string; titre: string; intro?: string;
       <Accordeon titre="Comment payer ?">{boutique.paiement}.</Accordeon>
       <Accordeon titre="Les prix ne sont pas affichés, pourquoi ?">Les prix sont en cours de mise en ligne. En attendant, demandez-les sur WhatsApp depuis la fiche produit.</Accordeon>
       <Accordeon titre="Dois-je créer un compte ?">Non : vous pouvez commander sans compte. Avec un compte, votre panier, vos favoris, vos adresses et vos commandes vous suivent sur tous vos appareils.</Accordeon>
-      <Accordeon titre="Livrez-vous hors de Casablanca ?">{boutique.livraison.zones ?? <A />}</Accordeon>
+      <Accordeon titre="Livrez-vous hors de Casablanca ?">{livraisonLimitee() ? `Pour le moment, nous livrons à domicile à ${listeVilles(villesLivrees())} seulement.` : boutique.livraison.zones ?? <A />}</Accordeon>
     </>,
   },
   'guide-des-tailles': {

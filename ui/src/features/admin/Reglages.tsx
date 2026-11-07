@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Bouton, Champ, ZoneTexte, useNotifier } from '@/design-system'
+import { Bouton, CaseACocher, Champ, ZoneTexte, useNotifier } from '@/design-system'
 import { boutiqueFichier } from '@/lib/catalogue'
 import { chargerDonnees } from '@/lib/donnees'
+import { VILLES } from '@/lib/livraison'
 import { fusionnerBoutique } from '@/lib/produitsBase'
 import { validerReglages, type ErreursReglages } from '@/lib/admin'
 import type { Boutique } from '@/lib/types'
@@ -73,6 +74,21 @@ export function Reglages() {
               aide="0 = livraison offerte. Vide = « À confirmer »."
               onChange={e => { const c = e.target.value.replace(/\D/g, ''); maj(x => ({ ...x, livraison: { ...x.livraison, fraisDH: c ? Number(c) : null } }), 'fraisDH') }} />
           </div>
+          <fieldset className="mt-5" aria-describedby={erreurs.villes ? 'erreur-villes' : undefined}>
+            <legend className="label mb-3 text-gris">Villes livrées</legend>
+            <p className="mb-3 text-[13px] text-gris">Seules ces villes sont proposées au moment de commander.</p>
+            <div className="grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3 lg:grid-cols-4">
+              {VILLES.map(v => (
+                <CaseACocher key={v} label={v} checked={(b.livraison.villes ?? VILLES).includes(v)}
+                  onChange={e => maj(x => {
+                    const avant = x.livraison.villes ?? VILLES
+                    const villes = e.target.checked ? VILLES.filter(y => y === v || avant.includes(y)) : avant.filter(y => y !== v)
+                    return { ...x, livraison: { ...x.livraison, villes } }
+                  }, 'villes')} />
+              ))}
+            </div>
+            {erreurs.villes && <p id="erreur-villes" role="alert" className="mt-2 text-[13px] text-danger">{erreurs.villes}</p>}
+          </fieldset>
           <div className="mt-5"><ZoneTexte label="Échanges et retours" facultatif rows={4} value={b.retours ?? ''} onChange={e => maj(x => ({ ...x, retours: vide(e.target.value) }))} /></div>
         </CarteAdmin>
 

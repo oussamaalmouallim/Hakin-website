@@ -15,9 +15,12 @@
   "horaires": null,
   "paiement": "Paiement à la livraison",
   "livraison": {
-    "zones": null,
+    "zones": "Casablanca, à domicile",
+    "villes": [
+      "Casablanca"
+    ],
     "fraisDH": null,
     "delai": null
   },
-  "retours": null
+  "retours": "Retour possible sous 24 h après la livraison."
 }

@@ -92,7 +92,7 @@ describe('parcours d\'achat', () => {
     await u.type(screen.getByLabelText('Nom complet'), 'Sara Alaoui')
     await u.clear(screen.getByLabelText('Téléphone (WhatsApp)')) // pré-rempli par le profil du test précédent
     await u.type(screen.getByLabelText('Téléphone (WhatsApp)'), '0612345678')
-    await u.selectOptions(screen.getByLabelText('Ville'), 'Rabat')
+    await u.selectOptions(screen.getByLabelText('Ville'), 'Casablanca')
     await u.type(screen.getByLabelText('Adresse'), '4 avenue Mohammed V')
     await u.click(screen.getByRole('checkbox'))
     await u.click(screen.getByRole('button', { name: 'Passer la commande' }))

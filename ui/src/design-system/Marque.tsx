@@ -1,8 +1,8 @@
 import { useId } from 'react'
 import { cn } from '@/lib/utils'
 
-/** Monogramme H traversé d'une courbe, d'après Template/hero.png (touche H MODE, dégradé beige).
- *  PROVISOIRE : à remplacer par le fichier source du logo (décision D5 du plan). */
+/** Logo de la marque (décision du 07/11) : monogramme H traversé d'une courbe, celui du héros (dégradé beige).
+ *  Images de profil et icônes du site générées depuis ce même dessin : `npm run logo` (scripts/logo-marque.mjs). */
 export function Monogramme({ className, titre = 'H MODE' }: { className?: string; titre?: string }) {
   const id = `hm-bronze-${useId().replace(/:/g, '')}`
   return (

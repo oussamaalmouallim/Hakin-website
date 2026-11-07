@@ -1,3 +1,6 @@
+import { VILLES, listeVilles, livraisonLimitee, villesLivrees } from '@/lib/livraison'
+import { validerReglages } from '@/lib/admin'
+import { boutique } from '@/lib/catalogue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Catalogue de test : un produit commandable (prix réel de test) + un produit « prix sur demande ».
@@ -155,6 +158,21 @@ describe('format et validation', () => {
   it('valide la commande champ par champ', () => {
     const vide = { nom: '', telephone: '', email: 'x', ville: '', adresse: '', instructions: '' }
     expect(Object.keys(validerCommande(vide, false)).sort()).toEqual(['adresse', 'cgv', 'email', 'nom', 'telephone', 'ville'])
-    expect(validerCommande({ nom: 'Ali B', telephone: '0612345678', email: '', ville: 'Rabat', adresse: '12 rue X', instructions: '' }, true)).toEqual({})
+    expect(validerCommande({ nom: 'Ali B', telephone: '0612345678', email: '', ville: 'Casablanca', adresse: '12 rue X', instructions: '' }, true)).toEqual({})
+  })
+  it('livraison : seulement les villes réglées par la boutique (Casablanca), retours sous 24 h', () => {
+    expect(villesLivrees()).toEqual(['Casablanca'])
+    expect(validerCommande({ nom: 'Ali B', telephone: '0612345678', email: '', ville: 'Rabat', adresse: '12 rue X', instructions: '' }, true))
+      .toEqual({ ville: 'Nous livrons seulement à Casablanca pour le moment.' })
+    expect(boutique.retours).toBe('Retour possible sous 24 h après la livraison.')
+    const b = structuredClone(boutique)
+    b.livraison.villes = null
+    expect(villesLivrees(b)).toEqual(VILLES)
+    expect(livraisonLimitee(b)).toBe(false)
+    b.livraison.villes = ['Rabat', 'Casablanca']
+    expect(villesLivrees(b)).toEqual(['Casablanca', 'Rabat'])
+    expect(listeVilles(['Casablanca', 'Rabat', 'Fès'])).toBe('Casablanca, Rabat et Fès')
+    b.livraison.villes = []
+    expect(validerReglages(b).villes).toBe('Cochez au moins une ville.')
   })
 })

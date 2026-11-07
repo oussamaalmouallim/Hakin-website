@@ -9,6 +9,7 @@ description: Architecture, dossiers clés et flux de données de la boutique H M
 - `ui/src/lib/` : logique pure.
   - Catalogue : `catalogue.ts` (`produits`/`boutique`/`textes` modifiés SUR PLACE, `estCommandable`, `srcImage`), `donnees.ts` (lecture base → copie locale → `appliquerCatalogue`/`appliquerReglages`, store `useDonnees`), `produitsBase.ts` (ligne de la table ↔ produit, fusion des réglages et textes).
   - Navigation : `filtres.ts` (filtres, facettes, URL), `recherche.ts`.
+  - Livraison : `livraison.ts` (`VILLES`, `villesLivrees` réglées par l'admin, Casablanca seule au 07/11).
   - Commande : `commandeDirecte.ts` (`/commande?article=…`), `commandes.ts` (`passer_commande`), `whatsapp.ts`, `format.ts` (`formatDH`, téléphone, référence).
   - Supabase : `supabase.ts` (client unique, `null` sans `.env`), `compteDistant.ts` (lectures/écritures du compte, RLS).
   - Admin : `admin.ts` (slug, validation, filtres, statuts, CSV, résumé du journal, réglages).
@@ -20,7 +21,7 @@ description: Architecture, dossiers clés et flux de données de la boutique H M
 - `ui/src/App.tsx` : routes, transition de page, `chargerDonnees`, pages chargées à la demande (sauf Accueil, Boutique, Produit), `/admin` hors de `motion.main`.
 - `ui/src/test/` : Vitest — `logique`, `parcours`, `commande`, `auth`, `synchro` (fausse base à RLS), `admin` + `admin-ecrans` (fausse base).
 - `ui/e2e/` : Playwright — site sans Supabase (`vite --mode e2e`, prix d'essai `donnees/prix-test.json`) ; `admin/` sur Supabase local (compte admin jetable).
-- `ui/scripts/` : `optimiser-images.mjs`, `lighthouse.mjs`, `tests-supabase-local.mjs` (vrais comptes, RLS, admin), `verifier-supabase.mjs` (contrôle sans écriture), `montage-heros.mjs`.
+- `ui/scripts/` : `optimiser-images.mjs`, `lighthouse.mjs`, `tests-supabase-local.mjs` (vrais comptes, RLS, admin), `verifier-supabase.mjs` (contrôle sans écriture), `montage-heros.mjs`, `logo-marque.mjs` (`npm run logo` : logo du héros → profils IG/FB dans `medias/marque/`, favicon).
 - `ui/medias/` : photos originales (`produits/<slug>/<n>.jpg`, `campagne/`, `provenance.json`) → WebP dans `ui/public/images/` (généré).
 - `supabase/` : `schema.sql` (comptes, panier, commandes, favoris), `lot-19-favoris.sql`, `lot-20-admin.sql` (admin, produits, réglages, journal, stockage), `config.toml` (base locale).
 - Racine : `start.sh`/`stop.sh`/`deploy.sh`, Docker + nginx, `plan.md` (lots), `TODO.md`, `docs/decisions/` (ADR), `docs/logo-prompt-gemini.md`.

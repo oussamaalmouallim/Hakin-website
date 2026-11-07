@@ -14,6 +14,7 @@
     "test:e2e:admin": "playwright test -c playwright.admin.config.ts",
     "qualite:lighthouse": "node scripts/lighthouse.mjs",
     "images": "node scripts/optimiser-images.mjs",
+    "logo": "node scripts/logo-marque.mjs",
     "test:supabase": "node --env-file=.env.supabase-local scripts/tests-supabase-local.mjs"
   },
   "dependencies": {

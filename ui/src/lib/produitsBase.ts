@@ -1,4 +1,4 @@
-import type { Boutique, Produit } from './types'
+import type { Boutique, ReglagesBoutique, Produit } from './types'
 
 /** Ligne de la table `produits` (supabase/lot-20-admin.sql) : mêmes champs que `produits.json`, en snake_case,
  *  plus `publie` (visible sur le site) et `ordre` (rang dans la boutique). */
@@ -61,7 +61,7 @@ export const SECTIONS_TEXTES = {
 export const TEXTES_VIDES: Textes = { 'mentions-legales': {}, cgv: {}, confidentialiteResponsable: '', guideDesTailles: '' }
 
 /** Complète des réglages lus en base avec les valeurs par défaut (champ absent = valeur du fichier). */
-export function fusionnerBoutique(defaut: Boutique, base: Partial<Boutique> | null | undefined): Boutique {
+export function fusionnerBoutique(defaut: Boutique, base: ReglagesBoutique | null | undefined): Boutique {
   if (!base) return defaut
   return {
     ...defaut, ...base,

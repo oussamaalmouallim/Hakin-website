@@ -69,9 +69,12 @@ export interface Boutique {
   adresse: string | null
   horaires: string | null
   paiement: string
-  livraison: { zones: string | null; fraisDH: number | null; delai: string | null }
+  livraison: { zones: string | null; villes: string[] | null; fraisDH: number | null; delai: string | null }
   retours: string | null
 }
+
+/** Réglages lus en base : chaque champ peut manquer (anciennes lignes), il est alors pris dans `boutique.json`. */
+export type ReglagesBoutique = Partial<Omit<Boutique, 'livraison'>> & { livraison?: Partial<Boutique['livraison']> }
 
 export interface LignePanier {
   cle: string

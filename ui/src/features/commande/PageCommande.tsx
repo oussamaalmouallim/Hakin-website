@@ -16,8 +16,8 @@ import { supabaseActif } from '@/lib/supabase'
 import { lienWhatsApp, messageCommande } from '@/lib/whatsapp'
 import { cn } from '@/lib/utils'
 import type { CoordonneesClient } from '@/lib/types'
+import { listeVilles, villesLivrees } from '@/lib/livraison'
 
-export const VILLES = ['Casablanca', 'Rabat', 'Marrakech', 'Tanger', 'Fès', 'Agadir', 'Meknès', 'Oujda', 'Kénitra', 'Tétouan', 'El Jadida', 'Mohammédia', 'Autre ville']
 type Erreurs = Partial<Record<keyof CoordonneesClient | 'cgv', string>>
 
 export function validerCommande(c: CoordonneesClient, cgv: boolean): Erreurs {
@@ -26,10 +26,14 @@ export function validerCommande(c: CoordonneesClient, cgv: boolean): Erreurs {
   if (!telephoneMarocValide(c.telephone)) e.telephone = 'Numéro marocain attendu, ex. 06 12 34 56 78 ou +212 6 12 34 56 78.'
   if (c.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)) e.email = 'Adresse e-mail invalide.'
   if (!c.ville) e.ville = 'Choisissez votre ville.'
+  else if (!villesLivrees().includes(c.ville)) e.ville = `Nous livrons seulement à ${listeVilles(villesLivrees())} pour le moment.`
   if (c.adresse.trim().length < 6) e.adresse = 'Indiquez une adresse de livraison précise.'
   if (!cgv) e.cgv = 'Veuillez accepter les conditions de vente.'
   return e
 }
+
+/** Une seule ville livrée : elle est déjà choisie. */
+const villeUnique = () => { const v = villesLivrees(); return v.length === 1 ? v[0] : '' }
 
 /** cloneme: C-28 — section numérotée du checkout de la référence : titre Archivo Black 18 px .04em, pastille jaune 28 px chiffre mono 12 px. */
 function Section({ n, titre, children }: { n: number; titre: string; children: ReactNode }) {
@@ -62,7 +66,7 @@ export function PageCommande() {
   const utilisateur = useSession(s => s.utilisateur)
   const parDefaut = adresses.find(a => a.parDefaut)
   const [c, setC] = useState<CoordonneesClient>({ nom: profil.nom, telephone: profil.telephone, email: profil.email,
-    ville: parDefaut?.ville ?? '', adresse: parDefaut?.adresse ?? '', instructions: parDefaut?.instructions ?? '' })
+    ville: parDefaut?.ville ?? villeUnique(), adresse: parDefaut?.adresse ?? '', instructions: parDefaut?.instructions ?? '' })
   const [cgv, setCgv] = useState(false)
   const [memoriser, setMemoriser] = useState(true)
   // E-mail et instructions (facultatifs, absents de la référence) : repliés, ouverts d'office s'ils sont déjà remplis.
@@ -77,7 +81,7 @@ export function PageCommande() {
   // Compte chargé après l'arrivée sur la page (connexion, actualisation) : on complète seulement les champs encore vides.
   useEffect(() => {
     setC(x => ({ nom: x.nom || profil.nom, telephone: x.telephone || profil.telephone, email: x.email || profil.email,
-      ville: x.ville || parDefaut?.ville || '', adresse: x.adresse || parDefaut?.adresse || '', instructions: x.instructions || parDefaut?.instructions || '' }))
+      ville: x.ville || parDefaut?.ville || villeUnique(), adresse: x.adresse || parDefaut?.adresse || '', instructions: x.instructions || parDefaut?.instructions || '' }))
   }, [profil, parDefaut])
 
   if (sp.has('article') && !details.length) {
@@ -176,7 +180,7 @@ export function PageCommande() {
                 <ChampLigne data-ref="co-nom" label="Nom complet" autoComplete="name" value={c.nom} onChange={maj('nom')} erreur={erreurs.nom} />
                 <ChampLigne label="Téléphone (WhatsApp)" type="tel" inputMode="tel" autoComplete="tel" placeholder="06 12 34 56 78" value={c.telephone} onChange={maj('telephone')} erreur={erreurs.telephone} />
                 <SelectionLigne label="Ville" value={c.ville} onChange={maj('ville')} erreur={erreurs.ville}>
-                  <option value="">Choisir…</option>{VILLES.map(v => <option key={v}>{v}</option>)}
+                  <option value="">Choisir…</option>{villesLivrees().map(v => <option key={v}>{v}</option>)}
                 </SelectionLigne>
                 <ChampLigne label="Adresse" autoComplete="street-address" value={c.adresse} onChange={maj('adresse')} erreur={erreurs.adresse} />
                 {precisions ? (<>

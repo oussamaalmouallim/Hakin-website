@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { obtenirSupabase } from '@/lib/supabase'
 import { appliquerCatalogue, appliquerReglages } from '@/lib/catalogue'
 import { ligneVersProduit, type LigneProduit, type Textes } from '@/lib/produitsBase'
-import type { Boutique, Produit } from '@/lib/types'
+import type { ReglagesBoutique, Produit } from '@/lib/types'
 
 /** Origine des données affichées : fichiers livrés avec le site, dernière copie de la base gardée sur l'appareil, ou la base. */
 export type SourceDonnees = 'fichier' | 'copie' | 'base'
@@ -11,7 +11,7 @@ interface EtatDonnees { version: number; source: SourceDonnees }
 export const useDonnees = create<EtatDonnees>(() => ({ version: 0, source: 'fichier' }))
 
 const CLE_COPIE = 'hmode-catalogue'
-interface Copie { v: 1; produits: Produit[]; boutique: Partial<Boutique> | null; textes: Partial<Textes> | null }
+interface Copie { v: 1; produits: Produit[]; boutique: ReglagesBoutique | null; textes: Partial<Textes> | null }
 
 function appliquer(c: Omit<Copie, 'v'>, source: SourceDonnees) {
   if (c.produits.length) appliquerCatalogue(c.produits)
@@ -41,7 +41,7 @@ export async function chargerDonnees() {
       return p as Produit
     })
     const reglages = Object.fromEntries(((rReglages.data ?? []) as { cle: string; valeur: unknown }[]).map(r => [r.cle, r.valeur]))
-    const c = { produits, boutique: (reglages.boutique ?? null) as Partial<Boutique> | null, textes: (reglages.textes ?? null) as Partial<Textes> | null }
+    const c = { produits, boutique: (reglages.boutique ?? null) as ReglagesBoutique | null, textes: (reglages.textes ?? null) as Partial<Textes> | null }
     appliquer(c, 'base')
     try { localStorage.setItem(CLE_COPIE, JSON.stringify({ v: 1, ...c })) } catch { /* stockage plein ou bloqué */ }
   } catch (e) {

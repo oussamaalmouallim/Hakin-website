@@ -151,12 +151,13 @@ export function numeroWhatsAppClient(tel: string) {
 }
 
 // ── Réglages ────────────────────────────────────────────────────────────────────────────────────
-export type ErreursReglages = Partial<Record<'whatsapp' | 'instagram' | 'facebook' | 'fraisDH', string>>
+export type ErreursReglages = Partial<Record<'whatsapp' | 'instagram' | 'facebook' | 'fraisDH' | 'villes', string>>
 export function validerReglages(b: import('./types').Boutique): ErreursReglages {
   const e: ErreursReglages = {}
   if (!/^\d{10,15}$/.test(b.whatsapp)) e.whatsapp = 'Numéro international, chiffres seulement (ex. 212612345678).'
   if (b.instagram.url && !/^https:\/\/(www\.)?instagram\.com\//.test(b.instagram.url)) e.instagram = 'Lien Instagram commençant par https://www.instagram.com/'
   if (b.facebook.url && !/^https:\/\/(www\.|m\.)?facebook\.com\//.test(b.facebook.url)) e.facebook = 'Lien Facebook commençant par https://www.facebook.com/'
   if (b.livraison.fraisDH !== null && (!Number.isInteger(b.livraison.fraisDH) || b.livraison.fraisDH < 0 || b.livraison.fraisDH > 10000)) e.fraisDH = 'Montant en dirhams entre 0 et 10 000.'
+  if (b.livraison.villes && b.livraison.villes.length === 0) e.villes = 'Cochez au moins une ville.'
   return e
 }

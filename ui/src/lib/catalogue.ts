@@ -3,7 +3,7 @@ import categoriesJson from '@/data/categories.json'
 import collectionsJson from '@/data/collections.json'
 import boutiqueJson from '@/data/boutique.json'
 import fondsClairsJson from '@/data/fonds-clairs.json'
-import type { Boutique, Categorie, Collection, Produit } from './types'
+import type { Boutique, ReglagesBoutique, Categorie, Collection, Produit } from './types'
 import { fusionnerBoutique, fusionnerTextes, type Textes } from './produitsBase'
 
 /** Catalogue réel uniquement : un prix ou une taille absente reste `null` / vide (« Prix sur demande »).
@@ -38,7 +38,7 @@ export function appliquerCatalogue(liste: Produit[]) {
   recalculerTeintes()
 }
 /** Remplace coordonnées, livraison, retours et textes par ceux de la base (champ absent = valeur du fichier). */
-export function appliquerReglages(b: Partial<Boutique> | null, t: Partial<Textes> | null) {
+export function appliquerReglages(b: ReglagesBoutique | null, t: Partial<Textes> | null) {
   const nouveau = fusionnerBoutique(BOUTIQUE_FICHIER, b)
   for (const k of Object.keys(boutique)) delete (boutique as unknown as Record<string, unknown>)[k]
   Object.assign(boutique, nouveau)

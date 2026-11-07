@@ -34,7 +34,7 @@ const monter = (url: string) => render(
 async function remplir(u: ReturnType<typeof userEvent.setup>) {
   await u.type(await screen.findByLabelText('Nom complet'), 'Sara Alaoui')
   await u.type(screen.getByLabelText('Téléphone (WhatsApp)'), '0612345678')
-  await u.selectOptions(screen.getByLabelText('Ville'), 'Rabat')
+  await u.selectOptions(screen.getByLabelText('Ville'), 'Casablanca')
   await u.type(screen.getByLabelText('Adresse'), '4 avenue Mohammed V')
   await u.click(screen.getByRole('checkbox', { name: /conditions de vente/ }))
 }
@@ -61,7 +61,7 @@ describe('checkout : commande enregistrée en base puis WhatsApp, paiement à la
     await u.click(screen.getByRole('button', { name: 'Passer la commande' }))
     expect(await screen.findByRole('heading', { name: 'Commande enregistrée' })).toBeInTheDocument()
     expect(rpc).toHaveBeenCalledWith('passer_commande', { commande: expect.objectContaining({
-      client: { nom: 'Sara Alaoui', telephone: '0612345678', email: '', ville: 'Rabat', adresse: '4 avenue Mohammed V', instructions: '' },
+      client: { nom: 'Sara Alaoui', telephone: '0612345678', email: '', ville: 'Casablanca', adresse: '4 avenue Mohammed V', instructions: '' },
       lignes: [{ slug: 'a', nom: 'T-shirt Été', coloris: 'noir', taille: 'M', quantite: 2, prix_dh: 500 }],
     }) })
     expect(ouvrir).toHaveBeenCalledWith('', '_blank')

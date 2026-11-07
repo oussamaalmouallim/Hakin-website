@@ -18,7 +18,7 @@
 | # | Décision |
 |---|---|
 | D3 | **Paiement à la livraison uniquement.** Aucun paiement en ligne. |
-| D5 | **Logo créé par l'utilisateur avec Gemini** à partir d'un prompt fourni (`docs/logo-prompt-gemini.md`), pour les profils Instagram et Facebook, puis repris sur le site. |
+| D5 | ~~Logo créé avec Gemini~~ → **décision du 07/11 : le logo est le monogramme du héros** (H traversé d'une courbe, dégradé beige, composant `Monogramme`). Photo de profil Instagram/Facebook `ui/medias/marque/logo-profil-1080.png`, favicon et icône iOS générés par `npm run logo`. |
 | D6 | **Pas de nouvelle photo de campagne** : on garde le héros actuel (photomontage du 02/11). **Pas de vidéo d'intro.** |
 | D9 | **Adresse, livraison et retours gérés dans l'administration** (lot 20), pas en dur dans le code. |
 | D11 | **Contraste** : `--gris` passe de `#8a8a8a` (Original Fit) à `#6b6b6b` (4,8:1, WCAG AA). **Chargement découpé** par page. |
@@ -27,13 +27,20 @@
 | D14 | **Administration** : connexion admin pour gérer prix, images, textes, réglages et commandes (lot 20, par sous-lots). |
 | D15 | **Hébergement Netlify** (lot 14). Le **nom de domaine** est traité à part, hors de ce plan. |
 
+### Décisions actées (07/11/2026)
+
+| # | Décision |
+|---|---|
+| D16 | **Vrais prix et tailles saisis par l'admin** dans `/admin` (lot 20), pas dans le code. |
+| D17 | **Livraison à domicile à Casablanca seulement** ; **retour possible sous 24 h après la livraison**. Villes livrées réglables dans l'admin (Réglages) ; le formulaire de commande ne propose que ces villes. Frais et délai : non communiqués, « À confirmer » jusqu'à saisie dans l'admin. |
+
 ---
 
 ### Avancement (14/10/2026) — boilerplate livré
 
 | Lot | État | Détail |
 |---|---|---|
-| 0 | ✅ fait (03/11) | D1, D2, D8 (14/10) puis D3, D5, D6, D9, D11 à D15 (03/11) tranchés. Reste à recevoir : les vrais prix et tailles (D2), saisis dans l'administration (lot 20), et le logo créé avec Gemini (D5). |
+| 0 | ✅ fait (07/11) | D1, D2, D8 (14/10), D3, D5, D6, D9, D11 à D15 (03/11), D16 et D17 (07/11) tranchés. Reste à saisir par l'admin dans `/admin` : les vrais prix et tailles (D16), les frais et le délai de livraison. |
 | 1 | ✅ | Export WhatsApp archivé dans `legacy/export-whatsapp/` (91 fichiers, aucun référencé ; `assets/` passe de 38 Mo à 1,2 Mo). `hero.png` est dans `Template/`. 12 photos → 10 produits (T4/T5 et T6/T7 = même produit, face et dos), WebP 480/960. |
 | 2 | ✅ | `ui/` : Vite 5, React 18, TS strict, Tailwind 3, framer-motion, React Router, Zustand. Scripts `start.sh`, `stop.sh`, `deploy.sh`, Docker/nginx, `_redirects`. |
 | 3 | ✅ | Tokens H MODE, composants dans `src/design-system/`, page `/design-system`. Lightswind : `scroll-reveal` et `image-reveal` installés via la CLI et ré-habillés. |

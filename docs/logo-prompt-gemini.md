@@ -1,5 +1,9 @@
 # Logo H MODE — prompt pour Gemini (décision D5, 03/11/2026)
 
+> **Remplacé le 07/11/2026** : le logo de la marque est le monogramme du héros (H traversé d'une courbe, dégradé beige).
+> Photo de profil Instagram et Facebook prête : `ui/medias/marque/logo-profil-1080.png` (`cd ui && npm run logo`).
+> Ce prompt reste ici pour mémoire.
+
 Usage : photo de profil Instagram et Facebook (affichée en rond), puis reprise sur le site.
 Charte du site : `palette.md` (encre `#0a0a0a`, fond crème `#f5f4f0`, jaune `#f5d000`), monogramme actuel = pastille noire
 ronde inclinée de -12° avec un « H » serif (Cormorant Garamond), nom en Archivo Black, sous-ligne mono « CASABLANCA ».

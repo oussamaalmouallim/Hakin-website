@@ -251,10 +251,19 @@ describe('administration : commandes, réglages, textes, journal', () => {
     expect(await screen.findByText(/Numéro international, chiffres seulement/)).toBeInTheDocument()
     await u.clear(wa); await u.type(wa, '212612345678')
     await u.type(screen.getByLabelText(/Frais de livraison/), '30')
+    // Villes livrées : Casablanca seule (boutique.json) ; aucune ville cochée = refusé ; Rabat ajoutée.
+    const casa = screen.getByRole('checkbox', { name: 'Casablanca' })
+    expect(casa).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Rabat' })).not.toBeChecked()
+    await u.click(casa)
+    await u.click(screen.getByRole('button', { name: 'Enregistrer les réglages' }))
+    expect(await screen.findByText('Cochez au moins une ville.')).toBeInTheDocument()
+    await u.click(casa)
+    await u.click(screen.getByRole('checkbox', { name: 'Rabat' }))
     await u.click(screen.getByRole('button', { name: 'Enregistrer les réglages' }))
     expect(await screen.findByText('Réglages enregistrés : le site est à jour.')).toBeInTheDocument()
     const r = base.reglages.find(x => x.cle === 'boutique')!.valeur as Record<string, unknown>
-    expect(r).toMatchObject({ whatsapp: '212612345678', livraison: { fraisDH: 30 } })
+    expect(r).toMatchObject({ whatsapp: '212612345678', livraison: { fraisDH: 30, villes: ['Casablanca', 'Rabat'] }, retours: 'Retour possible sous 24 h après la livraison.' })
     expect(r).not.toHaveProperty('paiement')
   })
 

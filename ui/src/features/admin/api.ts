@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { obtenirSupabase } from '@/lib/supabase'
 import { ligneVersProduit, produitVersLigne, type LigneProduit, type ProduitAdmin, type Textes } from '@/lib/produitsBase'
 import type { CommandeAdmin, EntreeJournal, Statut } from '@/lib/admin'
-import type { Boutique, Produit } from '@/lib/types'
+import type { ReglagesBoutique, Produit } from '@/lib/types'
 
 /** Accès à la base pour l'administration. Les droits sont vérifiés par la base (RLS + `est_admin()`, lot-20-admin.sql) :
  *  ces fonctions n'accordent rien elles-mêmes. Toute erreur est levée avec un message en français. */
@@ -76,10 +76,10 @@ export async function supprimerPhoto(src: string) {
 }
 
 // ── Réglages et textes ──────────────────────────────────────────────────────────────────────────
-export async function lireReglages(): Promise<{ boutique: Partial<Boutique> | null; textes: Partial<Textes> | null }> {
+export async function lireReglages(): Promise<{ boutique: ReglagesBoutique | null; textes: Partial<Textes> | null }> {
   const lignes = verifier(await (await base()).from('reglages').select('cle, valeur')) as { cle: string; valeur: unknown }[]
   const m = Object.fromEntries(lignes.map(l => [l.cle, l.valeur]))
-  return { boutique: (m.boutique ?? null) as Partial<Boutique> | null, textes: (m.textes ?? null) as Partial<Textes> | null }
+  return { boutique: (m.boutique ?? null) as ReglagesBoutique | null, textes: (m.textes ?? null) as Partial<Textes> | null }
 }
 export async function enregistrerReglage(cle: 'boutique' | 'textes', valeur: object) {
   verifier(await (await base()).from('reglages').upsert({ cle, valeur, maj_le: new Date().toISOString() }))

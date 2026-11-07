@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 import { useAnimationsActives } from '@/state/animations'
 import { cn } from '@/lib/utils'
 
-export function ShinyText({ children, className, base = '#151514', reflet = '#C8A96E', duree = 3.2, auSurvol }: {
+export function ShinyText({ children, className, base = 'var(--encre-douce)', reflet = 'var(--beige)', duree = 3.2, auSurvol }: {
   children: ReactNode; className?: string; base?: string; reflet?: string; duree?: number; auSurvol?: boolean
 }) {
   const actives = useAnimationsActives()

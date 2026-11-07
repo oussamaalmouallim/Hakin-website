@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, DatabaseZap } from 'lucide-react'
-import { Bouton, useNotifier } from '@/design-system'
-import { produitsFichier } from '@/lib/catalogue'
-import { chargerDonnees } from '@/lib/donnees'
+import { ArrowRight } from 'lucide-react'
 import { formatDH } from '@/lib/format'
 import { libelleStatut } from '@/lib/admin'
-import { importerCatalogue, listerCommandes, listerProduits } from './api'
+import { listerCommandes, listerProduits } from './api'
+import { CarteImport } from './ImportCatalogue'
 import { CarteAdmin, Chargement, EnTeteAdmin, ErreurAdmin, Pastille, formatDate, useChargement } from './commun'
 
 function Chiffre({ valeur, libelle, vers, alerte }: { valeur: number; libelle: string; vers: string; alerte?: boolean }) {
@@ -21,25 +18,10 @@ function Chiffre({ valeur, libelle, vers, alerte }: { valeur: number; libelle: s
 }
 
 export function TableauDeBord() {
-  const notifier = useNotifier()
   const donnees = useChargement(async () => {
     const [produits, commandes] = await Promise.all([listerProduits(), listerCommandes()])
     return { produits, commandes }
   })
-  const [import_, setImport] = useState(false)
-  const fichier = produitsFichier()
-
-  const importer = async () => {
-    setImport(true)
-    try {
-      const n = await importerCatalogue(fichier)
-      await donnees.recharger()
-      await chargerDonnees()
-      notifier({ ton: 'succes', message: `${n} pièces importées dans la base.` })
-    } catch (e) { notifier({ ton: 'erreur', message: (e as Error).message }) }
-    finally { setImport(false) }
-  }
-
   return (
     <>
       <EnTeteAdmin surtitre="Administration" titre="Tableau de bord" texte="L'état de la boutique en un coup d'œil. Chaque chiffre mène à la liste correspondante." />
@@ -52,14 +34,7 @@ export function TableauDeBord() {
         const nouvelles = commandes.filter(c => c.statut === 'nouvelle').length
         return (
           <div className="flex flex-col gap-6">
-            {produits.length === 0 && (
-              <CarteAdmin titre="Catalogue pas encore en base" texte="Le site affiche aujourd'hui les pièces livrées avec son code. Importez-les une fois pour les gérer ici.">
-                <div className="flex flex-wrap items-center gap-4">
-                  <Bouton variante="accent" chargement={import_} onClick={importer} icone={<DatabaseZap className="h-4 w-4" aria-hidden />}>Importer les {fichier.length} pièces</Bouton>
-                  <p className="text-[13px] text-gris">Prix, tailles et photos sont repris tels quels. Rien n'est inventé : les prix vides restent « Prix sur demande ».</p>
-                </div>
-              </CarteAdmin>
-            )}
+            {produits.length === 0 && <CarteImport onImporte={donnees.recharger} />}
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               <Chiffre valeur={produits.length - masques} libelle="Pièces visibles" vers="/admin/produits" />
               <Chiffre valeur={sansPrix} libelle="Sans prix" vers="/admin/produits?filtre=sans-prix" alerte />

@@ -230,6 +230,16 @@ describe('administration : catalogue', () => {
     expect(await screen.findByText('2 pièces importées dans la base.')).toBeInTheDocument()
   })
 
+  it('« Produits et prix » sur base vide : import sur place, puis la liste affiche les pièces', async () => {
+    connecter()
+    const u = userEvent.setup()
+    monter('/admin/produits')
+    await u.click(await screen.findByRole('button', { name: 'Importer les 2 pièces' }))
+    expect(await screen.findByText('T-shirt Été')).toBeInTheDocument()
+    expect(screen.getByText('Polo Riviera')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Importer les/ })).not.toBeInTheDocument()
+  })
+
   it('fiche : ancien prix refusé s\'il est plus bas, puis prix, solde et tailles enregistrés', async () => {
     connecter(); remplirCatalogue()
     const u = userEvent.setup()

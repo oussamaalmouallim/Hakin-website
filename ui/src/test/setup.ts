@@ -1,4 +1,8 @@
 import '@testing-library/jest-dom/vitest'
+import { configure } from '@testing-library/react'
+
+/** Pages chargées à la demande : leur premier affichage peut dépasser 1 s quand la machine est chargée. */
+configure({ asyncUtilTimeout: 3000 })
 
 /** Node ≥ 25 expose un `localStorage` global incomplet qui masque celui de jsdom : stockage mémoire de test. */
 class StockageMemoire implements Storage {

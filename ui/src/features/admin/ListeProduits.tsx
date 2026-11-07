@@ -9,6 +9,7 @@ import { formatDH } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { changerPublication, listerProduits } from './api'
 import { Chargement, EnTeteAdmin, ErreurAdmin, Interrupteur, Pastille, useChargement } from './commun'
+import { CarteImport } from './ImportCatalogue'
 
 const nomType = (slug: string) => categories.find(c => c.slug === slug)?.nom ?? slug
 
@@ -63,10 +64,8 @@ export function ListeProduits() {
       {liste.donnees && (
         <>
           <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.14em] text-gris" aria-live="polite">{visibles.length} pièce{visibles.length > 1 ? 's' : ''}</p>
-          {visibles.length === 0 ? (
-            <p className="rounded-carte bg-fond-2 p-8 text-center text-[14px] text-gris">
-              {liste.donnees.length === 0 ? <>Aucune pièce en base. Importez le catalogue depuis le <Link to="/admin" className="text-encre underline underline-offset-4">tableau de bord</Link>.</> : 'Aucune pièce ne correspond.'}
-            </p>
+          {liste.donnees.length === 0 ? <CarteImport onImporte={liste.recharger} /> : visibles.length === 0 ? (
+            <p className="rounded-carte bg-fond-2 p-8 text-center text-[14px] text-gris">Aucune pièce ne correspond.</p>
           ) : (
             <ul className="flex flex-col gap-2">
               {visibles.map(p => (

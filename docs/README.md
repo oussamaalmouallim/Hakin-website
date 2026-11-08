@@ -2,7 +2,9 @@
 
 | Je veux… | Lire |
 |---|---|
-| Lancer le projet, les commandes, mettre en ligne | [`../README.md`](../README.md) |
+| Lancer le projet, les commandes | [`../README.md`](../README.md) |
+| Mettre en ligne, surveiller, sauvegarder, connaître les coûts | [`../GUIDE_HEBERGEMENT.md`](../GUIDE_HEBERGEMENT.md) |
+| Lancer la marque sur les réseaux (identité, prompts, stratégies, publicité) | [`../marketing/INDEX.md`](../marketing/INDEX.md) |
 | Comprendre comment le site est construit | [`architecture.md`](architecture.md) |
 | Savoir pourquoi un choix a été fait | [`decisions/`](decisions/) (ADR, ci-dessous) |
 | Voir où en est le projet, lot par lot | [`projet/plan.md`](projet/plan.md) (tableau « Avancement » en haut) |
@@ -22,6 +24,7 @@
 | [0005](decisions/0005-supabase-comptes-commandes.md) | Supabase pour comptes, panier et commandes | en vigueur |
 | [0006](decisions/0006-administration.md) | Administration `/admin` à trois champs, droits vérifiés par la base | en vigueur |
 | [0007](decisions/0007-architecture-et-deploiement.md) | Un seul site statique + Supabase, dépôt rangé, CI/CD | en vigueur |
+| [0008](decisions/0008-supervision-et-commerce.md) | Supervision sans serveur, rôles admin, limites, demandes WhatsApp, aperçus de partage | en vigueur |
 
 Nouvelle décision : copier [`decisions/0000-modele.md`](decisions/0000-modele.md) avec le numéro suivant.
 

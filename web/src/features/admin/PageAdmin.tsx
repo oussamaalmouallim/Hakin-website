@@ -1,13 +1,13 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react'
 import { Link, Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
-import { ArrowUpRight, ClipboardList, FileText, History, LayoutDashboard, LogOut, Settings, Shirt, ShieldAlert } from 'lucide-react'
+import { Activity, ArrowUpRight, MessageCircle, ClipboardList, FileText, History, LayoutDashboard, LogOut, Settings, Shirt, ShieldAlert } from 'lucide-react'
 import { Bouton, BoutonLien, Champ, Logotype, useNotifier } from '@/design-system'
 import { produitsFichier } from '@/lib/catalogue'
 import { chargerDonnees } from '@/lib/donnees'
 import { supabaseActif } from '@/lib/supabase'
 import { useSession } from '@/state/session'
 import { cn } from '@/lib/utils'
-import { ErreurBase, deverrouillerAdmin, importInitialNecessaire, importerCatalogue, sessionRefusee, statutAdmin, verrouillerAdmin, type StatutAdmin } from './api'
+import { ErreurBase, deverrouillerAdmin, importInitialNecessaire, importerCatalogue, sessionRefusee, statutAdmin, verrouillerAdmin, type RoleAdmin, type StatutAdmin } from './api'
 import { Chargement } from './commun'
 import { TableauDeBord } from './TableauDeBord'
 import { ListeProduits } from './ListeProduits'
@@ -16,15 +16,29 @@ import { Commandes } from './Commandes'
 import { Reglages } from './Reglages'
 import { Textes } from './Textes'
 import { Journal } from './Journal'
+import { Supervision } from './Supervision'
+import { Demandes } from './Demandes'
 
-export const ONGLETS_ADMIN = [
-  { vers: '/admin', libelle: 'Tableau de bord', Icone: LayoutDashboard, fin: true },
-  { vers: '/admin/produits', libelle: 'Produits et prix', Icone: Shirt },
-  { vers: '/admin/commandes', libelle: 'Commandes', Icone: ClipboardList },
-  { vers: '/admin/reglages', libelle: 'Réglages', Icone: Settings },
-  { vers: '/admin/textes', libelle: 'Textes', Icone: FileText },
-  { vers: '/admin/journal', libelle: 'Journal', Icone: History },
+/** Trois espaces séparés : la boutique (catalogue, réglages), les commandes et demandes, la supervision technique.
+ *  La supervision n'est montrée qu'au rôle « technique » ; la base refuse de toute façon ses données aux autres. */
+interface OngletAdmin { vers: string; libelle: string; Icone: typeof Shirt; fin?: boolean }
+export const GROUPES_ADMIN: { titre: string; role?: RoleAdmin; onglets: OngletAdmin[] }[] = [
+  { titre: 'Boutique', onglets: [
+    { vers: '/admin', libelle: 'Tableau de bord', Icone: LayoutDashboard, fin: true },
+    { vers: '/admin/produits', libelle: 'Produits et prix', Icone: Shirt },
+    { vers: '/admin/reglages', libelle: 'Réglages', Icone: Settings },
+    { vers: '/admin/textes', libelle: 'Textes', Icone: FileText },
+    { vers: '/admin/journal', libelle: 'Journal', Icone: History },
+  ] },
+  { titre: 'Ventes', onglets: [
+    { vers: '/admin/commandes', libelle: 'Commandes', Icone: ClipboardList },
+    { vers: '/admin/demandes', libelle: 'Demandes WhatsApp', Icone: MessageCircle },
+  ] },
+  { titre: 'Technique', role: 'technique', onglets: [
+    { vers: '/admin/supervision', libelle: 'Supervision', Icone: Activity },
+  ] },
 ]
+export const ONGLETS_ADMIN = GROUPES_ADMIN.flatMap(g => g.onglets)
 
 /** Écran plein de l'administration, hors de la coque du site : connexion, clé, accès refusé. */
 function Ecran({ titre, texte, icone = true, children }: { titre: string; texte?: ReactNode; icone?: boolean; children?: ReactNode }) {
@@ -120,7 +134,7 @@ export function PageAdmin() {
       <Bouton variante="contour" onClick={() => void quitterAdmin(deconnexion)}>Se déconnecter</Bouton>
     </Ecran>
   )
-  return <CoqueAdmin email={utilisateur.email} />
+  return <CoqueAdmin email={utilisateur.email} role={statut.role ?? 'commerce'} />
 }
 
 /** Connexion de l'administration : e-mail, mot de passe et clé de sécurité, sur un seul écran.
@@ -208,7 +222,7 @@ function useImportInitial() {
   return pret
 }
 
-function CoqueAdmin({ email }: { email: string }) {
+function CoqueAdmin({ email, role }: { email: string; role: RoleAdmin }) {
   const deconnexion = useSession(s => s.deconnexion)
   const naviguer = useNavigate()
   const catalogue = useImportInitial()
@@ -222,8 +236,13 @@ function CoqueAdmin({ email }: { email: string }) {
           <Link to="/admin" className="flex items-center"><Logotype clair sousTitre="Administration" /><span className="sr-only"> — tableau de bord</span></Link>
         </div>
         <nav aria-label="Administration" className="defilement-masque flex gap-1 overflow-x-auto overscroll-x-contain px-3 pb-4 lg:flex-1 lg:flex-col lg:overflow-visible lg:px-4">
-          {ONGLETS_ADMIN.map(({ vers, libelle, Icone, fin }) => (
-            <NavLink key={vers} to={vers} end={fin} className={lien}><Icone className="h-4 w-4" strokeWidth={1.5} aria-hidden />{libelle}</NavLink>
+          {GROUPES_ADMIN.filter(g => !g.role || g.role === role).map(g => (
+            <div key={g.titre} className="contents lg:block">
+              <p className="hidden px-4 pb-1 pt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-fond/70 lg:block">{g.titre}</p>
+              {g.onglets.map(({ vers, libelle, Icone, fin }) => (
+                <NavLink key={vers} to={vers} end={fin} className={lien}><Icone className="h-4 w-4" strokeWidth={1.5} aria-hidden />{libelle}</NavLink>
+              ))}
+            </div>
           ))}
         </nav>
         <div className="hidden border-t border-fond/10 px-6 py-5 lg:block">
@@ -250,9 +269,11 @@ function CoqueAdmin({ email }: { email: string }) {
           <Route path="produits/nouveau" element={<EditionProduit />} />
           <Route path="produits/:slug" element={<EditionProduit />} />
           <Route path="commandes" element={<Commandes />} />
+          <Route path="demandes" element={<Demandes />} />
           <Route path="reglages" element={<Reglages />} />
           <Route path="textes" element={<Textes />} />
           <Route path="journal" element={<Journal />} />
+          <Route path="supervision" element={role === 'technique' ? <Supervision /> : <Navigate to="/admin" replace />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>}
       </main>

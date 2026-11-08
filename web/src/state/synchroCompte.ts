@@ -1,4 +1,5 @@
 import { obtenirSupabase } from '@/lib/supabase'
+import { signalerErreur as signalerSupervision } from '@/lib/supervision'
 import { ecrireAdresses, ecrireFavoris, ecrirePanier, ecrireProfil, lireAdresses, lireCommandes, lireFavoris, lirePanier, lireProfil } from '@/lib/compteDistant'
 import { trouverProduit } from '@/lib/catalogue'
 import { fusionnerLignes, usePanier } from '@/state/panier'
@@ -22,6 +23,7 @@ let favorisEnBase: string[] = []
 
 const signalerErreur = (e: unknown) => {
   console.warn('[compte] synchronisation :', e)
+  signalerSupervision('api', `Synchronisation du compte : ${String((e as Error)?.message ?? e)}`, { gravite: 'avertissement' })
   useSession.setState({ erreurSynchro: 'Enregistrement dans votre compte impossible pour le moment. Vos modifications restent sur cet appareil.' })
 }
 
@@ -38,9 +40,10 @@ async function pousser(quoi: Quoi) {
     }
     if (quoi === 'profil') await ecrireProfil(sb, id, useCompte.getState().profil)
     if (quoi === 'adresses') {
+      // Les retraits ne sont oubliés qu'une fois écrits : en cas d'échec, ils repartent au prochain envoi.
       const retirees = [...adressesRetirees]
-      adressesRetirees = new Set()
       await ecrireAdresses(sb, id, useCompte.getState().adresses, retirees)
+      retirees.forEach(r => adressesRetirees.delete(r))
     }
     useSession.setState({ erreurSynchro: null })
   } catch (e) { signalerErreur(e) }

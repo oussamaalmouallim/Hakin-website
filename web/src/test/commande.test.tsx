@@ -15,6 +15,8 @@ const requete: Record<string, unknown> = {}
 for (const m of ['select', 'eq', 'in', 'order', 'maybeSingle', 'update', 'upsert', 'delete']) requete[m] = () => requete
 requete.then = (ok: (v: unknown) => unknown) => Promise.resolve({ data: null, error: null }).then(ok)
 const auth = { getSession: async () => ({ data: { session: null } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }) }
+// Supervision (pages vues, erreurs) neutralisée : seuls les appels de commande sont observés ici.
+vi.mock('@/lib/supervision', async origine => ({ ...(await origine<object>()), compterVisite: () => {}, signalerErreur: () => {} }))
 vi.mock('@/lib/supabase', () => ({ supabaseActif: true, memoriserSession: () => {}, obtenirSupabase: async () => ({ auth, rpc, from: () => requete }) }))
 
 window.scrollTo = vi.fn() as never

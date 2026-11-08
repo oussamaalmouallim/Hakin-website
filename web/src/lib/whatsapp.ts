@@ -26,9 +26,20 @@ export function messageCommande(reference: string, lignes: LigneMessage[], clien
   ].join('\n')
 }
 
-export function messageProduit(nom: string, opts: { coloris?: string; taille?: string } = {}) {
-  const details = [opts.coloris && `coloris ${opts.coloris}`, opts.taille && `taille ${opts.taille}`].filter(Boolean).join(', ')
-  return `Bonjour H MODE, je suis intéressé(e) par « ${nom} »${details ? ` (${details})` : ''}. Pouvez-vous me confirmer le prix et la disponibilité ?`
+/** Message de demande depuis une fiche : pièce, coloris et taille choisis, lien de la fiche, question claire.
+ *  Le prix n'est demandé que s'il n'est pas affiché. */
+export function messageProduit(p: { nom: string; marque?: string; prixConnu?: boolean }, opts: { coloris?: string; taille?: string; lien?: string; motif?: 'renseignement' | 'commande' | 'alerte_stock' } = {}) {
+  const nom = p.marque ? `${p.marque} — ${p.nom}` : p.nom
+  const question = opts.motif === 'commande' ? 'Je souhaite la commander. Est-elle disponible ?'
+    : opts.motif === 'alerte_stock' ? 'Elle est indiquée épuisée : pouvez-vous me prévenir si elle revient ?'
+    : p.prixConnu ? 'Est-elle disponible ?' : 'Est-elle disponible, et à quel prix ?'
+  return [
+    `Bonjour H MODE, je souhaite avoir des informations sur ce produit : ${nom}.`,
+    ...(opts.coloris ? [`Couleur : ${opts.coloris}.`] : []),
+    ...(opts.taille ? [`Taille : ${opts.taille}.`] : []),
+    ...(opts.lien ? [`Lien : ${opts.lien}`] : []),
+    question,
+  ].join('\n')
 }
 
 export function messageContact(c: { nom: string; telephone: string; sujet: string; message: string }) {

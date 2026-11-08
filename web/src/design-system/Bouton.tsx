@@ -49,9 +49,9 @@ export function BoutonLien({ className, variante, taille, plein_largeur, icone, 
 }
 
 /** Lien externe (WhatsApp, réseaux) : nouvel onglet sécurisé. */
-export function BoutonExterne({ className, variante, taille, plein_largeur, icone, children, href }: Variantes & { href: string; icone?: ReactNode; children: ReactNode; className?: string }) {
+export function BoutonExterne({ className, variante, taille, plein_largeur, icone, children, href, onClick }: Variantes & { href: string; icone?: ReactNode; children: ReactNode; className?: string; onClick?: () => void }) {
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={cn(styleBouton({ variante, taille, plein_largeur }), className)}>
+    <a href={href} target="_blank" rel="noopener noreferrer" onClick={onClick} className={cn(styleBouton({ variante, taille, plein_largeur }), className)}>
       {icone}{children}
     </a>
   )

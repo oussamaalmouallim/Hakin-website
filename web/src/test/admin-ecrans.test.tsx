@@ -20,6 +20,7 @@ const appels: { rpc: [string, unknown][]; ecritures: [string, string, unknown][]
 let admin = true
 let deverrouille = true
 let cleDefinie = true
+let role: 'technique' | 'commerce' = 'technique'
 let erreurStatut: { code: string; message: string } | null = null
 const CLE = '482915603718'
 const COMPTES: Record<string, { id: string; mdp: string }> = { 'admin@hmode.test': { id: 'u-admin', mdp: 'Admin-2026' }, 'client@hmode.test': { id: 'u-client', mdp: 'Client-2026' } }
@@ -72,7 +73,7 @@ const faux = {
     const uid = useSession.getState().utilisateur?.id
     const estCompteAdmin = admin && uid === 'u-admin'
     if (nom === 'admin_statut' && erreurStatut) return { data: null, error: erreurStatut }
-    if (nom === 'admin_statut') return { data: { admin: estCompteAdmin, cle: cleDefinie, deverrouille: estCompteAdmin && deverrouille }, error: null }
+    if (nom === 'admin_statut') return { data: { admin: estCompteAdmin, cle: cleDefinie, deverrouille: estCompteAdmin && deverrouille, role: estCompteAdmin ? role : null }, error: null }
     if (nom === 'deverrouiller_admin') {
       if (!estCompteAdmin) return { data: null, error: { message: 'Réservé à l\'administration.', code: '42501' } }
       if ((args as { cle: string }).cle !== CLE) return { data: { ok: false, message: 'Clé incorrecte (4 essais restants).' }, error: null }
@@ -124,7 +125,7 @@ const commande = (reference: string, statut = 'nouvelle'): Ligne => ({
 beforeEach(() => {
   for (const k of Object.keys(base)) delete base[k]
   appels.rpc.length = 0; appels.ecritures.length = 0
-  admin = true; deverrouille = true; cleDefinie = true; erreurStatut = null
+  admin = true; deverrouille = true; cleDefinie = true; erreurStatut = null; role = 'technique'
   sessionStorage.setItem('hmode-sans-intro', '1')
 })
 afterEach(() => useSession.setState({ utilisateur: null, pret: false }))
@@ -415,5 +416,39 @@ describe('administration : commandes, réglages, textes, journal', () => {
     await u.click(screen.getByRole('button', { name: 'Commandes' }))
     expect(screen.queryByText('prix : vide → 520')).not.toBeInTheDocument()
     expect(screen.getByText('Nouvelle → Livrée')).toBeInTheDocument()
+  })
+})
+
+describe('administration : espaces séparés selon le rôle', () => {
+  it('rôle technique : la supervision est proposée ; rôle commerce : ni lien, ni écran', async () => {
+    remplirCatalogue(); connecter()
+    const { unmount } = monter('/admin')
+    expect(await screen.findByRole('link', { name: /Supervision/ })).toBeInTheDocument()
+    unmount()
+    role = 'commerce'
+    monter('/admin/supervision')
+    expect(await screen.findByRole('link', { name: /Commandes/ })).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /Supervision/ })).not.toBeInTheDocument()
+    expect(appels.rpc.map(r => r[0])).not.toContain('statistiques_supervision')
+  })
+})
+
+describe('administration : demandes WhatsApp, distinctes des commandes', () => {
+  it('liste les demandes à traiter et enregistre le suivi', async () => {
+    remplirCatalogue(); connecter()
+    base.demandes_whatsapp = [
+      { id: 1, cree_le: '2026-11-08T10:00:00Z', motif: 'renseignement', slug: 'a', nom_produit: 'T-shirt Été', coloris: 'noir', taille: 'M', prix_dh: null, statut: 'a_traiter', note: '', traitee_le: null },
+      { id: 2, cree_le: '2026-11-08T09:00:00Z', motif: 'commande', slug: 'a', nom_produit: 'T-shirt Été', coloris: 'noir', taille: 'L', prix_dh: 500, statut: 'traitee', note: 'vendu', traitee_le: '2026-11-08T09:30:00Z' },
+    ] as unknown as Ligne[]
+    const u = userEvent.setup()
+    monter('/admin/demandes')
+    expect(await screen.findByRole('heading', { name: 'Demandes WhatsApp' })).toBeInTheDocument()
+    expect(screen.getByText(/ne sont pas des commandes/)).toBeInTheDocument()
+    expect(screen.getByText(/Prix et disponibilité · couleur noir · taille M/)).toBeInTheDocument()
+    expect(screen.queryByText(/taille L/)).not.toBeInTheDocument() // filtre « À traiter » par défaut
+    await u.type(screen.getByLabelText('Note de suivi'), 'répondu, attend sa taille')
+    await u.click(within(screen.getByRole('group', { name: 'Suivi de la demande' })).getByRole('button', { name: 'Traitée' }))
+    expect(await screen.findByText(/Demande marquée « Traitée »/)).toBeInTheDocument()
+    expect(appels.ecritures.some(e => JSON.stringify(e).includes('demandes_whatsapp') && JSON.stringify(e).includes('traitee'))).toBe(true)
   })
 })

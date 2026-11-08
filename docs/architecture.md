@@ -1,6 +1,7 @@
 # Architecture de H MODE
 
-Référence technique du projet, à jour au 08/11/2026 (lot 22).
+Référence technique du projet, à jour au 08/11/2026 (lots 22 à 31). Mise en ligne et exploitation pas à pas :
+[`../GUIDE_HEBERGEMENT.md`](../GUIDE_HEBERGEMENT.md).
 Les choix sont expliqués dans les ADR de [`decisions/`](decisions/) ; la démarche, lot par lot, dans [`projet/plan.md`](projet/plan.md).
 
 ## 1. En une phrase
@@ -21,7 +22,9 @@ directement à **Supabase** (base, comptes, photos). Aucun serveur à nous. Les 
    │ Supabase (hébergé)           │      │ WhatsApp de la   │
    │ Postgres + RLS · Auth ·      │      │ boutique         │
    │ Storage (photos) · journal   │      └──────────────────┘
-   └──────────────────────────────┘
+   └──────────────▲───────────────┘
+                  │ toutes les 30 min (jeton)
+   GitHub Actions « Surveillance » (robot) ──► build hook Netlify si le catalogue a changé
 ```
 
 Pourquoi : [ADR 0007](decisions/0007-architecture-et-deploiement.md). Pas de microservice, pas d'hébergement à part
@@ -46,12 +49,14 @@ Hakin-website/
 │   ├── e2e/                 Playwright : site (sans Supabase) et admin/ (Supabase local)
 │   ├── medias/              photos d'origine → `npm run images` → public/images/ (WebP 480/960)
 │   ├── public/              _redirects, robots.txt, icônes, images générées
-│   ├── scripts/             images, logo, sitemap, admin:sql, contrôles Supabase, Lighthouse
+│   ├── scripts/             images, logo, sitemap, aperçus de partage, admin:sql, sante:sql, robot, contrôles Supabase, Lighthouse
 │   └── design.md · palette.md · animation.md · .cloneme/   charte CloneMe (pilote le code)
 ├── supabase/                migrations/ (schéma daté, rejouable), seed.sql, config.toml
 ├── infra/                   docker/ (Dockerfile, nginx.conf, securite.conf) · docker-compose.yml
 ├── .github/workflows/       ci · supabase · image · base
 ├── docs/                    architecture (ce fichier), decisions/, design/, projet/
+├── marketing/               identité visuelle, prompts, Facebook, Instagram, TikTok, Meta Ads
+├── GUIDE_HEBERGEMENT.md     mise en ligne, coûts, supervision, sauvegardes, checklists
 ├── archive/                 ancien site statique, legacy, ancien serveur (lecture seule, rien supprimé)
 ├── netlify.toml             hébergement Netlify
 └── start.sh · stop.sh · deploy.sh
@@ -91,6 +96,34 @@ chacun ne voit que les siens (RLS). Déconnexion = appareil vidé.
 
 Détail : [ADR 0006](decisions/0006-administration.md).
 
+L'admin a trois espaces : **Boutique** (catalogue, réglages, textes, journal), **Ventes** (commandes, demandes WhatsApp)
+et **Technique** (supervision). Deux rôles en base (`admins.role`) : `technique` voit tout, `commerce` n'a pas la
+supervision ; `est_admin_technique()` le vérifie côté base.
+
+### Demande WhatsApp depuis une fiche
+Chaque bouton WhatsApp d'une fiche ouvre un message prêt (pièce, couleur, taille, lien, question) et appelle
+`noter_demande_whatsapp` (nom et prix relus en base, limite par visiteur). L'admin les suit dans **Ventes → Demandes
+WhatsApp** (à traiter, traitée, sans suite) : ce ne sont jamais des commandes. Détail : [ADR 0008](decisions/0008-supervision-et-commerce.md).
+
+### Supervision (sans serveur à nous)
+- **Erreurs du site** : `lib/supervision.ts` capte erreurs de script, promesses rejetées, ressources introuvables et
+  erreurs d'appel à la base ; `components/GardeErreur.tsx` attrape les erreurs d'affichage (plus d'écran blanc).
+  Messages nettoyés (e-mails, numéros, jetons) dans le navigateur puis en base (`nettoyer_texte`), envoyés à
+  `signaler_erreur` (limité).
+- **Pages vues** : `compterVisite` à chaque changement d'adresse (hors `/admin`), LCP joint à la première ; visiteur =
+  empreinte hachée de l'adresse réseau (sel secret en base), jamais l'adresse.
+- **Santé** : le robot `web/scripts/robot-sante.mjs` (workflow `sante.yml`, toutes les 30 min) contrôle site, 404,
+  `version.json`, API, Auth, photos et WhatsApp, et écrit par `enregistrer_controles` (jeton haché). L'admin peut aussi
+  contrôler depuis son navigateur (`noter_controles`).
+- **Version** : `vite.config.ts` grave la version (commit) dans le JavaScript et dans `/version.json`.
+- Écran : `features/admin/Supervision.tsx` ; chiffres agrégés par `statistiques_supervision()`.
+
+### Aperçus de partage (Open Graph)
+`web/scripts/pages-partage.mjs`, après `vite build` : pour chaque pièce publiée (lue en base, sinon dans les fichiers),
+une page `dist/produit/<slug>/index.html` avec ses balises `og:` et une image JPEG 1200 × 630 de moins de 300 Ko
+(`dist/partage/`). Netlify et nginx servent cette page avant `index.html`. Le robot relance un build (build hook) quand
+le catalogue a changé, au plus toutes les 12 h (`republication_necessaire`).
+
 ## 4. Où est quoi dans le code
 
 | Besoin | Fichier |
@@ -103,6 +136,10 @@ Détail : [ADR 0006](decisions/0006-administration.md).
 | Filtres, recherche, prix | `lib/filtres.ts`, `lib/recherche.ts`, `lib/format.ts` (`formatDH`) |
 | Livraison | `lib/livraison.ts` |
 | Administration | `features/admin/` (écrans) · `features/admin/api.ts` (appels) · `lib/admin.ts` (validation) |
+| Supervision | `lib/supervision.ts`, `components/GardeErreur.tsx`, `features/admin/Supervision.tsx`, `scripts/robot-sante.mjs` |
+| Demandes WhatsApp | `lib/whatsapp.ts` (`messageProduit`), `lib/demandes.ts`, `features/admin/Demandes.tsx` |
+| Aperçus de partage | `web/index.html` (bloc `partage:debut/fin`), `scripts/pages-partage.mjs` |
+| Longueurs des champs (= contraintes de la base) | `lib/longueurs.ts` |
 | Charte | `web/palette.md` → `src/styles/tokens.css` + `tailwind.config.js` ; composants : `@/design-system` |
 | Animations | `web/animation.md` → `lib/animations.ts` ; coupées par `useAnimationsActives()` |
 
@@ -116,10 +153,15 @@ Détail : [ADR 0006](decisions/0006-administration.md).
 | `reglages` | boutique, livraison, textes | lecture publique ; écriture admin |
 | `admins`, `admin_cle`, `admin_sessions`, `admin_essais` | droits admin, empreinte de la clé, sessions déverrouillées, essais | fonctions de la base seulement |
 | `journal_admin` | qui a changé quoi, avant / après, connexions | lecture admin ; écrit par déclencheurs |
+| `demandes_whatsapp` | clics WhatsApp des fiches (pièce, couleur, taille, suivi) | écrites par `noter_demande_whatsapp` ; lues et suivies par l'admin |
+| `limites`, `limites_evenements`, `sel_empreinte` | règles de limitation, passages et blocages, sel de l'empreinte | fonctions de la base ; lecture technique |
+| `controles_sante`, `robot_jeton`, `erreurs_site`, `visites`, `sauvegardes`, `republications` | supervision | écrites par des fonctions limitées ; lues par le rôle technique |
 | Storage `produits` | photos WebP | lecture publique ; écriture admin |
 
-Fonctions : `passer_commande`, `changer_statut_commande`, `supprimer_commande`, `est_admin`, `admin_statut`,
-`deverrouiller_admin`, `verrouiller_admin`, `session_courante`, `journaliser`, `creer_profil`.
+Fonctions : `passer_commande` (v3), `changer_statut_commande`, `supprimer_commande`, `est_admin`, `est_admin_technique`,
+`admin_statut`, `deverrouiller_admin`, `verrouiller_admin`, `session_courante`, `journaliser`, `creer_profil`,
+`passer_limite`, `empreinte_visiteur`, `nettoyer_texte`, `signaler_erreur`, `compter_visite`, `noter_demande_whatsapp`,
+`enregistrer_controles`, `noter_controles`, `statistiques_supervision`, `republication_necessaire`.
 
 Migrations dans `supabase/migrations/`, toutes rejouables. Nouvelle évolution :
 `npx supabase migration new <nom>`, test en local (`npx supabase migration up --local`), puis en ligne par le
@@ -130,7 +172,9 @@ workflow `base.yml`. Voir [`supabase/README.md`](../supabase/README.md).
 - **Navigateur** : seulement l'URL et la clé **publique** Supabase. Aucune variable `VITE_` ne contient un identifiant
   ou une clé (`admin:sql` refuse de tourner sinon). Jamais de clé `service_role`.
 - **Droits** : tout passe par la RLS et `est_admin()`. Masquer un bouton n'est jamais une protection.
-- **Prix** : relus en base au moment de la commande.
+- **Prix** : relus en base au moment de la commande, avec la pièce, le coloris, la taille et la ville livrée.
+- **Limitation des requêtes** : toute écriture publique (commande, erreur, visite, demande, robot) passe par
+  `passer_limite` : maximum par visiteur (empreinte de l'adresse, falsifiable) **et** plafond global.
 - **Admin** : mot de passe et clé hachés (bcrypt), session déverrouillée liée à la session Auth, blocage après 5 erreurs, journal.
 - **Hébergement** (identique Netlify et nginx) : CSP stricte (pas de script en ligne, seul domaine externe
   `*.supabase.co`), `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS sur Netlify,
@@ -155,6 +199,7 @@ Les deux renvoient un **vrai 404** sur une adresse inconnue et mettent en cache 
 | `supabase.yml` | push sur `main`, à la demande | Supabase local dans la CI : migrations sur base vide, vrais comptes, RLS, Playwright admin |
 | `image.yml` | push sur `main`, tag `v*` | image publiée sur `ghcr.io/<compte>/hmode-web` |
 | `base.yml` | à la main seulement | migrations sur la base en ligne (essai à blanc par défaut, environnement « production ») |
+| `sante.yml` | toutes les 30 min, dès que `SITE_URL` existe | robot de surveillance ; échec = e-mail de GitHub |
 
 Le compte admin n'est jamais créé par la CI.
 
@@ -165,7 +210,7 @@ Le compte admin n'est jamais créé par la CI.
 | Types | `npm run lint` | TypeScript strict |
 | Unitaires et intégration | `npm test` | logique, écrans, fausse base à RLS, admin, routes ↔ hébergement (jamais le vrai Supabase) |
 | Navigateur, site | `npm run test:e2e` | parcours d'achat, clavier, axe WCAG 2.2 AA, mobile (serveur de test 6014, sans Supabase) |
-| Vrais comptes | `npm run test:supabase` | inscription, RLS entre comptes, commandes, admin et clé (Supabase **local**) |
+| Vrais comptes | `npm run test:supabase` | inscription, RLS entre comptes, commandes (limites, catalogue, ville), admin et clé, rôles, supervision, robot, demandes (Supabase **local**) |
 | Navigateur, admin | `npm run test:e2e:admin` | connexion à trois champs, écrans, axe (Supabase local, compte jetable) |
 | Qualité | `npm run qualite:lighthouse` | performance, accessibilité, SEO (build de prod) |
 | Charte | `node ~/.claude/plugins/cache/stackllm-skills/cloneme/*/scripts/verifier-synchro.mjs web` | design.md, palette.md, animation.md ↔ code |

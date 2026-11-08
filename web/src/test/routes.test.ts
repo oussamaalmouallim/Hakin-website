@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest'
 /** Les routes de l'application doivent être connues de l'hébergement (Netlify : public/_redirects ; Docker : nginx.conf),
  *  sinon la page répond 404 alors qu'elle existe. Ce test casse dès qu'une route est ajoutée d'un seul côté. */
 const app = readFileSync('src/App.tsx', 'utf8')
-const premiers = [...new Set([...app.matchAll(/<Route path="\/([^/"*:]+)/g)].map(m => m[1]))].sort()
+// Les routes réservées au développement ({import.meta.env.DEV && <Route …>}) ne sont pas servies en ligne.
+const premiers = [...new Set([...app.matchAll(/(DEV && )?<Route path="\/([^/"*:]+)/g)].filter(m => !m[1]).map(m => m[2]))].sort()
 const redirects = readFileSync('public/_redirects', 'utf8')
 const nginx = readFileSync('../infra/docker/nginx.conf', 'utf8')
 const routesNginx = (nginx.match(/location ~ \^\/\(([^)]+)\)/)?.[1] ?? '').split('|')
@@ -17,6 +18,11 @@ describe('routes : application ↔ hébergement', () => {
   it('chaque route de l\'application est servie en 200 par nginx (Docker)', () => {
     for (const r of premiers.filter(r => r !== 'admin')) expect(routesNginx, `/${r} absente de nginx.conf`).toContain(r)
     expect(nginx).toMatch(/location \^~ \/admin/)
+  })
+  it('outil /design-system : jamais servi en ligne', () => {
+    expect(app).toMatch(/import\.meta\.env\.DEV && <Route path="\/design-system"/)
+    expect(redirects).not.toMatch(/design-system/)
+    expect(nginx).not.toMatch(/design-system/)
   })
   it('adresse inconnue : vrai statut 404, en dernier', () => {
     expect(redirects.trim().split('\n').at(-1)).toMatch(/^\/\*\s+\/index\.html\s+404$/)

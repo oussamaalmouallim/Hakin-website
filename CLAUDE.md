@@ -6,6 +6,7 @@
 - Un seul serveur : `./start.sh` → http://localhost:6013 (catalogue réel, Supabase de `web/.env`) · Arrêt : `./stop.sh`. Ne jamais lancer d'autre serveur de dev (plus de 6011 / 6012).
 - Dans `web/` : Tests : `npm test` · Types : `npm run lint` · Build : `npm run build` · Images WebP : `npm run images` · Logo (profils IG/FB, favicon) : `npm run logo`
 - Test d'un seul fichier : `cd web && npx vitest run src/test/logique.test.ts`
+- Robot de surveillance : `npm run sante:sql` (jeton → SQL) · `npm run robot:sante` (à la main, variables `SITE_URL`, `VITE_SUPABASE_*`, `SANTE_JETON`). Admin sur Supabase local sans toucher au 6013 : config `hmode-test-local` de `.claude/launch.json` (port 6014), clé posée par psql puis retirée.
 - Navigateur réel : `cd web && npm run test:e2e` (Playwright, serveur de test 6014 sans Supabase, lancé et arrêté seul) · Lighthouse : `npm run qualite:lighthouse` (build de prod temporaire) → rapports dans `web/rapports/` (non versionné)
 - Production locale (Docker, nginx sans root) : `./deploy.sh` → http://localhost:6111 (santé `/sante`) · arrêt : `docker compose -f infra/docker-compose.yml down`
 - Contrôle CloneMe : `node ~/.claude/plugins/cache/stackllm-skills/cloneme/*/scripts/verifier-synchro.mjs web`
@@ -21,6 +22,9 @@
 - Administration `/admin` (ADR 0006) : connexion propre à trois champs (e-mail, mot de passe, clé de sécurité au format libre), pas celle des clients ; compte admin créé par `npm run admin:sql` depuis `ADMIN_EMAIL`/`ADMIN_MOT_DE_PASSE`/`ADMIN_CLE` (sans `VITE_`) de `web/.env`, ligne de `admins`, session déverrouillée 12 h par la clé ; droits vérifiés par la base (`est_admin()`), jamais par le navigateur. Jamais d'identifiant ni de clé dans une variable `VITE_`. Catalogue et réglages lus en base par `lib/donnees.ts`, appliqués SUR PLACE dans `produits`/`boutique`/`textes` de `lib/catalogue.ts` (repli : fichiers de `src/data/`). Commande = enregistrée par `passer_commande` puis message WhatsApp ; paiement à la livraison uniquement, jamais en ligne. Sans `.env`, retour au parcours WhatsApp seul (ADR 0001).
 - Clés Supabase dans `web/.env` (non versionné) : URL + clé publique seulement. Contrôle sans écriture : `cd web && node --env-file=.env scripts/verifier-supabase.mjs`.
 - Contacts et réseaux : source unique `web/src/data/boutique.json`.
+- Toute écriture publique en base (commande, erreur, visite, demande) passe par `passer_limite` ; jamais d'insert direct pour `anon`. Longueurs des champs : `lib/longueurs.ts` = contraintes de la base.
+- Admin : rôles `technique` / `commerce` (`est_admin_technique()`) ; supervision réservée au technique. Demande WhatsApp ≠ commande.
+- Mise en ligne et exploitation : `GUIDE_HEBERGEMENT.md` ; marketing : `marketing/INDEX.md`.
 - Vérifier une page dans le navigateur par le DOM et les styles calculés, pas seulement par capture d'écran.
 - Fin de lot : mettre à jour le tableau « Avancement » en haut de `docs/projet/plan.md`.
 - Nouvelle route dans `App.tsx` : l'ajouter aussi à `web/public/_redirects` et `infra/docker/nginx.conf` (sinon 404 ; `routes.test.ts` le vérifie).
@@ -38,6 +42,8 @@
 - Tests : jamais le vrai Supabase (`env` vidé dans `vite.config.ts`) ; client simulé dans `src/test/*` (fausse base à RLS dans `synchro.test.ts`).
 - Aucune donnée fictive dans le site (mode démo supprimé le 04/11). Prix d'essai seulement pour Playwright : `web/e2e/donnees/prix-test.json`, servis par `vite --mode e2e`. Le 6013 écrit dans la vraie base : n'y passer que de vraies commandes.
 - Nouvelles données de la base : les pages du catalogue se remontent (`key` = version), les pages à formulaire (commande, connexion, compte, contact) non, pour ne pas effacer une saisie. Écran qui charge puis laisse saisir : ignorer une réponse en retard (jeton, voir `useChargement`).
+- `index.html` : ne pas toucher au bloc `<!-- partage:debut -->…<!-- partage:fin -->` (réécrit au build par `scripts/pages-partage.mjs`).
+- Tests unitaires qui comptent les appels `rpc` : neutraliser `@/lib/supervision` (pages vues, erreurs) comme dans `commande.test.tsx`.
 - `/admin` est rendu hors de `motion.main` (barres fixées en bas) et n'est pas préchargé pour les visiteurs.
 - L'ancien site est dans `archive/ancien-site/` jusqu'à la mise en ligne : ne pas le supprimer.
 - CSP stricte (Netlify et nginx) : pas de script en ligne, pas de domaine externe hors `*.supabase.co`. Un nouveau service externe = l'ajouter aux deux politiques (`netlify.toml`, `infra/docker/securite.conf`).

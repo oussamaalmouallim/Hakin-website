@@ -13,6 +13,10 @@ import './styles/index.css'
 import { FournisseurAnimations } from './state/animations'
 import { FournisseurNotifications } from './design-system'
 import App from './App'
+import { GardeErreur } from './components/GardeErreur'
+import { installerSurveillance } from './lib/supervision'
+
+installerSurveillance()
 
 
 createRoot(document.getElementById('racine')!).render(
@@ -20,7 +24,9 @@ createRoot(document.getElementById('racine')!).render(
     <BrowserRouter>
       <FournisseurAnimations>
         <FournisseurNotifications>
-          <App />
+          <GardeErreur>
+            <App />
+          </GardeErreur>
         </FournisseurNotifications>
       </FournisseurAnimations>
     </BrowserRouter>

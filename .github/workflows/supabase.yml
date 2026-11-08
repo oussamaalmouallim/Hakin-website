@@ -30,7 +30,7 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - uses: supabase/setup-cli@v1
         with:
-          version: 2.122.1
+          version: 3.0.0 # même version que celle des essais en local (npx supabase --version)
       - name: Supabase local (migrations appliquées)
         run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,realtime,postgres-meta,supavisor
       - name: Variables du site de test (base locale, clé publique locale)
@@ -49,5 +49,13 @@ jobs:
         run: npx playwright install --with-deps chromium
       - working-directory: web
         run: npm run test:e2e:admin
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-admin
+          path: |
+            web/rapports/playwright-admin
+            web/rapports/playwright-admin-resultats
+          retention-days: 7
       - if: always()
         run: supabase stop --no-backup

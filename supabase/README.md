@@ -5,6 +5,10 @@
   - `20261105120000_favoris.sql` : favoris (déjà dans le schéma ; gardé pour les bases créées avant).
   - `20261107120000_administration.sql` : administration (catalogue, réglages, journal, photos, `passer_commande` v2).
   - `20261107180000_cle_admin.sql` : clé de sécurité de l'administration.
+  - `20261108120000_limites_commandes.sql` : limites par visiteur et plafond global (`passer_limite`), commande v3 (pièce, coloris, taille, ville vérifiés en base).
+  - `20261108130000_supervision.sql` : rôles `technique` / `commerce`, contrôles de santé (robot à jeton), erreurs du site, pages vues, sauvegardes notées, `statistiques_supervision()`.
+  - `20261108140000_demandes_whatsapp.sql` : demandes WhatsApp notées au clic, suivies dans l'admin (jamais des commandes).
+  - `20261108150000_republication.sql` : le robot relance un build Netlify quand le catalogue a changé (au plus toutes les 12 h).
 - `seed.sql` : base locale seulement, sans données.
 - `config.toml` : Supabase local (`npx supabase start`).
 
@@ -12,3 +16,6 @@ Nouvelle évolution : `npx supabase migration new <nom>` puis écrire le SQL. En
 (`.github/workflows/base.yml`, `supabase db push`) — ou à la main dans le SQL Editor.
 
 Le compte admin ne passe jamais par une migration : `cd web && npm run admin:sql` (valeurs de `web/.env`).
+Le jeton du robot non plus : `cd web && npm run sante:sql`.
+
+Mise en ligne pas à pas : [`../GUIDE_HEBERGEMENT.md`](../GUIDE_HEBERGEMENT.md) (section C.2).

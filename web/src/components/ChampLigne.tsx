@@ -55,12 +55,13 @@ export function SelectionLigne({ label, erreur, children, ...p }: { label: strin
 }
 
 /** Zone de texte au même style (instructions de livraison). */
-export function ZoneLigne({ label, facultatif, ...p }: { label: string; facultatif?: boolean } & TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export function ZoneLigne({ label, erreur, facultatif, ...p }: { label: string; erreur?: string; facultatif?: boolean } & TextareaHTMLAttributes<HTMLTextAreaElement>) {
   const id = useId()
   return (
     <div>
       <Libelle id={id} label={label} facultatif={facultatif} />
-      <textarea id={id} {...p} className={cn(classeChamp(), 'resize-y')} />
+      <textarea id={id} {...p} aria-invalid={erreur ? true : undefined} aria-describedby={erreur ? `${id}-e` : undefined} className={cn(classeChamp(erreur), 'resize-y')} />
+      <Erreur id={id} erreur={erreur} />
     </div>
   )
 }

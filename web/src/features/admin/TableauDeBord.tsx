@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { formatDH } from '@/lib/format'
 import { libelleStatut } from '@/lib/admin'
-import { listerCommandes, listerProduits } from './api'
+import { listerCommandes, listerDemandes, listerProduits } from './api'
 import { CarteImport } from './ImportCatalogue'
 import { CarteAdmin, Chargement, EnTeteAdmin, ErreurAdmin, Pastille, formatDate, useChargement } from './commun'
 
@@ -19,8 +19,8 @@ function Chiffre({ valeur, libelle, vers, alerte }: { valeur: number; libelle: s
 
 export function TableauDeBord() {
   const donnees = useChargement(async () => {
-    const [produits, commandes] = await Promise.all([listerProduits(), listerCommandes()])
-    return { produits, commandes }
+    const [produits, commandes, demandes] = await Promise.all([listerProduits(), listerCommandes(), listerDemandes()])
+    return { produits, commandes, demandes }
   })
   return (
     <>
@@ -28,18 +28,19 @@ export function TableauDeBord() {
       {donnees.erreur && <ErreurAdmin message={donnees.erreur} onReessayer={donnees.recharger} />}
       {donnees.enCours && !donnees.donnees && <Chargement />}
       {donnees.donnees && (() => {
-        const { produits, commandes } = donnees.donnees
+        const { produits, commandes, demandes } = donnees.donnees
         const sansPrix = produits.filter(p => p.prixDH === null).length
         const masques = produits.filter(p => !p.publie).length
         const nouvelles = commandes.filter(c => c.statut === 'nouvelle').length
         return (
           <div className="flex flex-col gap-6">
             {produits.length === 0 && <CarteImport onImporte={donnees.recharger} />}
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
               <Chiffre valeur={produits.length - masques} libelle="Pièces visibles" vers="/admin/produits" />
               <Chiffre valeur={sansPrix} libelle="Sans prix" vers="/admin/produits?filtre=sans-prix" alerte />
               <Chiffre valeur={masques} libelle="Masquées" vers="/admin/produits?filtre=masques" />
               <Chiffre valeur={nouvelles} libelle="Commandes nouvelles" vers="/admin/commandes?statut=nouvelle" alerte />
+              <Chiffre valeur={demandes.filter(d => d.statut === 'a_traiter').length} libelle="Demandes WhatsApp à traiter" vers="/admin/demandes" alerte />
             </div>
             <CarteAdmin titre="Dernières commandes" actions={<Link to="/admin/commandes" className="label text-encre underline underline-offset-4">Toutes les commandes</Link>}>
               {commandes.length === 0 ? <p className="text-[14px] text-gris">Aucune commande pour le moment.</p> : (

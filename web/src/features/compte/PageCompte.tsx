@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { EMAIL_VALIDE, LONGUEURS, tropLong } from '@/lib/longueurs'
 import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import { Heart, MapPin, Package, Trash2, User } from 'lucide-react'
 import { Bouton, BoutonLien, CaseACocher, Champ, EtatVide, Modale, PastilleCouleur, Prix, Selection, ZoneTexte, useNotifier } from '@/design-system'
@@ -37,6 +38,8 @@ function Profil() {
   const enregistrer = (e: FormEvent) => {
     e.preventDefault()
     if (p.telephone && !telephoneMarocValide(p.telephone)) { setErreur('Numéro marocain attendu.'); return }
+    if (tropLong(p.nom, 'nom')) { setErreur(`Nom : ${tropLong(p.nom, 'nom')}`); return }
+    if (p.email && (!EMAIL_VALIDE.test(p.email.trim()) || tropLong(p.email, 'email'))) { setErreur('Adresse e-mail invalide.'); return }
     majProfil(p); notifier({ ton: 'succes', message: connecte ? 'Profil enregistré dans votre compte.' : 'Profil enregistré sur cet appareil.' })
   }
   return (
@@ -106,6 +109,9 @@ function Adresses() {
     const er: Record<string, string> = {}
     if (!edition.ville) er.ville = 'Choisissez une ville.'
     if (edition.adresse.trim().length < 6) er.adresse = 'Adresse trop courte.'
+    else if (tropLong(edition.adresse, 'adresse')) er.adresse = tropLong(edition.adresse, 'adresse')!
+    if (tropLong(edition.libelle, 'libelle')) er.libelle = tropLong(edition.libelle, 'libelle')!
+    if (tropLong(edition.instructions, 'instructions')) er.instructions = tropLong(edition.instructions, 'instructions')!
     setErreurs(er); if (Object.keys(er).length) return
     enregistrerAdresse({ ...edition, libelle: edition.libelle || 'Adresse' }); setEdition(null)
   }
@@ -130,12 +136,12 @@ function Adresses() {
       <Modale ouvert={!!edition} onFermer={() => setEdition(null)} titre={edition?.id ? 'Modifier l\'adresse' : 'Nouvelle adresse'}>
         {edition && (
           <form onSubmit={valider} noValidate className="grid gap-6">
-            <Champ label="Libellé" placeholder="Maison, bureau…" value={edition.libelle} onChange={e => setEdition({ ...edition, libelle: e.target.value })} />
+            <Champ label="Libellé" placeholder="Maison, bureau…" maxLength={LONGUEURS.libelle} erreur={erreurs.libelle} value={edition.libelle} onChange={e => setEdition({ ...edition, libelle: e.target.value })} />
             <Selection label="Ville" value={edition.ville} erreur={erreurs.ville} onChange={e => setEdition({ ...edition, ville: e.target.value })}>
               <option value="">Choisir…</option>{VILLES.map(v => <option key={v}>{v}</option>)}
             </Selection>
             <Champ label="Adresse" value={edition.adresse} erreur={erreurs.adresse} onChange={e => setEdition({ ...edition, adresse: e.target.value })} />
-            <ZoneTexte label="Instructions" facultatif rows={2} value={edition.instructions} onChange={e => setEdition({ ...edition, instructions: e.target.value })} />
+            <ZoneTexte label="Instructions" facultatif rows={2} maxLength={LONGUEURS.instructions} erreur={erreurs.instructions} value={edition.instructions} onChange={e => setEdition({ ...edition, instructions: e.target.value })} />
             <CaseACocher label="Adresse par défaut" checked={edition.parDefaut} onChange={() => setEdition({ ...edition, parDefaut: !edition.parDefaut })} />
             <Bouton type="submit">Enregistrer</Bouton>
           </form>

@@ -16,6 +16,7 @@ const verdict = (ok, libelle, detail = '') => { if (!ok) echecs++; console.log(`
 const client = () => createClient(url, cle, { auth: { persistSession: false, autoRefreshToken: false } })
 const suffixe = Date.now().toString(36)
 const MDP = `Essai-${suffixe}-9`
+const psql = sql => execFileSync('docker', ['exec', 'supabase_db_hmode', 'psql', '-U', 'postgres', '-d', 'postgres', '-tAc', sql], { encoding: 'utf8' }).trim()
 
 /** Ouvre le lien de confirmation reçu dans la boîte de test (Mailpit). */
 async function confirmerEmail(email) {
@@ -106,16 +107,22 @@ const adrB = await B.sb.from('adresses').select('id')
 verdict(adrB.data?.length === 0, 'isolation : B ne voit pas les adresses de A')
 
 // Commandes
-// Pièce absente de la table `produits` : le prix envoyé est gardé (catalogue pas encore importé). Le prix lu en base est testé plus bas.
-const HORS_CATALOGUE = `essai-hors-catalogue-${suffixe}`
-const commande = (reference, lignes = [{ slug: HORS_CATALOGUE, nom: 'T-shirt logo Dior', coloris: 'noir', taille: 'M', quantite: 2, prix_dh: 450 }]) => ({ commande: {
-  reference, client: { nom: 'Sara Alaoui', telephone: '0612345678', email: '', ville: 'Rabat', adresse: '4 avenue Mohammed V', instructions: '' }, lignes } })
+// Pièce de catalogue créée pour l'essai (passer_commande v3 refuse toute pièce absente de la table `produits`).
+// Les compteurs de limite « commande » sont remis à zéro : tous les appels locaux viennent de la même adresse.
+const CATALOGUE = `essai-catalogue-${suffixe}`
+psql(`insert into public.produits (slug, nom, categorie, prix_dh, publie, coloris, tailles) values ('${CATALOGUE}', 'T-shirt d''essai', 't-shirts', 450, true, '[{"nom":"noir","hex":"#000000"}]', '[{"taille":"M","disponible":true},{"taille":"XL","disponible":false}]')`)
+psql(`delete from public.limites_evenements where action = 'commande'`)
+const villesLivrees = JSON.parse(psql(`select coalesce(valeur -> 'livraison' -> 'villes', 'null') from public.reglages where cle = 'boutique'`) || 'null')
+const VILLE = Array.isArray(villesLivrees) ? villesLivrees[0] : 'Rabat'
+const commande = (reference, lignes = [{ slug: CATALOGUE, nom: 'nom envoyé par le navigateur', coloris: 'noir', taille: 'M', quantite: 2, prix_dh: 1 }], ville = VILLE) => ({ commande: {
+  reference, client: { nom: 'Sara Alaoui', telephone: '0612345678', email: '', ville, adresse: '4 avenue Mohammed V', instructions: '' }, lignes } })
 const refA = `HM-TEST-${suffixe}`
 const rpcA = await A.sb.rpc('passer_commande', commande(refA))
 verdict(rpcA.data === refA && !rpcA.error, 'commande de A enregistrée par passer_commande', rpcA.error?.message)
-const cmdA = await A.sb.from('commandes').select('reference, utilisateur, mode_paiement, statut, sous_total_dh, lignes_commande(quantite, prix_dh)')
+const cmdA = await A.sb.from('commandes').select('reference, utilisateur, mode_paiement, statut, sous_total_dh, lignes_commande(nom, quantite, prix_dh)')
 verdict(cmdA.data?.length === 1 && cmdA.data[0].utilisateur === A.id && cmdA.data[0].sous_total_dh === 900 && cmdA.data[0].lignes_commande.length === 1,
-  'commande lue par A : rattachée à son compte, total calculé par la base (900 DH), lignes présentes', JSON.stringify(cmdA.data?.[0]))
+  'commande lue par A : rattachée à son compte, total calculé par la base (900 DH, prix envoyé 1 DH ignoré), lignes présentes', JSON.stringify(cmdA.data?.[0]))
+verdict(cmdA.data?.[0].lignes_commande[0].nom === "T-shirt d'essai", 'commande : nom de la pièce lu en base, pas celui envoyé par le navigateur', cmdA.data?.[0].lignes_commande[0].nom)
 verdict(cmdA.data?.[0].mode_paiement === 'livraison' && cmdA.data?.[0].statut === 'nouvelle', 'paiement à la livraison, statut « nouvelle »')
 const cmdB = await B.sb.from('commandes').select('reference')
 const lignesB = await B.sb.from('lignes_commande').select('id')
@@ -138,10 +145,46 @@ const orpheline = await A.sb.from('commandes').select('reference').eq('reference
 verdict(Boolean(rpcInv.error) && orpheline.data?.length === 0, 'quantité 0 refusée, et aucune commande orpheline (transaction annulée)', rpcInv.error?.code)
 const doublon = await A.sb.rpc('passer_commande', commande(refA))
 verdict(Boolean(doublon.error), 'référence en double refusée', doublon.error?.code)
+const horsCat = await visiteur.rpc('passer_commande', commande(`HM-HORS-${suffixe}`, [{ slug: `inexistante-${suffixe}`, nom: 'x', coloris: 'noir', taille: 'M', quantite: 1, prix_dh: 1 }]))
+verdict(Boolean(horsCat.error), 'commande d\'une pièce absente du catalogue refusée (plus de prix pris au navigateur)', horsCat.error?.message)
+const colorisFaux = await visiteur.rpc('passer_commande', commande(`HM-COL-${suffixe}`, [{ slug: CATALOGUE, nom: 'x', coloris: 'rose', taille: 'M', quantite: 1, prix_dh: 1 }]))
+const tailleEpuisee = await visiteur.rpc('passer_commande', commande(`HM-TAI-${suffixe}`, [{ slug: CATALOGUE, nom: 'x', coloris: 'noir', taille: 'XL', quantite: 1, prix_dh: 1 }]))
+verdict(Boolean(colorisFaux.error) && Boolean(tailleEpuisee.error), 'commande : coloris inconnu et taille indisponible refusés', `${colorisFaux.error?.message} / ${tailleEpuisee.error?.message}`)
+{
+  // Liste de villes posée le temps de l'essai, puis réglage d'origine remis
+  const boutiqueAvant = psql(`select valeur::text from public.reglages where cle = 'boutique'`)
+  psql(`insert into public.reglages (cle, valeur) values ('boutique', '{"livraison":{"villes":["${VILLE}"]}}') on conflict (cle) do update set valeur = jsonb_set(public.reglages.valeur, '{livraison,villes}', '["${VILLE}"]', true)`)
+  const villeFausse = await visiteur.rpc('passer_commande', commande(`HM-VIL-${suffixe}`, undefined, 'Ville-non-livree'))
+  psql(boutiqueAvant ? `update public.reglages set valeur = '${boutiqueAvant.replaceAll("'", "''")}' where cle = 'boutique'` : `delete from public.reglages where cle = 'boutique'`)
+  verdict(Boolean(villeFausse.error) && /Ville non livrée/.test(villeFausse.error.message), 'commande : ville non livrée refusée par la base', villeFausse.error?.message)
+}
+
+// Limite par visiteur (lot A) : au-delà du maximum, passer_commande renvoie null et le blocage est noté
+const maxAvant = psql(`select maximum from public.limites where action = 'commande'`)
+psql(`delete from public.limites_evenements where action = 'commande'`)
+psql(`update public.limites set maximum = 1 where action = 'commande'`)
+const lim1 = await visiteur.rpc('passer_commande', commande(`HM-LIM1-${suffixe}`))
+const lim2 = await visiteur.rpc('passer_commande', commande(`HM-LIM2-${suffixe}`))
+const traceLim = psql(`select count(*) filter (where bloque) || '/' || count(*) from public.limites_evenements where action = 'commande'`)
+const lim2Base = psql(`select count(*) from public.commandes where reference = 'HM-LIM2-${suffixe}'`)
+psql(`update public.limites set maximum = ${Number(maxAvant) || 5} where action = 'commande'`)
+psql(`delete from public.limites_evenements where action = 'commande'`)
+verdict(lim1.data === `HM-LIM1-${suffixe}` && lim2.data === null && !lim2.error && lim2Base === '0' && traceLim === '1/2',
+  'limite : 2ᵉ commande refusée (null), rien enregistré, blocage noté', `${lim1.data} / ${lim2.data} / ${traceLim}`)
+// Plafond global (tous visiteurs) : l'en-tête d'adresse peut être falsifié, ce plafond tient quand même
+const globalAvant = psql(`select coalesce(maximum_global::text, 'null') from public.limites where action = 'commande'`)
+psql(`update public.limites set maximum_global = 1 where action = 'commande'`)
+const glo1 = await A.sb.rpc('passer_commande', commande(`HM-GLO1-${suffixe}`))
+const glo2 = await visiteur.rpc('passer_commande', commande(`HM-GLO2-${suffixe}`))
+psql(`update public.limites set maximum_global = ${globalAvant} where action = 'commande'`)
+psql(`delete from public.limites_evenements where action = 'commande'`)
+verdict(glo1.data === `HM-GLO1-${suffixe}` && glo2.data === null, 'limite : plafond global atteint, la commande suivante est refusée', `${glo1.data} / ${glo2.data}`)
+const evtV = await visiteur.from('limites_evenements').select('id')
+const evtA = await A.sb.from('limites_evenements').select('id')
+verdict((Boolean(evtV.error) || evtV.data?.length === 0) && evtA.data?.length === 0, 'limite : événements invisibles d\'un visiteur et d\'un client')
 
 // ── Administration (lot 20) ─────────────────────────────────────────────────────────────────────
 // Le rôle admin ne se donne qu'en SQL (jamais depuis le site) : ici par psql dans le conteneur local.
-const psql = sql => execFileSync('docker', ['exec', 'supabase_db_hmode', 'psql', '-U', 'postgres', '-d', 'postgres', '-tAc', sql], { encoding: 'utf8' }).trim()
 const estAdminA = await A.sb.rpc('est_admin')
 const estAdminV = await visiteur.rpc('est_admin')
 verdict(estAdminA.data === false && estAdminV.data === false, 'admin : un client et un visiteur ne sont pas admins')
@@ -263,6 +306,81 @@ await B.sb.rpc('verrouiller_admin')
 const apresVerrou = await B.sb.rpc('est_admin')
 verdict(apresVerrou.data === false, 'clé : déconnexion de l\'admin, la session perd ses droits aussitôt')
 await B.sb.rpc('deverrouiller_admin', { cle: CLE })
+
+// ── Supervision (lot C) : erreurs, visites, contrôles ; rôle « technique » seulement ─────────────────
+psql(`delete from public.limites_evenements where action in ('erreur_client', 'visite', 'controle_robot')`)
+const errV = await visiteur.rpc('signaler_erreur', { erreur: { type: 'script', message: `Essai ${suffixe} pour ali@exemple.ma au 0612345678`, page: '/produit/x?token=secret' } })
+const errTypeFaux = await visiteur.rpc('signaler_erreur', { erreur: { type: 'inconnu', message: 'x' } })
+const errLue = psql(`select message || ' | ' || page from public.erreurs_site where message like 'Essai ${suffixe}%'`)
+verdict(!errV.error && !errTypeFaux.error && errLue === `Essai ${suffixe} pour [e-mail] au [numéro] | /produit/x`, 'supervision : erreur envoyée par un visiteur, nettoyée (e-mail, numéro, paramètres)', errLue || errV.error?.message)
+const visV = await visiteur.rpc('compter_visite', { page: `/essai-${suffixe}`, lcp_ms: 1800 })
+const visAdmin = await visiteur.rpc('compter_visite', { page: '/admin/supervision' })
+verdict(!visV.error && psql(`select count(*) from public.visites where page = '/essai-${suffixe}'`) === '1' && psql(`select count(*) from public.visites where page like '/admin%'`) === '0',
+  'supervision : page vue comptée, administration jamais comptée', visV.error?.message ?? visAdmin.error?.message)
+const statsTech = await B.sb.rpc('statistiques_supervision')
+const errTech = await B.sb.from('erreurs_site').select('id').like('message', `Essai ${suffixe}%`)
+verdict(!statsTech.error && statsTech.data?.visites?.trente_jours >= 1 && Array.isArray(statsTech.data?.limites?.regles) && errTech.data?.length === 1,
+  'supervision : l\'admin technique lit les chiffres et les erreurs', statsTech.error?.message)
+const statsA = await A.sb.rpc('statistiques_supervision')
+const errA = await A.sb.from('erreurs_site').select('id')
+const visA = await visiteur.from('visites').select('id')
+verdict(statsA.error?.code === '42501' && errA.data?.length === 0 && (Boolean(visA.error) || visA.data?.length === 0), 'supervision : invisible d\'un client et d\'un visiteur', statsA.error?.code)
+psql(`update public.admins set role = 'commerce' where utilisateur = '${B.id}'`)
+const statsCommerce = await B.sb.rpc('statistiques_supervision')
+const errCommerce = await B.sb.from('erreurs_site').select('id')
+const prodCommerce = await B.sb.from('produits').select('slug').limit(1)
+const statutCommerce = await B.sb.rpc('admin_statut')
+verdict(statsCommerce.error?.code === '42501' && errCommerce.data?.length === 0 && !prodCommerce.error && statutCommerce.data?.role === 'commerce' && statutCommerce.data?.deverrouille === true,
+  'rôles : « commerce » garde la boutique, sans la supervision', statsCommerce.error?.code)
+psql(`update public.admins set role = 'technique' where utilisateur = '${B.id}'`)
+const notes = await B.sb.rpc('noter_controles', { resultats: [{ cible: `essai ${suffixe}`, ok: true, statut_http: 200, duree_ms: 12, detail: '' }] })
+const notesA = await A.sb.rpc('noter_controles', { resultats: [{ cible: 'pirate', ok: true }] })
+verdict(!notes.error && notesA.error?.code === '42501' && psql(`select count(*) from public.controles_sante where cible = 'essai ${suffixe}' and source = 'admin'`) === '1', 'supervision : contrôles notés par l\'admin technique, refusés à un client', notes.error?.message)
+const JETON = `jeton-robot-essai-${suffixe}-0123456789`
+const jetonAvant = psql('select hash from public.robot_jeton where id = 1')
+const sqlJeton = execFileSync('node', ['scripts/sante-sql.mjs'], { encoding: 'utf8', env: { PATH: process.env.PATH, SANTE_JETON: JETON } })
+psql(sqlJeton.split('\n').filter(l => !l.startsWith('--')).join(' '))
+const robotFaux = await visiteur.rpc('enregistrer_controles', { jeton: 'mauvais', resultats: [{ cible: 'x', ok: true }] })
+const robotOk = await visiteur.rpc('enregistrer_controles', { jeton: JETON, resultats: [{ cible: `robot ${suffixe}`, ok: false, statut_http: 503, duree_ms: 40, detail: 'panne simulée' }] })
+verdict(robotFaux.data?.ok === false && robotOk.data?.ok === true && robotOk.data?.alertes?.length >= 1 && !sqlJeton.includes(JETON)
+  && psql(`select count(*) from public.controles_sante where cible = 'robot ${suffixe}' and source = 'robot'`) === '1',
+  'robot : jeton faux refusé, bon jeton accepté, panne remontée en alerte ; le SQL ne contient que l\'empreinte', JSON.stringify(robotOk.data))
+const republiAvant = psql('select coalesce(max(id), 0) from public.republications')
+psql(`delete from public.republications where cree_le > now() - interval '12 hours'`)
+const rep1 = await visiteur.rpc('republication_necessaire', { jeton: JETON, construit_le: '2000-01-01T00:00:00Z' })
+const rep2 = await visiteur.rpc('republication_necessaire', { jeton: JETON, construit_le: '2000-01-01T00:00:00Z' })
+const repFaux = await visiteur.rpc('republication_necessaire', { jeton: 'mauvais', construit_le: '2000-01-01T00:00:00Z' })
+const repRecent = await visiteur.rpc('republication_necessaire', { jeton: JETON, construit_le: new Date(Date.now() + 3600e3).toISOString() })
+psql(`delete from public.republications where id > ${republiAvant}`)
+verdict(rep1.data === true && rep2.data === false && repFaux.data === false && repRecent.data === false,
+  'robot : rebuild demandé une fois si le catalogue a changé depuis le build ; pas deux fois en 12 h ; jamais sans jeton', `${rep1.data}/${rep2.data}/${repFaux.data}/${repRecent.data}`)
+psql(jetonAvant ? `update public.robot_jeton set hash = '${jetonAvant}' where id = 1` : 'delete from public.robot_jeton')
+const sauv = await B.sb.from('sauvegardes').insert({ type: 'manuelle', note: `essai ${suffixe}` })
+const sauvA = await A.sb.from('sauvegardes').insert({ type: 'manuelle', note: 'pirate' })
+verdict(!sauv.error && Boolean(sauvA.error), 'sauvegardes : notées par l\'admin technique, refusées à un client', sauvA.error?.code)
+psql(`delete from public.sauvegardes where note = 'essai ${suffixe}'; delete from public.controles_sante where cible in ('essai ${suffixe}', 'robot ${suffixe}'); delete from public.erreurs_site where message like 'Essai ${suffixe}%'; delete from public.visites where page = '/essai-${suffixe}'`)
+
+// ── Demandes WhatsApp (lot D) : notées au clic par un visiteur, suivies par l'admin, jamais des commandes ──
+psql(`delete from public.limites_evenements where action = 'demande_whatsapp'`)
+const dem = await visiteur.rpc('noter_demande_whatsapp', { demande: { motif: 'renseignement', slug: CATALOGUE, coloris: 'noir', taille: 'M', nom: 'nom pirate' } })
+const demInconnue = await visiteur.rpc('noter_demande_whatsapp', { demande: { motif: 'renseignement', slug: `inconnue-${suffixe}` } })
+const demMotif = await visiteur.rpc('noter_demande_whatsapp', { demande: { motif: 'autre', slug: CATALOGUE } })
+verdict(!dem.error && !demInconnue.error && !demMotif.error && psql(`select count(*) || '|' || max(nom_produit) || '|' || max(prix_dh) from public.demandes_whatsapp where slug = '${CATALOGUE}'`) === "1|T-shirt d'essai|450"
+  && psql(`select count(*) from public.demandes_whatsapp where slug = 'inconnue-${suffixe}'`) === '0',
+  'demandes : notée par un visiteur (nom et prix lus en base), pièce inconnue ou motif faux ignorés', dem.error?.message)
+const demV = await visiteur.from('demandes_whatsapp').select('id')
+const demA = await A.sb.from('demandes_whatsapp').select('id')
+const demB = await B.sb.from('demandes_whatsapp').select('id, statut').eq('slug', CATALOGUE)
+verdict((Boolean(demV.error) || demV.data?.length === 0) && demA.data?.length === 0 && demB.data?.length === 1, 'demandes : lues par l\'admin seulement')
+const suivi = await B.sb.from('demandes_whatsapp').update({ statut: 'traitee', note: 'répondu' }).eq('id', demB.data?.[0]?.id)
+const triche = await B.sb.from('demandes_whatsapp').update({ slug: 'autre' }).eq('id', demB.data?.[0]?.id)
+const suiviA = await A.sb.from('demandes_whatsapp').update({ statut: 'sans_suite' }).eq('slug', CATALOGUE)
+verdict(!suivi.error && Boolean(triche.error) && psql(`select statut from public.demandes_whatsapp where slug = '${CATALOGUE}'`) === 'traitee'
+  && psql(`select count(*) from public.journal_admin where cible = 'demande ${demB.data?.[0]?.id}'`) === '1',
+  'demandes : l\'admin change le suivi (journalisé), pas la pièce ; un client ne change rien', `${triche.error?.code} / ${suiviA.error?.code ?? 'aucune ligne'}`)
+verdict(psql(`select count(*) from public.commandes where reference like '%${suffixe}%' and nom = 'nom pirate'`) === '0', 'demandes : aucune commande créée par une demande')
+psql(`delete from public.demandes_whatsapp where slug = '${CATALOGUE}'`)
+
 psql(`delete from public.admins where utilisateur = '${B.id}'`)
 const plusAdmin = await B.sb.rpc('est_admin')
 verdict(plusAdmin.data === false, 'admin : droit retiré en SQL, effet immédiat (même session déverrouillée)')
@@ -284,5 +402,6 @@ await C.auth.signOut()
 psql(`delete from auth.users where email = '${emailC}'`)
 psql(ancienneCle ? `update public.admin_cle set hash = '${ancienneCle}' where id = 1` : 'delete from public.admin_cle')
 
+psql(`delete from public.produits where slug = '${CATALOGUE}'`)
 console.log(echecs ? `\n${echecs} échec(s)` : '\nTout est vert.')
 process.exit(echecs ? 1 : 0)

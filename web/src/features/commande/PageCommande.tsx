@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { EMAIL_VALIDE, LONGUEURS, tropLong } from '@/lib/longueurs'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, Banknote, Loader2 } from 'lucide-react'
 import { BoutonLien, EtatVide, ImageProduit, PastilleCouleur } from '@/design-system'
@@ -23,11 +24,14 @@ type Erreurs = Partial<Record<keyof CoordonneesClient | 'cgv', string>>
 export function validerCommande(c: CoordonneesClient, cgv: boolean): Erreurs {
   const e: Erreurs = {}
   if (c.nom.trim().length < 2) e.nom = 'Indiquez votre nom complet.'
+  else if (tropLong(c.nom, 'nom')) e.nom = tropLong(c.nom, 'nom')
   if (!telephoneMarocValide(c.telephone)) e.telephone = 'Numéro marocain attendu, ex. 06 12 34 56 78 ou +212 6 12 34 56 78.'
-  if (c.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email)) e.email = 'Adresse e-mail invalide.'
+  if (c.email && (!EMAIL_VALIDE.test(c.email.trim()) || tropLong(c.email, 'email'))) e.email = 'Adresse e-mail invalide.'
   if (!c.ville) e.ville = 'Choisissez votre ville.'
   else if (!villesLivrees().includes(c.ville)) e.ville = `Nous livrons seulement à ${listeVilles(villesLivrees())} pour le moment.`
   if (c.adresse.trim().length < 6) e.adresse = 'Indiquez une adresse de livraison précise.'
+  else if (tropLong(c.adresse, 'adresse')) e.adresse = tropLong(c.adresse, 'adresse')
+  if (tropLong(c.instructions, 'instructions')) e.instructions = tropLong(c.instructions, 'instructions')
   if (!cgv) e.cgv = 'Veuillez accepter les conditions de vente.'
   return e
 }
@@ -123,7 +127,9 @@ export function PageCommande() {
     // Onglet ouvert pendant le clic (sinon bloqué par le navigateur), dirigé vers WhatsApp une fois la commande enregistrée.
     const onglet = window.open('', '_blank')
     setEnvoi(true)
+    // Un échec inattendu (fichier du site introuvable après une mise à jour, réseau coupé) ne doit pas bloquer le bouton.
     const r = await enregistrerCommande(reference, c, aCommander)
+      .catch(() => ({ statut: 'erreur' as const, message: 'Connexion au serveur impossible. Rechargez la page, puis réessayez.' }))
     setEnvoi(false)
     if (r.statut !== 'enregistree') {
       onglet?.close()
@@ -185,7 +191,7 @@ export function PageCommande() {
                 <ChampLigne label="Adresse" autoComplete="street-address" value={c.adresse} onChange={maj('adresse')} erreur={erreurs.adresse} />
                 {precisions ? (<>
                   <ChampLigne label="E-mail" type="email" autoComplete="email" facultatif value={c.email} onChange={maj('email')} erreur={erreurs.email} />
-                  <ZoneLigne label="Instructions de livraison" facultatif rows={2} value={c.instructions} onChange={maj('instructions')} placeholder="Étage, repère, horaires…" />
+                  <ZoneLigne label="Instructions de livraison" facultatif rows={2} maxLength={LONGUEURS.instructions} erreur={erreurs.instructions} value={c.instructions} onChange={maj('instructions')} placeholder="Étage, repère, horaires…" />
                 </>) : (
                   <button type="button" onClick={() => setPrecisions(true)} className="w-fit font-mono text-[11px] uppercase tracking-[0.16em] text-gris underline underline-offset-4 hover:text-encre">
                     + E-mail ou instructions de livraison

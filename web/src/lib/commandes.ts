@@ -1,4 +1,5 @@
 import { obtenirSupabase } from '@/lib/supabase'
+import { signalerErreur } from '@/lib/supervision'
 import type { CoordonneesClient } from '@/lib/types'
 
 /** Ligne de commande telle qu'enregistrée : prix du catalogue au moment de la commande. */
@@ -21,9 +22,12 @@ export async function enregistrerCommande(reference: string, client: Coordonnees
   } })
   if (error) {
     console.warn('[commande] enregistrement refusé :', error.message)
+    signalerErreur('api', `Commande refusée : ${error.code ?? ''} ${error.message}`)
     return { statut: 'erreur', message: /fetch|network/i.test(error.message)
       ? 'Connexion au serveur impossible. Vérifiez votre réseau, puis réessayez.'
       : 'Votre commande n\'a pas pu être enregistrée. Réessayez, ou envoyez-la directement sur WhatsApp.' }
   }
-  return { statut: 'enregistree', reference: String(data ?? reference) }
+  // null = limite de commandes atteinte pour ce visiteur (passer_commande v3) : rien n'est enregistré.
+  if (data === null) return { statut: 'erreur', message: 'Trop de commandes envoyées depuis cet appareil en peu de temps. Réessayez dans une heure, ou écrivez-nous sur WhatsApp.' }
+  return { statut: 'enregistree', reference: String(data) }
 }

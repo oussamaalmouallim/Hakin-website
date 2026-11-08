@@ -160,6 +160,11 @@ describe('format et validation', () => {
     expect(Object.keys(validerCommande(vide, false)).sort()).toEqual(['adresse', 'cgv', 'email', 'nom', 'telephone', 'ville'])
     expect(validerCommande({ nom: 'Ali B', telephone: '0612345678', email: '', ville: 'Casablanca', adresse: '12 rue X', instructions: '' }, true)).toEqual({})
   })
+  it('refuse avant l\'envoi ce que la base refuserait (longueurs maximales)', () => {
+    const long = { nom: 'A'.repeat(121), telephone: '0612345678', email: `${'a'.repeat(250)}@x.ma`, ville: 'Casablanca', adresse: 'B'.repeat(301), instructions: 'C'.repeat(501) }
+    expect(Object.keys(validerCommande(long, true)).sort()).toEqual(['adresse', 'email', 'instructions', 'nom'])
+    expect(validerCommande({ ...long, nom: 'A'.repeat(120), email: '', adresse: 'B'.repeat(300), instructions: 'C'.repeat(500) }, true)).toEqual({})
+  })
   it('livraison : seulement les villes réglées par la boutique (Casablanca), retours sous 24 h', () => {
     expect(villesLivrees()).toEqual(['Casablanca'])
     expect(validerCommande({ nom: 'Ali B', telephone: '0612345678', email: '', ville: 'Rabat', adresse: '12 rue X', instructions: '' }, true))

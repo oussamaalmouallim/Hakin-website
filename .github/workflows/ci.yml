@@ -37,7 +37,12 @@ jobs:
       - run: npm run build
         env:
           SITE_URL: https://exemple.invalid # vérifie la génération de sitemap.xml
-      - run: test -f dist/sitemap.xml && test -f dist/_redirects
+      - name: Fichiers du build (sitemap, routes, version, aperçus de partage)
+        run: |
+          test -f dist/sitemap.xml && test -f dist/_redirects && test -f dist/version.json
+          fiche=$(ls dist/produit | head -1)
+          grep -q 'property="og:image" content="https://exemple.invalid/partage/' "dist/produit/$fiche/index.html"
+          test "$(find dist/partage -name '*.jpg' -size +300k | wc -l)" -eq 0 # WhatsApp : image de moins de 300 Ko
 
   navigateur:
     name: Playwright (site)
@@ -57,7 +62,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-site
-          path: web/test-results
+          path: |
+            web/rapports/playwright
+            web/rapports/playwright-resultats
           retention-days: 7
 
   image:

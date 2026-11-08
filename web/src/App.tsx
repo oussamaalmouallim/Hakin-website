@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect, type ComponentType } from 'react'
+import { compterVisite } from '@/lib/supervision'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { transitionPage } from './lib/animations'
@@ -32,7 +33,6 @@ const pages = {
   info: () => import('./features/infos/PagesInfo'),
   introuvable: () => import('./features/infos/Page404'),
   admin: () => import('./features/admin/PageAdmin'),
-  designSystem: () => import('./features/infos/PageDesignSystem'),
 }
 // Les pages exportent des fonctions nommées : on garde leur type (et donc leurs props) pour `lazy`.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,7 +51,8 @@ const PageContact = differee(pages.contact, 'PageContact')
 const PageMaison = differee(pages.maison, 'PageMaison')
 const PageInfo = differee(pages.info, 'PageInfo')
 const Page404 = differee(pages.introuvable, 'Page404')
-const PageDesignSystem = differee(pages.designSystem, 'PageDesignSystem')
+// Outil de développement : le fichier n'est même pas construit pour la production (import.meta.env.DEV vaut false).
+const PageDesignSystem = import.meta.env.DEV ? differee(() => import('./features/infos/PageDesignSystem'), 'PageDesignSystem') : () => null
 const PageAdmin = differee(pages.admin, 'PageAdmin')
 
 /** Précharge toutes les pages une fois la première affichée : la navigation suivante reste instantanée. */
@@ -90,6 +91,8 @@ export default function App() {
   useEffect(() => brancherSynchroCompte(), [])
   // Catalogue et réglages de la base (lot 20) ; en attendant, ceux livrés avec le site.
   useEffect(() => { void chargerDonnees() }, [])
+  // Fréquentation (supervision) : une page vue par changement d'adresse, hors administration.
+  useEffect(() => { compterVisite(location.pathname) }, [location.pathname])
   const versionDonnees = useDonnees(s => s.version)
   // Page de connexion plein écran comme la référence : ni en-tête, ni pied, ni repère latéral.
   const pleinEcran = location.pathname.startsWith('/connexion')
@@ -137,7 +140,8 @@ export default function App() {
             <Route path="/mentions-legales" element={<PageInfo page="mentions-legales" />} />
             <Route path="/confidentialite" element={<PageInfo page="confidentialite" />} />
             <Route path="/cgv" element={<PageInfo page="cgv" />} />
-            <Route path="/design-system" element={<PageDesignSystem />} />
+            {/* Outil de développement : absent du site en ligne (ni route, ni _redirects, ni nginx). */}
+            {import.meta.env.DEV && <Route path="/design-system" element={<PageDesignSystem />} />}
             <Route path="*" element={<Page404 />} />
           </Routes>
           </Suspense>

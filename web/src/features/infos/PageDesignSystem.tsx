@@ -51,8 +51,8 @@ export function PageDesignSystem() {
 
       <Bloc titre="Typographie">
         <div className="flex flex-col gap-6">
-          <p className="titre-display">Display</p><p className="titre-1">Titre 1 — Cormorant Garamond</p><p className="titre-2">Titre 2 <em>italique</em></p>
-          <p className="titre-3">Titre 3</p><p className="max-w-xl text-[17px]">Corps — Jost Light 16–17 px, lisible sur mobile et dans les formulaires.</p>
+          <p className="titre-display">Display</p><p className="titre-1">Titre 1 — Archivo Black</p><p className="titre-2">Titre 2 <em>italique</em></p>
+          <p className="titre-3">Titre 3</p><p className="max-w-xl text-[17px]">Corps — Space Grotesk 16–17 px, lisible sur mobile et dans les formulaires.</p>
           <p className="label">Label — capitales espacées 0,22 em</p><p className="label-large">Label large — 0,32 em</p>
           <a className="lien-souligne self-start" href="#dummy" onClick={e => e.preventDefault()}>Lien souligné animé <ArrowRight className="h-3.5 w-3.5" /></a>
         </div>

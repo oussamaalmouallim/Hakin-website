@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { signalerErreur } from '@/lib/supervision'
 import { obtenirSupabase } from '@/lib/supabase'
 import { appliquerCatalogue, appliquerReglages } from '@/lib/catalogue'
 import { ligneVersProduit, type LigneProduit, type Textes } from '@/lib/produitsBase'
@@ -46,5 +47,6 @@ export async function chargerDonnees() {
     try { localStorage.setItem(CLE_COPIE, JSON.stringify({ v: 1, ...c })) } catch { /* stockage plein ou bloqué */ }
   } catch (e) {
     console.warn('[catalogue] base injoignable, données locales gardées :', e)
+    signalerErreur('api', `Catalogue : base injoignable (${String((e as Error)?.message ?? e)})`, { gravite: 'avertissement' })
   }
 }

@@ -11,6 +11,7 @@ import { formatDH } from '@/lib/format'
 import { CarteProduit } from '@/components/CarteProduit'
 import { boutique, estCommandable, estPackshot, produitsLies, srcImage, trouverCategorie, trouverProduit } from '@/lib/catalogue'
 import { lienWhatsApp, messageProduit } from '@/lib/whatsapp'
+import { noterDemande, type MotifDemande } from '@/lib/demandes'
 import { lienCommandeDirecte } from '@/lib/commandeDirecte'
 import { cn } from '@/lib/utils'
 import { usePanier } from '@/state/panier'
@@ -159,7 +160,12 @@ export function PageProduit() {
     if (!taille) { setErreurTaille(true); return }
     naviguer(lienCommandeDirecte(produit.slug, coloris, taille, quantite))
   }
-  const lienWA = lienWhatsApp(messageProduit(produit.nom, { coloris: coloris ?? undefined, taille: taille ?? undefined }))
+  // WhatsApp : message pré-rempli (pièce, couleur, taille, lien de la fiche) et demande notée pour l'admin (« Demandes »).
+  const motifWA: MotifDemande = commandable ? 'commande' : epuise ? 'alerte_stock' : 'renseignement'
+  const lienFiche = typeof window === 'undefined' ? '' : `${window.location.origin}/produit/${produit.slug}`
+  const lienWA = lienWhatsApp(messageProduit({ nom: produit.nom, marque: produit.marque, prixConnu: produit.prixDH !== null },
+    { coloris: coloris ?? undefined, taille: taille ?? undefined, lien: lienFiche, motif: motifWA }))
+  const surWhatsApp = () => noterDemande(motifWA, produit.slug, { coloris, taille })
 
   const etiquette = 'mb-3 font-mono text-[11px] uppercase tracking-[0.22em] text-gris'
   const caracteristiques: [string, ReactNode][] = [
@@ -232,12 +238,12 @@ export function PageProduit() {
                   <button type="button" onClick={surCommande} aria-disabled={!taille} className={cn(secondaire, !taille && 'cursor-not-allowed opacity-40')}>
                     {taille ? 'Commander · Paiement à la livraison' : 'Choisir une taille'}
                   </button>
-                  <a href={lienWA} target="_blank" rel="noopener noreferrer" className={secondaire}><IconeWhatsApp className="h-4 w-4 text-whatsapp" />Commander sur WhatsApp</a>
+                  <a href={lienWA} target="_blank" rel="noopener noreferrer" onClick={surWhatsApp} className={secondaire}><IconeWhatsApp className="h-4 w-4 text-whatsapp" />Commander sur WhatsApp</a>
                 </>
               ) : (
                 <>
                   <div className="flex items-center gap-3">
-                    <a href={lienWA} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-3 rounded-full bg-encre py-4 font-display text-[13px] uppercase tracking-[0.16em] text-fond transition-colors hover:bg-encre-douce">
+                    <a href={lienWA} target="_blank" rel="noopener noreferrer" onClick={surWhatsApp} className="flex flex-1 items-center justify-center gap-3 rounded-full bg-encre py-4 font-display text-[13px] uppercase tracking-[0.16em] text-fond transition-colors hover:bg-encre-douce">
                       <IconeWhatsApp className="h-4 w-4 text-whatsapp" />{epuise ? 'Être prévenu sur WhatsApp' : 'Demander prix et disponibilité'}
                     </a>
                     <BoutonFavori actif={favori} onClick={() => basculerFavori(produit.slug)} nom={produit.nom} />
@@ -275,7 +281,7 @@ export function PageProduit() {
           <div className="min-w-0 flex-1"><p className="truncate font-display text-[15px] uppercase">{produit.nom}</p><Prix prixDH={produit.prixDH} /></div>
           {commandable
             ? <Bouton taille="sm" onClick={() => { zoneAchat.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' }); if (taille) surAjout(); else setErreurTaille(true) }}>Ajouter</Bouton>
-            : <BoutonExterne href={lienWA} taille="sm">WhatsApp</BoutonExterne>}
+            : <BoutonExterne href={lienWA} onClick={surWhatsApp} taille="sm">WhatsApp</BoutonExterne>}
         </div>
       </div>, document.body)}
       <GuideTailles ouvert={guide} onFermer={() => setGuide(false)} />

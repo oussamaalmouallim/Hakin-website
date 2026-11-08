@@ -1,0 +1,43 @@
+# H MODE — robot de surveillance : toutes les 30 minutes, contrôle le site en ligne, la base, les comptes, les photos
+# et WhatsApp, puis écrit le résultat en base (écran Admin → Supervision).
+# En cas d'échec ou d'alerte (blocages ou erreurs en rafale), le job échoue : GitHub envoie un e-mail au propriétaire
+# du dépôt (réglage : github.com → Settings → Notifications → Actions, « Only notify for failed workflows »).
+# Inactif tant que la variable SITE_URL n'est pas définie (avant la mise en ligne).
+# À régler une fois : variables SITE_URL, VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY ; secret SANTE_JETON
+# (même valeur que SANTE_JETON de web/.env, posée en base par `npm run sante:sql`) ; facultatif : secret NETLIFY_BUILD_HOOK
+# (Netlify → Site configuration → Build & deploy → Build hooks) pour republier les aperçus des fiches modifiées.
+# Bon à savoir : GitHub suspend les tâches planifiées d'un dépôt public sans aucun commit pendant 60 jours.
+name: Surveillance
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: surveillance
+  cancel-in-progress: false
+
+jobs:
+  controler:
+    if: ${{ vars.SITE_URL != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: web/scripts/robot-sante.mjs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node web/scripts/robot-sante.mjs
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          SANTE_JETON: ${{ secrets.SANTE_JETON }}
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }} # facultatif : republie les aperçus après un changement du catalogue

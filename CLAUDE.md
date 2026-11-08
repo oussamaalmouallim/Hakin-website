@@ -45,6 +45,7 @@
 
 ## Contexte
 - Architecture : utiliser la Skill `codebase-overview`
+- Guide technique : `docs/architecture.md` · index : `docs/README.md`
 - Décisions : `docs/decisions/` (lire seulement si utile)
 
 # Compact instructions

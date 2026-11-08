@@ -24,6 +24,8 @@ Le contenu (pièces, prix, photos, textes, livraison, commandes) se gère dans l
 Un seul site à héberger ; Supabase est le backend, déjà en ligne. L'admin n'est pas un service à part
 (voir [`docs/decisions/0007-architecture-et-deploiement.md`](docs/decisions/0007-architecture-et-deploiement.md)).
 
+Documentation : [`docs/README.md`](docs/README.md) (index) · [`docs/architecture.md`](docs/architecture.md) (guide technique : parcours, base, sécurité, hébergement, tests, exploitation) · [`docs/projet/TODO.md`](docs/projet/TODO.md) (ce qui reste).
+
 ## Arborescence
 
 ```
@@ -48,7 +50,7 @@ Hakin-website/
 │   ├── docker/             Dockerfile (build + nginx sans root), nginx.conf, securite.conf
 │   └── docker-compose.yml
 ├── .github/workflows/      ci.yml · supabase.yml · image.yml · base.yml
-├── docs/
+├── docs/                   README.md (index) · architecture.md (guide technique)
 │   ├── decisions/          ADR
 │   ├── design/             rapport CloneMe, maquettes, prompt du logo
 │   └── projet/             plan.md (lots), TODO.md, planning/

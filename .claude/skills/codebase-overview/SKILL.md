@@ -25,7 +25,7 @@ description: Architecture, dossiers clés et flux de données de la boutique H M
 - `web/medias/` : photos originales (`produits/<slug>/<n>.jpg`, `campagne/`, `provenance.json`) → WebP dans `web/public/images/` (généré).
 - `supabase/migrations/` : schéma dans l'ordre (`…_schema`, `…_favoris`, `…_administration` : admin, produits, réglages, journal, stockage, `…_cle_admin` : clé de sécurité, sessions déverrouillées), tous rejouables. `seed.sql` (local, vide), `config.toml`.
 - `infra/` : `docker/Dockerfile` (build Node puis nginx sans root, port 8080, `/sante`), `docker/nginx.conf` + `securite.conf` (CSP, en-têtes, 200/404), `docker-compose.yml`. `.github/workflows/` : `ci.yml`, `supabase.yml`, `image.yml` (ghcr), `base.yml` (migrations en ligne, manuel). `netlify.toml` + `web/public/_redirects` : hébergement.
-- Racine : `start.sh`/`stop.sh`/`deploy.sh`, `README.md`. `docs/` : `decisions/` (ADR), `design/` (rapport CloneMe, maquettes, prompt logo), `projet/` (`plan.md`, `TODO.md`, `planning/`).
+- Racine : `start.sh`/`stop.sh`/`deploy.sh`, `README.md`. `docs/` : `README.md` (index), `architecture.md` (guide technique complet), `decisions/` (ADR), `design/` (rapport CloneMe, maquettes, prompt logo), `projet/` (`plan.md`, `TODO.md`, `planning/`).
 - Hors appli : `archive/` (ancien site statique, `legacy/`, ancien `server/`), `Scrapping/` (Python, interne, hors git).
 
 # Flux principaux

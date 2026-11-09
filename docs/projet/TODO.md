@@ -9,10 +9,10 @@ Détail des lots : [`plan.md`](plan.md). Architecture : [`../architecture.md`](.
 - [ ] Robot de surveillance : `SANTE_JETON` dans `web/.env`, `npm run sante:sql` (coller le SQL), secret GitHub `SANTE_JETON` ; facultatif `NETLIFY_BUILD_HOOK`.
 - [ ] Netlify : importer le dépôt, variables `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SITE_URL`.
 - [ ] GitHub → Actions : variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SITE_URL`, `SUPABASE_PROJECT_REF`) et secrets (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`).
-- [ ] Base en ligne : `npx supabase link`, `migration repair --status applied` sur les 4 premières migrations, puis `db push` pour les 4 du 08/11.
+- [x] Base en ligne (09/11) : projet HMODE relié, 4 premières migrations notées appliquées, 4 du 08/11 poussées. Sauvegarde d'avant dans `~/Documents/HMODE-sauvegardes/` (hors dépôt).
 - [ ] Supabase → Authentication → URL Configuration : Site URL et Redirect URLs avec l'adresse finale.
 - [ ] Premier push : vérifier que `ci.yml` et `supabase.yml` passent (jamais exécutés sur GitHub à ce jour).
-- [ ] Supprimer les anciennes commandes `DEMO-…` de la base en ligne s'il en reste (lot 18).
+- [x] Anciennes commandes `DEMO-…` : la base en ligne n'a aucune commande (vérifié le 09/11).
 - [ ] Nom de domaine (traité à part).
 
 ## À saisir dans `/admin` par la boutique

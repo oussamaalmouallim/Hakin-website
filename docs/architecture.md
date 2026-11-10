@@ -116,7 +116,18 @@ WhatsApp** (à traiter, traitée, sans suite) : ce ne sont jamais des commandes.
   `version.json`, API, Auth, photos et WhatsApp, et écrit par `enregistrer_controles` (jeton haché). L'admin peut aussi
   contrôler depuis son navigateur (`noter_controles`).
 - **Version** : `vite.config.ts` grave la version (commit) dans le JavaScript et dans `/version.json`.
-- Écran : `features/admin/Supervision.tsx` ; chiffres agrégés par `statistiques_supervision()`.
+- **Point de santé** (ADR 0009) : `GET /rest/v1/rpc/sante`, public, sans donnée de la boutique, pour un service de
+  surveillance externe (3 à 5 min). Seuils de lenteur : `seuil_lent_ms()` ; états opérationnel / dégradé /
+  indisponible / inconnu calculés par `etat_supervision()`.
+- **Limites** : `passer_limite` répond HTTP **429** + `Retry-After` (`set_config('response.status')`), sans annuler la
+  trace du blocage ; `lib/commandes.ts` affiche « trop de commandes ».
+- **Journal** : `journal_technique(heures, type, gravité)` rassemble erreurs, contrôles en échec ou lents, blocages,
+  `evenements_techniques` (clé admin erronée, déploiements vus, sauvegardes par script) et `deploiements`.
+- **Sauvegardes** : `web/scripts/sauvegarde.mjs` (CLI Supabase, manifeste SHA-256) et `sauvegarde-tester.mjs`
+  (restauration dans un Supabase jetable, ports 553xx) ; résultat noté par `noter_sauvegarde_script` (jeton du robot).
+- Écran : `features/admin/Supervision.tsx`, une page à 5 onglets (`?onglet=vue|sante|journal|securite|maintenance`),
+  `SupervisionJournal.tsx`, `supervisionCommun.tsx` ; chiffres de `etat_supervision()` et `statistiques_supervision()`.
+  Exploitation pas à pas : `DEPLOIEMENT_ET_SUPERVISION/` (guide PDF, source `docs/guide-pdf/`).
 
 ### Aperçus de partage (Open Graph)
 `web/scripts/pages-partage.mjs`, après `vite build` : pour chaque pièce publiée (lue en base, sinon dans les fichiers),

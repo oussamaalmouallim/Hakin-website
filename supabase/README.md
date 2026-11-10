@@ -9,6 +9,7 @@
   - `20261108130000_supervision.sql` : rôles `technique` / `commerce`, contrôles de santé (robot à jeton), erreurs du site, pages vues, sauvegardes notées, `statistiques_supervision()`.
   - `20261108140000_demandes_whatsapp.sql` : demandes WhatsApp notées au clic, suivies dans l'admin (jamais des commandes).
   - `20261108150000_republication.sql` : le robot relance un build Netlify quand le catalogue a changé (au plus toutes les 12 h).
+  - `20261110120000_sante_et_journal.sql` : point de santé public `GET /rpc/sante`, HTTP 429 + `Retry-After` dans `passer_limite`, états des services (`etat_supervision`), journal technique filtrable, déploiements vus, événements (clé admin, sauvegardes par script). **À pousser en ligne** après `npm run sauvegarde`.
 - `seed.sql` : base locale seulement, sans données.
 - `config.toml` : Supabase local (`npx supabase start`).
 

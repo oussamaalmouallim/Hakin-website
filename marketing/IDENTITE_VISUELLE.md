@@ -21,6 +21,9 @@ En une phrase : *un catalogue clair et moderne, réchauffé par une touche beige
 
 ## 2. Direction artistique
 
+> **Réseaux sociaux : depuis le 10/11/2026, la direction est le « collage urbain » du § 8**, celle de la couverture
+> Facebook. Ce qui suit (§ 2 à 7) reste la charte **du site**, qui ne change pas.
+
 - **Base** : fond crème presque blanc, texte noir profond, beaucoup d'air autour des photos.
 - **Touche H MODE** : beige et bronze, seulement en petite quantité (logo, filets fins, fond d'une photo portée).
   Si tout devient beige, la touche disparaît.
@@ -120,3 +123,53 @@ Règles qui ne changent jamais :
 | **Contraste** | Encre `#0A0A0A` | Crème `#F5F4F0` | « H » crème plein | une citation, une annonce importante (rare) |
 
 À éviter : jaune sur beige (peu lisible), rouge en grand fond, plus de trois couleurs sur un même visuel.
+
+## 8. Direction des réseaux sociaux : le collage urbain (depuis le 10/11/2026)
+
+Née de la couverture Facebook : [`images/Gemini_Generated_Image_dg33pldg33pldg33.jpeg`](images/Gemini_Generated_Image_dg33pldg33pldg33.jpeg).
+Chaque visuel des réseaux (publication, story, carrousel, image générée) la reprend. Prompts prêts :
+[`PROMPTS_IDENTITE.md`](PROMPTS_IDENTITE.md).
+
+**L'idée** : un carnet de style urbain. Un fond noir où l'on devine le plan d'une ville, traversé de coups de pinceau
+sable, avec des photos penchées comme collées à la main.
+
+### Palette (mesurée sur la couverture)
+
+| Rôle | Nom | HEX | Part du visuel |
+|---|---|---|---|
+| Fond | Noir carbone | `#111111` | 40 à 60 % |
+| Texture du fond | Plan de ville | `#050505` (rues tracées, à peine visibles) | dans le noir |
+| Touche H MODE | Sable | `#D4BB96` | pinceaux, cadres, « H » : 20 à 30 % |
+| Lumière | Crème | `#F5EFDF` | pinceaux clairs, cadres, zones de texte |
+| Papier | Blanc cassé | `#F2F1F0` | fonds des zones claires, avec grain léger |
+| Accent | Moutarde | `#E6B12A` | trames de points, étiquette « NOUVEAU » : moins de 5 % |
+| Promotion | Rouge brique | `#C8341B` | seulement « SOLDES » et un prix barré (offre réelle) |
+
+Le sable des réseaux (`#D4BB96`) est un peu plus soutenu que le beige du site (`#E4D0B7`) : c'est voulu, il doit tenir
+sur le noir. Le moutarde remplace le jaune vif du site (`#F5D000`) sur les réseaux.
+
+### Les cinq éléments du décor
+
+1. **Fond noir à plan de ville** : toujours présent, au moins sur un tiers du visuel.
+2. **Coups de pinceau secs**, sable et crème, en diagonale (environ 10°), qui débordent des cadres.
+3. **Cadres photo penchés** avec une bordure décalée sable ou crème (effet de deux feuilles collées l'une sur l'autre).
+4. **Trames de points moutarde**, petites, dans deux coins opposés.
+5. **Le « H » officiel en sable**, petit en bas à droite (ou grand à gauche sur la couverture seulement).
+
+### Photos
+
+- Lumière du jour voilée, ville moderne, béton clair ; tenues casual noir, denim, moutarde, blanc.
+- Une pièce **à vendre** = sa **vraie photo** dans un cadre. Les personnes et vêtements dessinés par l'IA servent
+  seulement d'ambiance, sans logo de marque ni prix.
+
+### Typographies
+
+Inchangées (§ 4) : Archivo Black en capitales pour les titres, crème sur le noir ou noir sur le sable ; Space Grotesk
+pour le texte ; JetBrains Mono pour les étiquettes. Jamais de texte écrit par l'IA dans l'image.
+
+### À éviter
+
+- Un visuel tout sable ou tout crème : le noir porte la direction.
+- Plus de six cadres sur une publication (illisible sur téléphone).
+- Le moutarde en grand fond, le jaune vif du site, des dégradés brillants.
+- Un « H » redessiné par l'IA, ou un logo de marque inventé sur un vêtement.

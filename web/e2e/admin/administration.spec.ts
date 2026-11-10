@@ -120,7 +120,7 @@ test('administration : de la création d\'une pièce à sa commande par un clien
 
 test('accessibilité WCAG 2.2 AA de chaque écran de l\'administration (axe)', async ({ page }) => {
   await seConnecter(page, true)
-  for (const ecran of ['/admin', '/admin/produits', '/admin/produits/nouveau', '/admin/produits/t-shirt-prada-graffiti', '/admin/commandes', '/admin/demandes', '/admin/reglages', '/admin/textes', '/admin/journal', '/admin/supervision']) {
+  for (const ecran of ['/admin', '/admin/produits', '/admin/produits/nouveau', '/admin/produits/t-shirt-prada-graffiti', '/admin/commandes', '/admin/demandes', '/admin/reglages', '/admin/textes', '/admin/journal', '/admin/supervision', '/admin/supervision?onglet=sante', '/admin/supervision?onglet=journal', '/admin/supervision?onglet=securite', '/admin/supervision?onglet=maintenance']) {
     await page.goto(ecran)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.waitForLoadState('networkidle')

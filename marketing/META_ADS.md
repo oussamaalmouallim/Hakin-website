@@ -116,7 +116,7 @@ résultat, plus que les chiffres de Meta.
 
 L'objectif **Ventes** demande que Meta sache qu'un achat a eu lieu, grâce au **pixel Meta** (un petit script du site)
 ou à l'**API Conversions** (un envoi depuis la base). Le site n'en a pas aujourd'hui, volontairement :
-- la sécurité du site interdit tout script externe (politique de sécurité stricte, voir `GUIDE_HEBERGEMENT.md`) ;
+- la sécurité du site interdit tout script externe (politique de sécurité stricte, voir le guide PDF de `DEPLOIEMENT_ET_SUPERVISION/`, chapitre 9) ;
 - un pixel demande un **bandeau de consentement** aux cookies et une mise à jour de la page Confidentialité.
 
 Quand les campagnes Messages seront rentables, ce sera une évolution à décider (développement, consentement, texte

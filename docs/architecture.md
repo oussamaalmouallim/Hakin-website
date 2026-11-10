@@ -1,7 +1,7 @@
 # Architecture de H MODE
 
 Référence technique du projet, à jour au 08/11/2026 (lots 22 à 31). Mise en ligne et exploitation pas à pas :
-[`../GUIDE_HEBERGEMENT.md`](../GUIDE_HEBERGEMENT.md).
+[`../DEPLOIEMENT_ET_SUPERVISION/`](../DEPLOIEMENT_ET_SUPERVISION/) (guide PDF, étude, supervision, checklist).
 Les choix sont expliqués dans les ADR de [`decisions/`](decisions/) ; la démarche, lot par lot, dans [`projet/plan.md`](projet/plan.md).
 
 ## 1. En une phrase
@@ -56,7 +56,7 @@ Hakin-website/
 ├── .github/workflows/       ci · supabase · image · base
 ├── docs/                    architecture (ce fichier), decisions/, design/, projet/
 ├── marketing/               identité visuelle, prompts, Facebook, Instagram, TikTok, Meta Ads
-├── GUIDE_HEBERGEMENT.md     mise en ligne, coûts, supervision, sauvegardes, checklists
+├── DEPLOIEMENT_ET_SUPERVISION/  guide PDF, étude d'hébergement, architecture de la supervision, checklist
 ├── archive/                 ancien site statique, legacy, ancien serveur (lecture seule, rien supprimé)
 ├── netlify.toml             hébergement Netlify
 └── start.sh · stop.sh · deploy.sh

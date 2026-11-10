@@ -46,8 +46,9 @@ export function Interrupteur({ actif, onChange, libelle, desactive }: { actif: b
   )
 }
 
-export function Pastille({ children, ton = 'neutre' }: { children: ReactNode; ton?: 'neutre' | 'encre' | 'accent' | 'danger' | 'succes' }) {
+export function Pastille({ children, ton = 'neutre' }: { children: ReactNode; ton?: 'neutre' | 'encre' | 'accent' | 'danger' | 'succes' | 'alerte' }) {
   const tons = {
+    alerte: 'border border-alerte bg-alerte/10 text-bronze-fonce', // texte foncé : l'ocre seul n'atteint pas 4,5:1 sur les fonds clairs
     neutre: 'border border-ligne-forte text-gris',
     encre: 'bg-encre text-fond',
     accent: 'bg-accent text-encre',

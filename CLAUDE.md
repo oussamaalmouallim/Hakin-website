@@ -24,7 +24,7 @@
 - Contacts et réseaux : source unique `web/src/data/boutique.json`.
 - Toute écriture publique en base (commande, erreur, visite, demande) passe par `passer_limite` ; jamais d'insert direct pour `anon`. Longueurs des champs : `lib/longueurs.ts` = contraintes de la base.
 - Admin : rôles `technique` / `commerce` (`est_admin_technique()`) ; supervision réservée au technique. Demande WhatsApp ≠ commande.
-- Mise en ligne et exploitation : `GUIDE_HEBERGEMENT.md` ; marketing : `marketing/INDEX.md`.
+- Mise en ligne et exploitation : `DEPLOIEMENT_ET_SUPERVISION/` (guide PDF + étude d'hébergement, architecture de la supervision, checklist) ; source du PDF `docs/guide-pdf/`, régénéré par `npm run guide:pdf` (Paged.js + Chromium). Marketing : `marketing/INDEX.md`.
 - Vérifier une page dans le navigateur par le DOM et les styles calculés, pas seulement par capture d'écran.
 - Fin de lot : mettre à jour le tableau « Avancement » en haut de `docs/projet/plan.md`.
 - Nouvelle route dans `App.tsx` : l'ajouter aussi à `web/public/_redirects` et `infra/docker/nginx.conf` (sinon 404 ; `routes.test.ts` le vérifie).

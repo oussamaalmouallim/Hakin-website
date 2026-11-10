@@ -18,4 +18,4 @@ Nouvelle évolution : `npx supabase migration new <nom>` puis écrire le SQL. En
 Le compte admin ne passe jamais par une migration : `cd web && npm run admin:sql` (valeurs de `web/.env`).
 Le jeton du robot non plus : `cd web && npm run sante:sql`.
 
-Mise en ligne pas à pas : [`../GUIDE_HEBERGEMENT.md`](../GUIDE_HEBERGEMENT.md) (section C.2).
+Mise en ligne pas à pas : guide PDF de [`../DEPLOIEMENT_ET_SUPERVISION/`](../DEPLOIEMENT_ET_SUPERVISION/) (chapitre 8) ; sauvegarde : `npm run sauvegarde` puis `npm run sauvegarde:tester` dans `web/` (chapitre 14).

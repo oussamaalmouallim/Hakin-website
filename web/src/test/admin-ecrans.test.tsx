@@ -25,6 +25,18 @@ let erreurStatut: { code: string; message: string } | null = null
 const CLE = '482915603718'
 const COMPTES: Record<string, { id: string; mdp: string }> = { 'admin@hmode.test': { id: 'u-admin', mdp: 'Admin-2026' }, 'client@hmode.test': { id: 'u-client', mdp: 'Client-2026' } }
 const CLES: Record<string, string> = { produits: 'slug', reglages: 'cle', commandes: 'reference' }
+// Supervision : réponses de la base (la logique des statuts est testée en SQL par `npm run test:supabase`).
+const etatVide = () => ({
+  services: [] as Ligne[], tendance: [], dernier_robot: null, deploiements: [], sauvegardes: { derniere: null, derniere_restauration: null, dernier_echec: null },
+  compteurs_24h: { erreurs: 0, erreurs_api: 0, controles_en_echec: 0, appels_publics: 0, appels_bloques: 0, securite: 0 }, appels_par_action_24h: [],
+})
+let etatSupervisionTest = etatVide()
+const statsSupervisionTest = {
+  visites: { aujourdhui: 0, visiteurs_aujourdhui: 0, sept_jours: 0, visiteurs_sept_jours: 0, trente_jours: 0, lcp_median_ms: null, lcp_mesures: 0, pages: [], par_jour: [] },
+  limites: { regles: [{ action: 'commande', maximum: 5, fenetre_minutes: 60, maximum_global: 100, description: 'Commandes enregistrées' }], bloques_24h: [], bloques_7j: 0, suspects: [], historique: [] },
+  erreurs: { vingt_quatre_heures: 0, sept_jours: 0 },
+}
+let journalTest: Ligne[] = []
 
 class Requete {
   private mode: 'select' | 'insert' | 'update' | 'upsert' | 'delete' = 'select'
@@ -81,6 +93,9 @@ const faux = {
       return { data: { ok: true }, error: null }
     }
     if (nom === 'verrouiller_admin') { deverrouille = false; return { data: null, error: null } }
+    if (nom === 'etat_supervision') return { data: etatSupervisionTest, error: null }
+    if (nom === 'statistiques_supervision') return { data: statsSupervisionTest, error: null }
+    if (nom === 'journal_technique') return { data: journalTest, error: null }
     const { ref, nouveau_statut } = args as { ref: string; nouveau_statut?: string }
     const c = base.commandes?.find(x => x.reference === ref)
     if (!c) return { data: null, error: { message: 'introuvable', code: 'P0002' } }
@@ -126,6 +141,7 @@ beforeEach(() => {
   for (const k of Object.keys(base)) delete base[k]
   appels.rpc.length = 0; appels.ecritures.length = 0
   admin = true; deverrouille = true; cleDefinie = true; erreurStatut = null; role = 'technique'
+  etatSupervisionTest = etatVide(); journalTest = []
   sessionStorage.setItem('hmode-sans-intro', '1')
 })
 afterEach(() => useSession.setState({ utilisateur: null, pret: false }))
@@ -430,6 +446,45 @@ describe('administration : espaces séparés selon le rôle', () => {
     expect(await screen.findByRole('link', { name: /Commandes/ })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /Supervision/ })).not.toBeInTheDocument()
     expect(appels.rpc.map(r => r[0])).not.toContain('statistiques_supervision')
+  })
+})
+
+describe('administration : supervision technique en onglets', () => {
+  it('sans aucun contrôle : tout est « Inconnu », jamais « Opérationnel »', async () => {
+    remplirCatalogue(); connecter()
+    monter('/admin/supervision')
+    expect(await screen.findByRole('tab', { name: 'Vue d\'ensemble', selected: true })).toBeInTheDocument()
+    expect((await screen.findAllByText('Inconnu')).length).toBeGreaterThanOrEqual(6) // état global + 5 parties
+    expect(screen.queryByText('Opérationnel')).not.toBeInTheDocument()
+    expect(screen.getByText(/Le robot n'a encore rien envoyé/)).toBeInTheDocument()
+  })
+
+  it('un service en échec rend sa partie « Indisponible » ; Santé détaille disponibilité et seuil', async () => {
+    const u = userEvent.setup()
+    remplirCatalogue(); connecter()
+    const maintenant = new Date().toISOString()
+    const service = (cible: string, statut: string, ok = true) => ({ cible, dernier: maintenant, source: 'robot', ok, duree_ms: 300, statut_http: ok ? 200 : 503, detail: ok ? '' : 'HTTP 503', seuil_ms: 2000,
+      controles_24h: 48, disponibilite_24h: ok ? 100 : 97.9, controles_7j: 336, disponibilite_7j: 99.7, moyenne_ms_24h: 310, p95_ms_24h: 520, statut })
+    etatSupervisionTest.services = [service('site : accueil', 'operationnel'), service('base : API et données', 'indisponible', false)]
+    etatSupervisionTest.dernier_robot = maintenant as never
+    monter('/admin/supervision')
+    expect(await screen.findAllByText('Indisponible')).not.toHaveLength(0)
+    expect(screen.getAllByText('Opérationnel')).toHaveLength(1) // seulement la partie « Site »
+    await u.click(screen.getByRole('tab', { name: 'Santé' }))
+    expect(await screen.findByText('97,9 %')).toBeInTheDocument()
+    expect(screen.getAllByText('HTTP 503').length).toBeGreaterThan(0)
+  })
+
+  it('Journaux : lecture filtrée par la base (période, type, gravité)', async () => {
+    const u = userEvent.setup()
+    remplirCatalogue(); connecter()
+    journalTest = [{ quand: '2026-11-10T08:00:00Z', categorie: 'securite', gravite: 'avertissement', origine: 'limites', message: 'Requête bloquée : commande', detail: 'visiteur abc…' }]
+    monter('/admin/supervision?onglet=journal')
+    expect(await screen.findByText('Requête bloquée : commande')).toBeInTheDocument()
+    expect(appels.rpc).toContainEqual(['journal_technique', { p_heures: 168, p_categorie: null, p_gravite: null }])
+    await u.click(within(screen.getByRole('group', { name: 'Type' })).getByRole('button', { name: 'Sécurité' }))
+    await u.click(within(screen.getByRole('group', { name: 'Gravité' })).getByRole('button', { name: 'Critique' }))
+    await waitFor(() => expect(appels.rpc).toContainEqual(['journal_technique', { p_heures: 168, p_categorie: 'securite', p_gravite: 'critique' }]))
   })
 })
 

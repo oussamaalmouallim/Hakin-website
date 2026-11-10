@@ -6,12 +6,15 @@
 # À régler une fois : variables SITE_URL, VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY ; secret SANTE_JETON
 # (même valeur que SANTE_JETON de web/.env, posée en base par `npm run sante:sql`) ; facultatif : secret NETLIFY_BUILD_HOOK
 # (Netlify → Site configuration → Build & deploy → Build hooks) pour republier les aperçus des fiches modifiées.
+# Le robot remonte aussi : lenteur trois fois de suite, clé admin bloquée, et chaque jour vers 9 h (heure du Maroc) une
+# sauvegarde de plus de 8 jours ou une restauration non testée depuis 35 jours. Pour une alerte en quelques minutes,
+# un service externe interroge /rest/v1/rpc/sante (DEPLOIEMENT_ET_SUPERVISION/ARCHITECTURE_SUPERVISION.md).
 # Bon à savoir : GitHub suspend les tâches planifiées d'un dépôt public sans aucun commit pendant 60 jours.
 name: Surveillance
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '7,37 * * * *' # toutes les 30 min, hors du début d'heure (GitHub retarde les tâches planifiées à :00)
   workflow_dispatch:
 
 permissions:

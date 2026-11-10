@@ -36,10 +36,19 @@ async function photoDuCatalogue() {
   return null
 }
 
+let versionVue = null // { version, construit_le } lue dans /version.json : la base note chaque nouveau déploiement
 const resultats = await Promise.all([
   controler('site : accueil', `${site}/`, {}, async r => (!r.ok ? `HTTP ${r.status}` : (await r.text()).includes('id="racine"') ? '' : 'page sans application')),
   controler('site : boutique', `${site}/boutique`),
-  controler('site : version', `${site}/version.json`, {}, async r => (!r.ok ? `HTTP ${r.status}` : (await r.json().catch(() => null))?.version ? '' : 'version.json illisible')),
+  controler('site : version', `${site}/version.json`, {}, async r => {
+    if (!r.ok) return `HTTP ${r.status}`
+    const v = await r.json().catch(() => null)
+    if (!v?.version) return 'version.json illisible'
+    versionVue = { version: String(v.version), construit_le: v.construit_le ?? null }
+    return ''
+  }),
+  // Le même point que le service de surveillance externe : GET, l'API répond et la base lit une table.
+  controler('base : santé (GET)', `${sb}/rest/v1/rpc/sante`, { headers: entetesSb }, async r => (!r.ok ? `HTTP ${r.status}` : (await r.json().catch(() => null))?.ok === true ? '' : 'réponse inattendue')),
   controler('site : vrai 404', `${site}/adresse-inexistante-robot`, {}, r => (r.status === 404 ? '' : `HTTP ${r.status} au lieu de 404`)),
   controler('base : API et données', `${sb}/rest/v1/reglages?select=cle&limit=1`, { headers: entetesSb }),
   controler('base : comptes (Auth)', `${sb}/auth/v1/health`, { headers: entetesSb }),
@@ -50,6 +59,7 @@ resultats.push(photo
   ? await controler('stockage : photos', photo, { method: 'HEAD' })
   : { cible: 'stockage : photos', ok: true, statut_http: null, duree_ms: null, detail: 'aucune photo en ligne dans le catalogue : non vérifié' })
 
+if (versionVue) Object.assign(resultats.find(r => r.cible === 'site : version'), versionVue)
 for (const r of resultats) console.log(`${r.ok ? '✓' : '✗'} ${r.cible} — ${r.statut_http ?? '-'} en ${r.duree_ms ?? '-'} ms${r.detail ? ` (${r.detail})` : ''}`)
 
 let reponse

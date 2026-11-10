@@ -138,7 +138,33 @@ export async function lireJournal(avant?: number): Promise<EntreeJournal[]> {
 // ── Supervision technique (lot C) : lecture réservée au rôle technique par la base ─────────────────
 export interface Controle { id?: number; cree_le?: string; source?: 'robot' | 'admin'; cible: string; ok: boolean; statut_http: number | null; duree_ms: number | null; detail: string }
 export interface ErreurSite { id: number; cree_le: string; type: string; gravite: 'erreur' | 'avertissement'; message: string; page: string; source: string; version: string; navigateur: string }
-export interface Sauvegarde { id: number; cree_le: string; type: 'manuelle' | 'restauration_testee'; note: string }
+export interface Sauvegarde { id: number; cree_le: string; type: 'manuelle' | 'restauration_testee' | 'echec'; note: string }
+
+/** Statut honnête d'un service : « inconnu » tant qu'aucun contrôle récent n'existe, jamais vert par défaut. */
+export type StatutService = 'operationnel' | 'degrade' | 'indisponible' | 'inconnu'
+export interface ServiceSurveille {
+  cible: string; dernier: string; source: 'robot' | 'admin'; ok: boolean; duree_ms: number | null; statut_http: number | null; detail: string; seuil_ms: number
+  controles_24h: number; disponibilite_24h: number | null; controles_7j: number; disponibilite_7j: number | null
+  moyenne_ms_24h: number | null; p95_ms_24h: number | null; statut: StatutService
+}
+export interface EtatSupervision {
+  services: ServiceSurveille[]
+  tendance: { heure: string; site_ms: number | null; base_ms: number | null; echecs: number; controles: number }[]
+  dernier_robot: string | null
+  deploiements: { version: string; construit_le: string | null; vu_le: string }[]
+  sauvegardes: { derniere: string | null; derniere_restauration: string | null; dernier_echec: string | null }
+  compteurs_24h: { erreurs: number; erreurs_api: number; controles_en_echec: number; appels_publics: number; appels_bloques: number; securite: number }
+  appels_par_action_24h: { action: string; acceptes: number; bloques: number }[]
+}
+export async function etatSupervision(): Promise<EtatSupervision> {
+  return verifier(await (await base()).rpc('etat_supervision')) as EtatSupervision
+}
+export type CategorieJournal = 'site' | 'api' | 'sante' | 'securite' | 'deploiement' | 'sauvegarde' | 'base'
+export type GraviteJournal = 'info' | 'avertissement' | 'erreur' | 'critique'
+export interface EntreeTechnique { quand: string; categorie: CategorieJournal; gravite: GraviteJournal; origine: string; message: string; detail: string }
+export async function journalTechnique(heures: number, categorie: CategorieJournal | null, gravite: GraviteJournal | null): Promise<EntreeTechnique[]> {
+  return verifier(await (await base()).rpc('journal_technique', { p_heures: heures, p_categorie: categorie, p_gravite: gravite })) as EntreeTechnique[]
+}
 export interface StatistiquesSupervision {
   visites: { aujourdhui: number; visiteurs_aujourdhui: number; sept_jours: number; visiteurs_sept_jours: number; trente_jours: number
     lcp_median_ms: number | null; lcp_mesures: number; pages: { page: string; vues: number }[]; par_jour: { jour: string; vues: number; visiteurs: number }[] }
@@ -181,13 +207,20 @@ export async function controlerMaintenant(): Promise<Controle[]> {
     }
   }
   const sb = await base()
-  const resultats = await Promise.all([
+  let versionVue: { version: string; construit_le: string | null } | null = null
+  const resultats: (Controle & { version?: string; construit_le?: string | null })[] = await Promise.all([
     chrono('site : version', async () => {
       const r = await fetch('/version.json', { cache: 'no-store' })
       if (!r.ok) return { statut: r.status, detail: `HTTP ${r.status}` }
       if (!(r.headers.get('content-type') ?? '').includes('json')) return { statut: r.status, detail: 'version.json absent (l\'hébergeur renvoie une page)' }
-      const v = (await r.json()) as { version?: string }
+      const v = (await r.json()) as { version?: string; construit_le?: string }
+      if (v.version) versionVue = { version: v.version, construit_le: v.construit_le ?? null }
       return { statut: r.status, detail: v.version ? '' : 'version.json illisible' }
+    }),
+    chrono('base : santé (GET)', async () => {
+      const r = await fetch(`${url}/rest/v1/rpc/sante`, { headers: { apikey: cle }, cache: 'no-store' })
+      if (!r.ok) return { statut: r.status, detail: `HTTP ${r.status}` }
+      return { statut: r.status, detail: ((await r.json()) as { ok?: boolean })?.ok === true ? '' : 'réponse inattendue' }
     }),
     chrono('base : API et données', async () => {
       const { error, status } = await sb.from('reglages').select('cle', { head: true, count: 'exact' })
@@ -203,6 +236,8 @@ export async function controlerMaintenant(): Promise<Controle[]> {
   resultats.push(photo
     ? await chrono('stockage : photos', async () => { const r = await fetch(photo, { method: 'HEAD', cache: 'no-store' }); return { statut: r.status, detail: r.ok ? '' : `HTTP ${r.status}` } })
     : { cible: 'stockage : photos', ok: true, statut_http: null, duree_ms: null, detail: 'aucune photo téléversée dans le catalogue : non vérifié' })
+  // Seul un site construit (pas le serveur de dev) a une vraie version à noter comme déploiement.
+  if (versionVue && !import.meta.env.DEV) Object.assign(resultats[0], versionVue)
   await noterControles(resultats).catch(() => undefined)
   return resultats
 }

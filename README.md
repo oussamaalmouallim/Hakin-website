@@ -106,7 +106,7 @@ Mise en ligne du site : Netlify relié au dépôt (déploiement à chaque push s
 
 ## Mise en ligne, une fois
 
-Tout est détaillé pas à pas, pour un débutant, dans **[`GUIDE_HEBERGEMENT.md`](GUIDE_HEBERGEMENT.md)** (hébergement,
+Tout est détaillé pas à pas, pour un débutant, dans **[le guide PDF](DEPLOIEMENT_ET_SUPERVISION/GUIDE_DEPLOIEMENT_HEBERGEMENT_MAINTENANCE_HMODE.pdf)** du dossier [`DEPLOIEMENT_ET_SUPERVISION/`](DEPLOIEMENT_ET_SUPERVISION/) (hébergement,
 coûts, domaine, HTTPS, sauvegardes, pannes, checklists). En bref :
 
 1. Désactiver GitHub Pages (il sert encore l'ancien site).

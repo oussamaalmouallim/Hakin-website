@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Guide de déploiement, d'hébergement et de maintenance — H MODE</title>
+<meta name="author" content="H MODE">
+<meta name="description" content="Héberger, déployer, surveiller et maintenir la boutique H MODE, pas à pas.">
+<link rel="stylesheet" href="guide.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════ COUVERTURE ═══════════════════════════ -->
+<section class="couverture">
+  <div class="bande"></div>
+  <div class="logotype"><i>H</i>H MODE</div>
+  <svg class="monogramme" viewBox="0 0 120 100" aria-hidden="true">
+    <defs><linearGradient id="bronze" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#9c8366"/><stop offset=".55" stop-color="#836240"/><stop offset="1" stop-color="#5f4831"/></linearGradient></defs>
+    <text x="60" y="84" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="104" font-weight="500" fill="url(#bronze)">H</text>
+    <path d="M14 66 C 40 58, 62 40, 106 34 C 76 42, 52 58, 22 70 Z" fill="url(#bronze)"/>
+  </svg>
+  <div class="contenu">
+    <div class="surtitre">Guide pratique · exploitation de la boutique</div>
+    <h1>Déployer, héberger<br>et <span>surveiller</span><br>H MODE</h1>
+    <p class="sous-titre">De l'hébergement actuel sur Netlify à un site professionnel sur votre domaine : choix de l'offre, mise en production, supervision, protection des API, sauvegardes et maintenance, pas à pas.</p>
+    <div class="meta">
+      <div>Version<b>10 novembre 2026</b></div>
+      <div>Pour<b>le responsable technique (seul)</b></div>
+      <div>Site<b>hmodeclothes.netlify.app</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ SOMMAIRE ═══════════════════════════ -->
+<nav class="sommaire">
+  <h2>Sommaire</h2><div class="filet"></div>
+  <div class="partie">Comprendre</div>
+  <ol>
+    <li><a href="#ch1"><span class="n">01</span><span class="t">L'architecture réelle de H MODE</span></a></li>
+    <li><a href="#ch2"><span class="n">02</span><span class="t">Domaine, DNS, serveur, hébergement, API, base de données</span></a></li>
+  </ol>
+  <div class="partie">Choisir</div>
+  <ol>
+    <li><a href="#ch3"><span class="n">03</span><span class="t">Trois offres d'hébergement étudiées</span></a></li>
+    <li><a href="#ch4"><span class="n">04</span><span class="t">Coûts mensuels et annuels comparés</span></a></li>
+    <li><a href="#ch5"><span class="n">05</span><span class="t">Recommandation d'hébergement</span></a></li>
+  </ol>
+  <div class="partie">Mettre en production</div>
+  <ol>
+    <li><a href="#ch6"><span class="n">06</span><span class="t">Acheter et configurer le nom de domaine</span></a></li>
+    <li><a href="#ch7"><span class="n">07</span><span class="t">Déployer pas à pas depuis Netlify</span></a></li>
+    <li><a href="#ch8"><span class="n">08</span><span class="t">Configurer le frontend, le backend et la base</span></a></li>
+    <li><a href="#ch9"><span class="n">09</span><span class="t">HTTPS, certificat SSL et sécurité</span></a></li>
+  </ol>
+  <div class="partie">Surveiller et protéger</div>
+  <ol>
+    <li><a href="#ch10"><span class="n">10</span><span class="t">Mettre en place la surveillance</span></a></li>
+    <li><a href="#ch11"><span class="n">11</span><span class="t">Surveiller la santé des API</span></a></li>
+    <li><a href="#ch12"><span class="n">12</span><span class="t">Limiter les requêtes et protéger les points d'entrée</span></a></li>
+    <li><a href="#ch13"><span class="n">13</span><span class="t">Journaux et alertes</span></a></li>
+    <li><a href="#ch14"><span class="n">14</span><span class="t">Sauvegardes et restauration</span></a></li>
+  </ol>
+  <div class="partie">Durer</div>
+  <ol>
+    <li><a href="#ch15"><span class="n">15</span><span class="t">Maintenance préventive et corrective</span></a></li>
+    <li><a href="#ch16"><span class="n">16</span><span class="t">Diagnostiquer les pannes courantes</span></a></li>
+    <li><a href="#ch17"><span class="n">17</span><span class="t">Checklist de mise en production</span></a></li>
+    <li><a href="#ch18"><span class="n">18</span><span class="t">Checklists quotidienne, hebdomadaire et mensuelle</span></a></li>
+    <li><a href="#ch19"><span class="n">19</span><span class="t">Budget global estimé</span></a></li>
+    <li><a href="#ch20"><span class="n">20</span><span class="t">Sources officielles et liens utiles</span></a></li>
+  </ol>
+  <div class="encadre" style="margin-top:5mm">
+    <div class="titre">Comment lire ce guide</div>
+    <p>Chaque mot technique est défini la première fois, <em class="def">en gras beige</em>. Les étapes sont numérotées : suivez-les dans l'ordre. Chaque étiquette dit où en est une fonction : <span class="etiquette ok">en place et testé</span> ou <span class="etiquette afaire">à configurer</span>. Les prix ont été lus le 10/11/2026, avec leur source : vérifiez-les avant de payer.</p>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════ 1 ═══════════════════════════ -->
+<section class="chapitre" id="ch1">
+  <header><div class="num">Chapitre 01 · Comprendre</div><h2>L'architecture réelle de H MODE</h2>
+  <p class="chapeau">H MODE n'a pas de serveur à vous. Le site est un ensemble de fichiers ; tout ce qui calcule, garde ou vérifie est chez Supabase. Toute la suite du guide découle de ce choix.</p></header>
+
+  <figure>
+    <svg viewBox="0 0 680 330" xmlns="http://www.w3.org/2000/svg" font-family="Space Grotesk, sans-serif">
+      <rect x="0" y="0" width="680" height="330" rx="10" fill="#ffffff"/>
+      <g font-size="11">
+        <rect x="24" y="24" width="150" height="60" rx="8" fill="#f4ede3" stroke="#836240"/><text x="99" y="50" text-anchor="middle" font-weight="700">Visiteur / client</text><text x="99" y="68" text-anchor="middle" fill="#6b6b6b" font-size="9.5">navigateur, téléphone</text>
+        <rect x="24" y="108" width="150" height="60" rx="8" fill="#f4ede3" stroke="#836240"/><text x="99" y="134" text-anchor="middle" font-weight="700">Admin /admin</text><text x="99" y="152" text-anchor="middle" fill="#6b6b6b" font-size="9.5">e-mail + mot de passe + clé</text>
+        <rect x="250" y="40" width="180" height="110" rx="8" fill="#0a0a0a"/><text x="340" y="70" text-anchor="middle" fill="#f5d000" font-family="JetBrains Mono" font-size="9">HÉBERGEMENT</text><text x="340" y="92" text-anchor="middle" fill="#f5f4f0" font-weight="700" font-size="13">Netlify</text><text x="340" y="112" text-anchor="middle" fill="#b4b2ac" font-size="9.5">fichiers du site (web/dist)</text><text x="340" y="128" text-anchor="middle" fill="#b4b2ac" font-size="9.5">HTTPS, en-têtes, 404</text>
+        <rect x="490" y="24" width="170" height="182" rx="8" fill="#0a0a0a"/><text x="575" y="52" text-anchor="middle" fill="#f5d000" font-family="JetBrains Mono" font-size="9">BACKEND</text><text x="575" y="74" text-anchor="middle" fill="#f5f4f0" font-weight="700" font-size="13">Supabase</text>
+        <g fill="#e4d0b7" font-size="9.5"><text x="508" y="100">• API REST (PostgREST)</text><text x="508" y="118">• base PostgreSQL + RLS</text><text x="508" y="136">• Auth : comptes, e-mails</text><text x="508" y="154">• Storage : photos</text><text x="508" y="172">• fonctions : commande,</text><text x="518" y="188">admin, limites, santé</text></g>
+        <path d="M174 54 H250" stroke="#0a0a0a" stroke-width="1.4" marker-end="url(#f)"/><path d="M174 138 H250" stroke="#0a0a0a" stroke-width="1.4" marker-end="url(#f)"/>
+        <path d="M430 95 H490" stroke="#836240" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#f)"/>
+        <text x="440" y="86" font-size="8.5" fill="#836240" font-family="JetBrains Mono">HTTPS</text>
+        <path d="M174 40 C 330 -6, 470 -6, 520 24" stroke="#836240" stroke-width="1.2" fill="none" stroke-dasharray="4 3" marker-end="url(#f)"/>
+        <text x="300" y="20" font-size="8.5" fill="#836240" font-family="JetBrains Mono">API + clé publique + session</text>
+        <rect x="24" y="236" width="196" height="70" rx="8" fill="#efede7" stroke="#0a0a0a38"/><text x="122" y="260" text-anchor="middle" font-weight="700">GitHub</text><text x="122" y="278" text-anchor="middle" fill="#6b6b6b" font-size="9.5">code, CI, robot (30 min)</text><text x="122" y="294" text-anchor="middle" fill="#6b6b6b" font-size="9.5">migrations de la base</text>
+        <rect x="250" y="236" width="180" height="70" rx="8" fill="#efede7" stroke="#0a0a0a38"/><text x="340" y="260" text-anchor="middle" font-weight="700">Surveillance externe</text><text x="340" y="278" text-anchor="middle" fill="#6b6b6b" font-size="9.5">UptimeRobot / Better Stack</text><text x="340" y="294" text-anchor="middle" fill="#6b6b6b" font-size="9.5">toutes les 3 à 5 min</text>
+        <rect x="460" y="236" width="96" height="70" rx="8" fill="#efede7" stroke="#0a0a0a38"/><text x="508" y="266" text-anchor="middle" font-weight="700">Brevo</text><text x="508" y="284" text-anchor="middle" fill="#6b6b6b" font-size="9.5">e-mails</text>
+        <rect x="566" y="236" width="94" height="70" rx="8" fill="#efede7" stroke="#0a0a0a38"/><text x="613" y="266" text-anchor="middle" font-weight="700">WhatsApp</text><text x="613" y="284" text-anchor="middle" fill="#6b6b6b" font-size="9.5">wa.me</text>
+        <path d="M200 236 C 260 200, 300 170, 320 150" stroke="#6b6b6b" stroke-width="1" fill="none" marker-end="url(#f)"/>
+        <path d="M150 236 C 300 220, 470 230, 540 206" stroke="#6b6b6b" stroke-width="1" fill="none" marker-end="url(#f)"/>
+        <path d="M380 236 L 380 150" stroke="#6b6b6b" stroke-width="1" marker-end="url(#f)"/>
+        <path d="M420 236 C 470 225, 520 220, 560 206" stroke="#6b6b6b" stroke-width="1" fill="none" marker-end="url(#f)"/>
+        <path d="M530 206 L 515 236" stroke="#6b6b6b" stroke-width="1" marker-end="url(#f)"/>
+      </g>
+      <defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#0a0a0a"/></marker></defs>
+    </svg>
+    <figcaption>Figure 1 — Qui parle à qui. Les flèches pleines sont les visites ; les pointillés, les appels à l'API de Supabase depuis le navigateur.</figcaption>
+  </figure>
+
+  <h3>Les pièces, une par une</h3>
+  <table>
+    <thead><tr><th>Pièce</th><th>Ce que c'est</th><th>Où elle vit</th><th>État</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Site</strong> (frontend)</td><td>Vite + React + TypeScript, compilé une fois par <code>npm run build</code> en fichiers HTML, JS, CSS et images</td><td>Netlify (<code>netlify.toml</code>, <code>web/public/_redirects</code>)</td><td><span class="etiquette ok">en ligne</span></td></tr>
+      <tr><td><strong>Admin</strong> <code>/admin</code></td><td>une partie du même site ; droits vérifiés par la base, jamais par le navigateur</td><td>Netlify (même build)</td><td><span class="etiquette ok">en ligne</span></td></tr>
+      <tr><td><strong>Backend</strong></td><td>Supabase : API REST, base PostgreSQL avec règles de droits (RLS), Auth, Storage, fonctions SQL</td><td>projet Supabase « HMODE » (Europe)</td><td><span class="etiquette ok">en ligne</span><br>8 migrations</td></tr>
+      <tr><td><strong>Robot</strong></td><td>contrôle le site et les services toutes les 30 min, écrit le résultat en base</td><td>GitHub Actions (<code>sante.yml</code>)</td><td><span class="etiquette afaire">à activer</span></td></tr>
+      <tr><td><strong>E-mails</strong></td><td>confirmation de compte, mot de passe oublié</td><td>Supabase Auth + Brevo (SMTP)</td><td><span class="etiquette afaire">à brancher</span><br>SMTP Brevo</td></tr>
+      <tr><td><strong>Commande</strong></td><td>enregistrée en base par <code>passer_commande</code>, puis message WhatsApp ; paiement à la livraison</td><td>Supabase + wa.me</td><td><span class="etiquette ok">en ligne</span></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Un échange réel : un client passe commande</h3>
+  <ol class="etapes">
+    <li><strong>Le navigateur charge le site depuis Netlify</strong>, puis lit le catalogue chez Supabase : <code>GET /rest/v1/produits?publie=eq.true</code>.</li>
+    <li><strong>Le client valide <code>/commande</code></strong> : le site appelle la fonction de la base <code>POST /rest/v1/rpc/passer_commande</code> avec la clé publique.</li>
+    <li><strong>La base vérifie tout elle-même</strong> : limite par visiteur (sinon HTTP 429), ville livrée, pièce publiée, prix lu en base (celui du navigateur est ignoré), coloris, taille. Puis elle enregistre la commande en une seule transaction.</li>
+    <li><strong>Le site ouvre WhatsApp</strong> avec le message prêt. La commande apparaît dans l'admin, Ventes → Commandes.</li>
+  </ol>
+  <div class="encadre cle"><div class="titre">À retenir</div><p>Le navigateur n'est jamais cru sur parole. Prix, droits, limites : tout est vérifié <strong>dans la base</strong>. C'est pourquoi la clé publique peut être visible dans le site sans danger, et pourquoi la clé <code>service_role</code> (qui ignore les droits) n'est utilisée nulle part.</p></div>
+
+  <h3>Les points de défaillance</h3>
+  <table>
+    <thead><tr><th>Dépendance</th><th>Si elle tombe</th><th>Protection en place</th></tr></thead>
+    <tbody>
+      <tr><td>Netlify</td><td>plus de site du tout ; ou site en pause si crédits épuisés</td><td>surveillance externe ; jauge d'usage ; retour arrière en un clic</td></tr>
+      <tr><td>Supabase (base)</td><td>site visible mais sans catalogue à jour, commandes impossibles</td><td>repli sur le catalogue des fichiers ; commande par WhatsApp seul ; point de santé surveillé</td></tr>
+      <tr><td>Supabase Free : mise en pause après 1 semaine sans activité</td><td>comme une panne de la base</td><td>sondes régulières (activité) ; passage en Pro recommandé</td></tr>
+      <tr><td>Supabase Auth / e-mails</td><td>inscriptions impossibles</td><td>commande sans compte toujours possible ; SMTP Brevo à brancher</td></tr>
+      <tr><td>GitHub</td><td>plus de déploiement ni de robot ; le site reste en ligne</td><td>rien à faire : le site ne dépend pas de GitHub pour tourner</td></tr>
+      <tr><td>Vous (seul responsable)</td><td>personne ne voit la panne</td><td>alertes par e-mail ; checklists du chapitre 18 ; guide pour un remplaçant</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════ 2 ═══════════════════════════ -->
+<section class="chapitre" id="ch2">
+  <header><div class="num">Chapitre 02 · Comprendre</div><h2>Domaine, DNS, serveur, hébergement, API, base de données</h2>
+  <p class="chapeau">Six mots qu'on confond souvent. Pour chacun : une définition, à quoi il sert, ce qu'il est chez H MODE, ce que vous avez à faire, et comment vérifier.</p></header>
+
+  <div class="notion"><h3>Nom de domaine</h3><dl>
+    <dt>Définition</dt><dd>L'adresse lisible d'un site, comme <code>hmode.ma</code>. On la <strong>loue</strong> à l'année auprès d'un <em class="def">registrar</em> (une société agréée pour vendre des domaines).</dd>
+    <dt>À quoi ça sert</dt><dd>Donner une adresse stable et mémorisable, indépendante de l'hébergeur. Si vous changez d'hébergeur, le domaine reste.</dd>
+    <dt>Chez H MODE</dt><dd>Aujourd'hui <code>hmodeclothes.netlify.app</code>, un sous-domaine prêté par Netlify. Un domaine à vous est prévu.</dd>
+    <dt>À faire</dt><dd>L'acheter (chapitre 6), puis le relier à Netlify.</dd>
+    <dt>Vérifier</dt><dd>L'adresse s'ouvre dans un navigateur, avec le cadenas.</dd></dl></div>
+
+  <div class="notion"><h3>DNS</h3><dl>
+    <dt>Définition</dt><dd>Le <em class="def">DNS</em> (<em>Domain Name System</em>) est l'annuaire d'Internet : il traduit <code>hmode.ma</code> en adresse de machine. Chaque ligne de cet annuaire est un <em class="def">enregistrement</em> : <code>A</code> (domaine → adresse IP), <code>CNAME</code> (nom → autre nom), <code>TXT</code> (texte de preuve, pour les e-mails).</dd>
+    <dt>À quoi ça sert</dt><dd>Dire au monde « le site de <code>hmode.ma</code> est chez Netlify » et « les e-mails de <code>hmode.ma</code> partent de Brevo ».</dd>
+    <dt>Chez H MODE</dt><dd>Géré chez le registrar du domaine (ou chez Netlify si vous lui confiez le DNS).</dd>
+    <dt>À faire</dt><dd>Recopier exactement les enregistrements que Netlify et Brevo vous donnent.</dd>
+    <dt>Vérifier</dt><dd><code>dig hmode.ma +short</code> dans un terminal, ou le site <a href="https://dnschecker.org">dnschecker.org</a> : la valeur attendue apparaît partout.</dd></dl></div>
+
+  <div class="notion"><h3>Serveur</h3><dl>
+    <dt>Définition</dt><dd>Un ordinateur allumé en permanence, relié à Internet, qui répond aux requêtes. Un <em class="def">serveur virtuel</em> (VPS) est une part d'un gros serveur louée au mois.</dd>
+    <dt>À quoi ça sert</dt><dd>Faire tourner un programme qui doit répondre à tout moment.</dd>
+    <dt>Chez H MODE</dt><dd><strong>Aucun serveur à vous.</strong> Ceux de Netlify et de Supabase font le travail ; vous n'avez ni système à mettre à jour, ni machine à redémarrer.</dd>
+    <dt>À faire</dt><dd>Rien. L'image Docker du projet (<code>infra/docker/</code>) existe pour un hébergement sur serveur, si un jour c'est utile.</dd>
+    <dt>Vérifier</dt><dd>—</dd></dl></div>
+
+  <div class="notion"><h3>Hébergement</h3><dl>
+    <dt>Définition</dt><dd>Le service qui garde les fichiers du site et les envoie aux visiteurs, en général par un <em class="def">CDN</em> (réseau de serveurs répartis dans le monde, qui servent une copie proche du visiteur).</dd>
+    <dt>À quoi ça sert</dt><dd>Rendre le site rapide et disponible, avec HTTPS.</dd>
+    <dt>Chez H MODE</dt><dd>Netlify. À chaque envoi de code sur <code>main</code>, il reconstruit le site et le publie.</dd>
+    <dt>À faire</dt><dd>Garder les variables d'environnement à jour (chapitre 8) et surveiller la jauge d'usage (chapitre 15).</dd>
+    <dt>Vérifier</dt><dd><code>https://…/version.json</code> montre la dernière version et sa date de construction.</dd></dl></div>
+
+  <div class="notion"><h3>API</h3><dl>
+    <dt>Définition</dt><dd>Une <em class="def">API</em> (interface de programmation) est une liste d'adresses qu'un programme appelle pour lire ou écrire des données. Une API <em class="def">REST</em> utilise les adresses web et les verbes HTTP (<code>GET</code> lire, <code>POST</code> envoyer). Une <em class="def">clé d'API</em> identifie l'application qui appelle.</dd>
+    <dt>À quoi ça sert</dt><dd>Permettre au site, dans le navigateur, de parler à la base.</dd>
+    <dt>Chez H MODE</dt><dd>Fournie par Supabase (PostgREST) : une adresse par table et par fonction, par exemple <code>/rest/v1/rpc/passer_commande</code>. Pas d'API écrite à la main.</dd>
+    <dt>À faire</dt><dd>Surveiller son point de santé <code>/rest/v1/rpc/sante</code> (chapitre 11) et ses limites (chapitre 12).</dd>
+    <dt>Vérifier</dt><dd>L'admin, Supervision → Santé : « base : API et données » est « Opérationnel ».</dd></dl></div>
+
+  <div class="notion"><h3>Base de données</h3><dl>
+    <dt>Définition</dt><dd>Le lieu où les données sont rangées en tables. PostgreSQL est la base utilisée par Supabase. La <em class="def">RLS</em> (<em>Row Level Security</em>) y écrit, ligne par ligne, qui a le droit de lire ou modifier. Une <em class="def">migration</em> est un fichier SQL daté qui fait évoluer la base.</dd>
+    <dt>À quoi ça sert</dt><dd>Garder produits, commandes, comptes, réglages, et les protéger.</dd>
+    <dt>Chez H MODE</dt><dd>Projet Supabase « HMODE ». 8 migrations appliquées ; une neuvième (santé, journal, 429) est prête.</dd>
+    <dt>À faire</dt><dd>Sauvegarder chaque semaine et tester la restauration (chapitre 14).</dd>
+    <dt>Vérifier</dt><dd><code>npx supabase migration list</code> : les colonnes « local » et « remote » sont identiques.</dd></dl></div>
+</section>
+
+<!-- ═══════════════════════════ 3 ═══════════════════════════ -->
+<section class="chapitre" id="ch3">
+  <header><div class="num">Chapitre 03 · Choisir</div><h2>Trois offres d'hébergement étudiées</h2>
+  <p class="chapeau">H MODE a besoin d'un hébergeur de fichiers statiques avec build, HTTPS, en-têtes de sécurité et réécritures d'adresse. Le backend reste Supabase dans les trois cas. Prix lus le 10/11/2026 ; 1 USD = 9,76 DH.</p></header>
+
+  <h3>Ce qui est inclus</h3>
+  <table>
+    <thead><tr><th style="width:22%">Rubrique</th><th>Netlify</th><th>Cloudflare Pages</th><th>Vercel</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Offre étudiée</strong></td><td>Free, puis Personal</td><td>Free</td><td>Pro (Hobby interdit l'usage commercial)</td></tr>
+      <tr><td><strong>Services inclus</strong></td><td>CDN, build GitHub, aperçus, retour arrière, HTTPS</td><td>CDN, build GitHub, aperçus, HTTPS, DNS</td><td>CDN, build, aperçus, fonctions, statistiques</td></tr>
+      <tr><td><strong>Frontend</strong></td><td><strong>déjà configuré et en ligne</strong></td><td>à adapter : en-têtes dans <code>_headers</code>, à retester</td><td>à adapter : <code>vercel.json</code></td></tr>
+      <tr><td><strong>Backend / API</strong></td><td colspan="3">Supabase dans les trois cas (rien à héberger)</td></tr>
+      <tr><td><strong>Base de données</strong></td><td colspan="3">Supabase dans les trois cas</td></tr>
+      <tr><td><strong>Fichiers, images</strong></td><td>images du catalogue dans le site ; photos de l'admin dans Supabase Storage</td><td>idem ; 20 000 fichiers, 25 Mio par fichier</td><td>idem</td></tr>
+      <tr><td><strong>SSL / HTTPS</strong></td><td>Let's Encrypt automatique</td><td>automatique</td><td>automatique</td></tr>
+      <tr><td><strong>Domaine, DNS</strong></td><td>domaine externe ou DNS Netlify</td><td>DNS Cloudflare ; registrar au prix coûtant (pas de <code>.ma</code>)</td><td>domaine externe</td></tr>
+      <tr><td><strong>Sauvegardes</strong></td><td colspan="3">code dans GitHub ; déploiements précédents republiables ; base : voir Supabase</td></tr>
+      <tr><td><strong>Monitoring, logs</strong></td><td>journal de build, jauge d'usage</td><td>statistiques de trafic</td><td>journaux et statistiques</td></tr>
+      <tr><td><strong>Limites</strong></td><td>300 crédits/mois ; <strong>site en pause</strong> au-delà</td><td>500 builds/mois ; trafic statique non facturé</td><td>usage inclus 20 $, puis à la demande</td></tr>
+    </tbody>
+  </table>
+  <h3>Prix et bilan</h3>
+  <table>
+    <thead><tr><th style="width:22%">Rubrique</th><th>Netlify</th><th>Cloudflare Pages</th><th>Vercel</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Évolution</strong></td><td>Personal 1 000 crédits ; Pro 3 000</td><td>Pro 20 $/mois, 5 000 builds</td><td>Enterprise sur devis</td></tr>
+      <tr><td><strong>Prix mensuel</strong></td><td class="chiffre">0 · Personal 9 $ ≈ 88 DH</td><td class="chiffre">0</td><td class="chiffre">20 $ ≈ 195 DH / membre</td></tr>
+      <tr><td><strong>Prix annuel</strong></td><td class="chiffre">0 · ≈ 1 054 DH</td><td class="chiffre">0</td><td class="chiffre">≈ 2 342 DH</td></tr>
+      <tr><td><strong>Coûts en plus</strong></td><td>packs de crédits (5 $ / 500 sur Personal, source tierce)</td><td>aucun pour un site statique</td><td>usage au-delà du crédit inclus</td></tr>
+      <tr><td><strong>Avantages</strong></td><td>en place, testé, aucun changement</td><td>pas de pause liée au trafic ; gratuit durablement</td><td>outil soigné</td></tr>
+      <tr><td><strong>Inconvénients</strong></td><td>pause si crédits épuisés ; coût lié au trafic</td><td>migration et nouveaux tests ; pas de <code>.ma</code></td><td>payant dès le premier jour ; fonctions inutiles ici</td></tr>
+    </tbody>
+  </table>
+
+  <h3>La base : Supabase Free ou Pro</h3>
+  <table>
+    <thead><tr><th></th><th>Free</th><th>Pro</th></tr></thead>
+    <tbody>
+      <tr><td>Prix</td><td class="chiffre">0</td><td class="chiffre">25 $/mois ≈ 244 DH (≈ 2 928 DH/an)</td></tr>
+      <tr><td>Mise en pause</td><td>après 1 semaine d'inactivité</td><td>jamais</td></tr>
+      <tr><td>Sauvegardes</td><td><strong>aucune restaurable</strong></td><td>quotidiennes, gardées 7 jours</td></tr>
+      <tr><td>Quotas</td><td>500 Mo de base, 50 000 utilisateurs actifs/mois</td><td>8 Go de disque, 100 000 utilisateurs actifs</td></tr>
+    </tbody>
+  </table>
+  <div class="encadre attention"><div class="titre">Sources et prudence</div><p>Pages officielles : <a href="https://www.netlify.com/pricing/">Netlify</a>, <a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare Pages</a>, <a href="https://vercel.com/docs/plans/hobby">Vercel Hobby</a>, <a href="https://supabase.com/pricing">Supabase</a>. Quand la page officielle n'était pas lisible, le chiffre vient d'un comparatif daté 2026 (voir chapitre 20). Détail complet : <code>DEPLOIEMENT_ET_SUPERVISION/ETUDE_HEBERGEMENT.md</code>.</p></div>
+</section>
+
+<!-- ═══════════════════════════ 4 ═══════════════════════════ -->
+<section class="chapitre" id="ch4">
+  <header><div class="num">Chapitre 04 · Choisir</div><h2>Coûts mensuels et annuels comparés</h2>
+  <p class="chapeau">Cinq scénarios complets : site, base et domaine. Hors frais bancaires de change, que votre banque applique en plus sur un paiement en dollars.</p></header>
+  <table>
+    <thead><tr><th>Scénario</th><th>Site</th><th>Base</th><th>Domaine</th><th class="chiffre">Par mois</th><th class="chiffre">Par an</th></tr></thead>
+    <tbody>
+      <tr class="reco"><td><strong>A. Lancement</strong> (recommandé)</td><td>Netlify Free</td><td>Supabase Free</td><td><code>.ma</code></td><td class="chiffre">≈ 8 à 17 DH</td><td class="chiffre">100 à 200 DH HT</td></tr>
+      <tr class="reco"><td><strong>B. Ventes régulières</strong> (ensuite)</td><td>Netlify Free</td><td>Supabase Pro</td><td><code>.ma</code></td><td class="chiffre">≈ 252 à 261 DH</td><td class="chiffre">≈ 3 030 à 3 130 DH</td></tr>
+      <tr><td>C. Gros trafic sur Netlify</td><td>Netlify Personal</td><td>Supabase Pro</td><td><code>.ma</code></td><td class="chiffre">≈ 340 à 349 DH</td><td class="chiffre">≈ 4 080 à 4 180 DH</td></tr>
+      <tr><td>D. Cloudflare Pages</td><td>Cloudflare Free</td><td>Supabase Pro</td><td><code>.com</code></td><td class="chiffre">≈ 253 DH</td><td class="chiffre">≈ 3 040 DH</td></tr>
+      <tr><td>E. Vercel</td><td>Vercel Pro</td><td>Supabase Pro</td><td><code>.ma</code></td><td class="chiffre">≈ 448 à 456 DH</td><td class="chiffre">≈ 5 370 à 5 470 DH</td></tr>
+    </tbody>
+  </table>
+  <h4>Comment ces chiffres sont calculés</h4>
+  <ul>
+    <li>Netlify Personal : 9 $ × 9,76 = 87,8 DH. Vercel Pro : 20 $ × 9,76 = 195,2 DH. Supabase Pro : 25 $ × 9,76 = 244 DH.</li>
+    <li>Domaine <code>.ma</code> : 100 à 200 DH HT par an selon les guides marocains, soit 8 à 17 DH par mois lissés. Le renouvellement peut coûter plus que la première année.</li>
+    <li>Domaine <code>.com</code> chez Cloudflare au prix coûtant : ≈ 11,17 $ par an ≈ 109 DH (hausse du registre au 01/11/2026, source tierce).</li>
+    <li>Taux : 1 USD = 9,76 DH (XE, 10/11/2026). Il a varié de 9,23 à 9,99 DH en 90 jours.</li>
+  </ul>
+  <h3>Ce qui reste gratuit au départ</h3>
+  <table>
+    <thead><tr><th>Service</th><th>Offre</th><th>Limite à surveiller</th></tr></thead>
+    <tbody>
+      <tr><td>GitHub (code, CI, robot)</td><td>dépôt public</td><td>robot suspendu après 60 jours sans commit</td></tr>
+      <tr><td>Brevo (e-mails)</td><td>gratuite, quota quotidien</td><td>vérifier le quota sur leur page tarifs</td></tr>
+      <tr><td>Surveillance externe</td><td>UptimeRobot ou Better Stack, gratuits</td><td>conditions d'usage commercial à lire</td></tr>
+      <tr><td>WhatsApp Business (application)</td><td>gratuite</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="encadre"><div class="titre">Budget publicitaire</div><p>La publicité Meta n'est pas comptée ici : c'est un budget que vous fixez vous-même (<code>marketing/META_ADS.md</code>).</p></div>
+</section>
+
+<!-- ═══════════════════════════ 5 ═══════════════════════════ -->
+<section class="chapitre" id="ch5">
+  <header><div class="num">Chapitre 05 · Choisir</div><h2>Recommandation d'hébergement</h2>
+  <p class="chapeau">Lancer sur Netlify Free et Supabase Free, avec un domaine <code>.ma</code>. Passer Supabase en Pro dès les ventes régulières : c'est la première dépense utile.</p></header>
+  <div class="encadre cle"><div class="titre">La recommandation</div>
+    <p><strong>Maintenant :</strong> Netlify Free + Supabase Free + domaine <code>.ma</code> ≈ <strong>100 à 200 DH HT par an</strong>.</p>
+    <p><strong>Dès les premières commandes régulières, ou avant toute campagne publicitaire :</strong> Supabase Pro ≈ <strong>244 DH par mois</strong>.</p>
+    <p><strong>Plan B :</strong> si la jauge Netlify dépasse 70 % plusieurs mois de suite, migrer vers Cloudflare Pages (gratuit) plutôt que payer Netlify Personal.</p></div>
+  <h3>Pourquoi</h3>
+  <ol class="etapes">
+    <li><strong>Netlify est déjà en ligne et vérifié.</strong> Vraie page 404, en-têtes de sécurité, sitemap, aperçus de partage : tout a été contrôlé le 10/11. Changer d'hébergeur ne réglerait aucun problème réel et obligerait à tout retester.</li>
+    <li><strong>Le vrai risque est la base, pas le site.</strong> Sur Free, elle se met en pause après une semaine sans activité et n'a aucune sauvegarde restaurable. Le Pro règle les deux.</li>
+    <li><strong>Vercel coûte 195 DH par mois dès le premier jour</strong> (l'offre gratuite interdit la vente) sans rien apporter à un site statique.</li>
+    <li><strong>Cloudflare Pages est la bonne sortie</strong> si le trafic grossit : trafic statique non facturé. Une demi-journée pour porter les en-têtes et retester.</li>
+  </ol>
+  <h3>Les signaux qui font changer d'offre</h3>
+  <table>
+    <thead><tr><th>Signal</th><th>Où le voir</th><th>Décision</th></tr></thead>
+    <tbody>
+      <tr><td>Commandes réelles chaque semaine</td><td>Admin → Commandes</td><td>Supabase Pro</td></tr>
+      <tr><td>Campagne publicitaire prévue</td><td>—</td><td>Supabase Pro <strong>avant</strong> la campagne</td></tr>
+      <tr><td>Jauge Netlify &gt; 70 % avant la fin du mois</td><td>Netlify → Usage</td><td>packs de crédits ponctuels, ou Cloudflare Pages si répété</td></tr>
+      <tr><td>Base proche de 500 Mo</td><td>Supabase → Reports</td><td>Supabase Pro</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════ 6 ═══════════════════════════ -->
+<section class="chapitre" id="ch6">
+  <header><div class="num">Chapitre 06 · Mettre en production</div><h2>Acheter et configurer le nom de domaine</h2>
+  <p class="chapeau">Un domaine se loue à l'année. On l'achète chez un registrar, puis on écrit dans son DNS où se trouve le site. Netlify crée ensuite le certificat HTTPS tout seul.</p></header>
+
+  <div class="fiche"><h3>Étape 1 — Choisir et acheter le domaine</h3><dl>
+    <dt>Quoi</dt><dd>Choisir <code>.ma</code> (clients marocains, confiance locale) ou <code>.com</code> (international). Un seul suffit au départ.</dd>
+    <dt>Où</dt><dd><code>.ma</code> : un registrar agréé par l'ANRT (liste sur <a href="https://www.registre.ma">registre.ma</a>). <code>.com</code> : Cloudflare Registrar, Namecheap, Porkbun…</dd>
+    <dt>Pourquoi</dt><dd>Une adresse à vous, que personne ne peut reprendre tant que vous la renouvelez.</dd>
+    <dt>Vérifier</dt><dd>Le domaine apparaît dans votre espace client du registrar, avec sa date d'expiration.</dd>
+    <dt>Erreurs</dt><dd><ul><li>Regarder le prix de la 1re année seulement : lisez le <strong>prix de renouvellement</strong>.</li><li>Oublier le renouvellement automatique : un domaine expiré coupe le site <em>et</em> les e-mails.</li><li>Acheter le domaine au nom d'un tiers : il doit être à votre nom ou à celui de la boutique.</li></ul></dd></dl></div>
+
+  <div class="fiche"><h3>Étape 2 — Déclarer le domaine dans Netlify</h3><dl>
+    <dt>Quoi</dt><dd>Netlify → votre site → <strong>Domain management → Add a domain</strong> → saisir <code>hmode.ma</code>, puis ajouter aussi <code>www.hmode.ma</code>.</dd>
+    <dt>Où</dt><dd>app.netlify.com</dd>
+    <dt>Pourquoi</dt><dd>Netlify doit savoir qu'il sert ce domaine, pour créer le certificat.</dd>
+    <dt>Vérifier</dt><dd>Netlify affiche « Awaiting External DNS » ou la liste des enregistrements à créer.</dd></dl></div>
+
+  <div class="fiche"><h3>Étape 3 — Écrire les enregistrements DNS chez le registrar</h3><dl>
+    <dt>Quoi</dt><dd>Recopier <strong>exactement</strong> les valeurs affichées par Netlify. En général :</dd>
+    <dd style="grid-column:1/3"><pre data-titre="Exemple — valeurs à reprendre telles que Netlify les affiche">Type    Nom     Valeur                              TTL
+A       @       75.2.60.5            <span class="c">(adresse donnée par Netlify)</span>   3600
+CNAME   www     hmodeclothes.netlify.app.                     3600</pre></dd>
+    <dt>Pourquoi</dt><dd><code>@</code> désigne le domaine nu (<code>hmode.ma</code>) ; <code>www</code> le sous-domaine. Le <em class="def">TTL</em> est la durée pendant laquelle l'annuaire garde la réponse en mémoire.</dd>
+    <dt>Vérifier</dt><dd><pre>dig hmode.ma +short
+dig www.hmode.ma +short</pre>Les valeurs saisies reviennent. La <em class="def">propagation</em> (mise à jour de l'annuaire partout) prend de quelques minutes à 48 h.</dd>
+    <dt>Erreurs</dt><dd><ul><li>Laisser un ancien enregistrement <code>A</code> ou <code>AAAA</code> du registrar (page de parking) : supprimez-le.</li><li>Ajouter un point ou un espace en trop en recopiant.</li><li>Changer les serveurs DNS (« nameservers ») <em>et</em> les enregistrements en même temps : choisissez l'un ou l'autre.</li></ul></dd></dl></div>
+
+  <div class="fiche"><h3>Étape 4 — Basculer l'adresse du site partout</h3><dl>
+    <dt>Quoi</dt><dd><ol><li><code>SITE_URL</code> = <code>https://hmode.ma</code> dans Netlify <strong>et</strong> GitHub, puis Netlify → Deploys → <strong>Trigger deploy</strong>.</li><li>Supabase → Authentication → URL Configuration : Site URL <code>https://hmode.ma</code>, Redirect URLs <code>https://hmode.ma/**</code>.</li><li>Service de surveillance externe : nouvelle adresse.</li><li>Brevo : expéditeur <code>noreply@hmode.ma</code>, domaine authentifié (enregistrements <code>TXT</code> SPF et DKIM donnés par Brevo).</li></ol></dd>
+    <dt>Pourquoi</dt><dd>Le sitemap, les aperçus de partage, les liens des e-mails et le robot utilisent cette adresse.</dd>
+    <dt>Vérifier</dt><dd><code>https://hmode.ma/sitemap.xml</code> contient des adresses en <code>hmode.ma</code> ; un e-mail de confirmation ramène sur <code>hmode.ma</code>.</dd></dl></div>
+</section>
+
+<!-- ═══════════════════════════ 7 ═══════════════════════════ -->
+<section class="chapitre" id="ch7">
+  <header><div class="num">Chapitre 07 · Mettre en production</div><h2>Déployer pas à pas depuis Netlify</h2>
+  <p class="chapeau">Le site est déjà publié sur Netlify. Ce chapitre décrit le circuit complet d'une mise à jour, du code à la page en ligne, et ce qu'il reste à faire une seule fois.</p></header>
+  <div class="etiquettes"><span class="etiquette ok">Netlify relié et reconstruit le 10/11</span><span class="etiquette ok">variables Netlify posées</span><span class="etiquette afaire">GitHub Pages à désactiver</span><span class="etiquette afaire">CI à vérifier sur GitHub</span></div>
+
+  <h3>Le circuit d'une mise à jour</h3>
+  <ol class="etapes">
+    <li><strong>Vous modifiez le code en local</strong> et le testez (<code>npm run lint</code>, <code>npm test</code>, <code>npm run build</code> dans <code>web/</code>).</li>
+    <li><strong>Vous envoyez sur GitHub</strong> (<code>git push</code>), idéalement par une branche et une pull request.</li>
+    <li><strong>La CI se lance</strong> (<em class="def">intégration continue</em> : types, tests, build, tests navigateur). Rouge = on corrige avant de fusionner.</li>
+    <li><strong>Netlify reconstruit</strong> à chaque nouveau commit sur <code>main</code> : <code>npm run build</code> dans <code>web/</code>, publication de <code>dist/</code>.</li>
+    <li><strong>Le robot voit la nouvelle version</strong> dans <code>/version.json</code> et la note dans l'admin (Supervision → Maintenance → Déploiements vus).</li>
+  </ol>
+
+  <div class="fiche"><h3>Une fois : désactiver GitHub Pages</h3><dl>
+    <dt>Quoi</dt><dd>GitHub → dépôt → <strong>Settings → Pages</strong> → <em>Unpublish site</em> (ou <em>Source : None</em>).</dd>
+    <dt>Pourquoi</dt><dd>L'ancien site y est encore publié : une deuxième boutique périmée, trouvable par Google.</dd>
+    <dt>Vérifier</dt><dd><code>https://oussamaalmouallim.github.io/Hakin-website/</code> renvoie 404.</dd></dl></div>
+
+  <div class="fiche"><h3>Une fois : vérifier que Netlify suit bien GitHub</h3><dl>
+    <dt>Quoi</dt><dd>Netlify → <strong>Site configuration → Build &amp; deploy → Continuous deployment</strong> : le dépôt <code>Hakin-website</code>, branche <code>main</code>, est lié.</dd>
+    <dt>Pourquoi</dt><dd>Le 10/11, un commit poussé n'avait pas été publié tout seul : il a fallu relancer à la main.</dd>
+    <dt>Vérifier</dt><dd>Après le prochain <code>git push</code>, Deploys montre un build « Production: main@… » et <code>/version.json</code> change.</dd>
+    <dt>Erreurs</dt><dd>Site importé par glisser-déposer : il n'est relié à rien. Utilisez <em>Link repository</em>.</dd></dl></div>
+
+  <h3>Ce que Netlify lit tout seul (déjà dans le dépôt)</h3>
+  <pre data-titre="netlify.toml (extrait)">[build]
+  base = "web"               <span class="c"># dossier du site</span>
+  command = "npm run build"  <span class="c"># types + build + sitemap + aperçus de partage</span>
+  publish = "dist"           <span class="c"># fichiers publiés</span>
+
+[build.environment]
+  NODE_VERSION = "22"</pre>
+  <div class="encadre astuce"><div class="titre">Revenir en arrière en 30 secondes</div><p>Netlify → <strong>Deploys</strong> → un déploiement précédent qui marchait → <strong>Publish deploy</strong>. Effet immédiat, sans toucher au code. La base, elle, ne revient pas en arrière : voir chapitre 14.</p></div>
+</section>
+
+<!-- ═══════════════════════════ 8 ═══════════════════════════ -->
+<section class="chapitre" id="ch8">
+  <header><div class="num">Chapitre 08 · Mettre en production</div><h2>Configurer le frontend, le backend et la base</h2>
+  <p class="chapeau">Le frontend se configure par des variables ; le « backend » n'a rien à déployer : il se règle dans Supabase. La base évolue par migrations, toujours après une sauvegarde.</p></header>
+
+  <h3>Les variables d'environnement</h3>
+  <p>Une <em class="def">variable d'environnement</em> est une valeur donnée au programme au moment du build, au lieu d'être écrite dans le code. <strong>Toute variable qui commence par <code>VITE_</code> est copiée dans le site, donc publique.</strong></p>
+  <table>
+    <thead><tr><th>Variable</th><th>Publique</th><th>Où</th><th>Rôle</th></tr></thead>
+    <tbody>
+      <tr><td><code>VITE_SUPABASE_URL</code></td><td>oui</td><td><code>web/.env</code>, Netlify, GitHub (variable)</td><td>adresse du projet Supabase</td></tr>
+      <tr><td><code>VITE_SUPABASE_PUBLISHABLE_KEY</code></td><td>oui</td><td>idem</td><td>clé publique ; les droits restent vérifiés par la RLS</td></tr>
+      <tr><td><code>SITE_URL</code></td><td>oui</td><td>Netlify, GitHub (variable)</td><td>adresse finale : sitemap, aperçus de partage, robot</td></tr>
+      <tr><td><code>ADMIN_EMAIL</code>, <code>ADMIN_MOT_DE_PASSE</code>, <code>ADMIN_CLE</code></td><td><strong>secret</strong></td><td><code>web/.env</code> seulement</td><td>compte admin (<code>npm run admin:sql</code>)</td></tr>
+      <tr><td><code>SANTE_JETON</code></td><td><strong>secret</strong></td><td><code>web/.env</code> + GitHub (secret)</td><td>jeton du robot et des scripts de sauvegarde</td></tr>
+      <tr><td><code>SUPABASE_ACCESS_TOKEN</code></td><td><strong>secret</strong></td><td>GitHub (secret), facultatif</td><td>appliquer les migrations depuis GitHub</td></tr>
+      <tr><td><code>NETLIFY_BUILD_HOOK</code></td><td><strong>secret</strong></td><td>GitHub (secret), facultatif</td><td>republier les aperçus quand le catalogue change</td></tr>
+    </tbody>
+  </table>
+  <div class="encadre attention"><div class="titre">Jamais</div><p>Ni la clé <code>service_role</code>, ni un mot de passe, ni un jeton dans une variable <code>VITE_</code> ou dans Netlify. Le dépôt est <strong>public</strong> : <code>web/.env</code> n'est jamais envoyé dans git.</p></div>
+
+  <h3>Le backend : réglages Supabase</h3>
+  <div class="fiche"><h3>URL Configuration <span class="etiquette ok">fait le 09/11</span></h3><dl>
+    <dt>Quoi</dt><dd>Authentication → URL Configuration : <em>Site URL</em> = l'adresse du site ; <em>Redirect URLs</em> = <code>https://…/**</code> et <code>http://localhost:6013/**</code> (démo locale).</dd>
+    <dt>Pourquoi</dt><dd>Les e-mails de confirmation et de mot de passe oublié ramènent sur <code>/connexion</code> : sans <code>/**</code>, Supabase refuse ces liens.</dd>
+    <dt>Vérifier</dt><dd>Un e-mail de confirmation ramène sur le site, connexion réussie.</dd></dl></div>
+  <div class="fiche"><h3>SMTP (Brevo) <span class="etiquette afaire">à faire</span></h3><dl>
+    <dt>Quoi</dt><dd>Authentication → <strong>SMTP Settings</strong> : hôte, port, identifiant et clé SMTP donnés par Brevo (SMTP &amp; API) ; expéditeur à votre nom.</dd>
+    <dt>Pourquoi</dt><dd>Sans SMTP à vous, Supabase n'envoie que 2 à 3 e-mails par heure, et seulement à l'équipe du projet : <strong>vos clients ne peuvent pas confirmer leur inscription</strong>.</dd>
+    <dt>Vérifier</dt><dd>Inscription avec une adresse à vous : l'e-mail arrive, expéditeur Brevo. Puis Authentication → Rate Limits : la limite d'e-mails est relevée.</dd></dl></div>
+
+  <h3>La base de production : appliquer une migration</h3>
+  <ol class="etapes">
+    <li><strong>Sauvegarder d'abord</strong> : <code>npm run sauvegarde</code> dans <code>web/</code> (chapitre 14).</li>
+    <li><strong>Voir ce qui va changer, sans rien écrire</strong> (à la racine du dépôt) :<pre>npx supabase db push --dry-run</pre>La liste doit contenir seulement les migrations attendues, aujourd'hui <code>20261110120000_sante_et_journal.sql</code>.</li>
+    <li><strong>Appliquer</strong> :<pre>npx supabase db push</pre></li>
+    <li><strong>Vérifier</strong> :<pre>npx supabase migration list</pre>Colonnes « local » et « remote » identiques. Puis ouvrez <code>https://&lt;projet&gt;.supabase.co/rest/v1/rpc/sante?apikey=&lt;clé publique&gt;</code> : <code>{"ok": true, …}</code>.</li>
+  </ol>
+  <div class="encadre"><div class="titre">Ce qui est déjà fait sur la base</div><p>Le 09/11 : projet relié, 4 premières migrations notées comme appliquées, 4 migrations du 08/11 poussées, sauvegarde d'avant gardée dans <code>~/Documents/HMODE-sauvegardes/</code>. Votre compte admin a le rôle <code>technique</code>.</p></div>
+</section>
+
+<!-- ═══════════════════════════ 9 ═══════════════════════════ -->
+<section class="chapitre" id="ch9">
+  <header><div class="num">Chapitre 09 · Mettre en production</div><h2>HTTPS, certificat SSL et sécurité</h2>
+  <p class="chapeau">HTTPS chiffre l'échange entre le client et le site. Netlify s'en occupe ; votre travail est de vérifier qu'il est actif, et que les protections du site sont bien envoyées.</p></header>
+
+  <div class="notion"><h3>HTTPS et certificat</h3><dl>
+    <dt>Définition</dt><dd><em class="def">HTTPS</em> est HTTP chiffré. Un <em class="def">certificat TLS</em> (souvent appelé SSL) prouve au navigateur que le site est bien le vôtre. <em class="def">Let's Encrypt</em> en délivre gratuitement, pour 90 jours, renouvelés automatiquement.</dd>
+    <dt>À quoi ça sert</dt><dd>Empêcher la lecture et la modification du trafic (mot de passe, adresse de livraison). Sans lui, le navigateur affiche « Non sécurisé ».</dd>
+    <dt>Chez H MODE</dt><dd>Actif sur <code>hmodeclothes.netlify.app</code>. Pour le domaine : créé par Netlify une fois le DNS correct.</dd>
+    <dt>À faire</dt><dd>Netlify → Domain management → <strong>HTTPS</strong> : certificat actif ; activer <em>Force HTTPS</em>.</dd>
+    <dt>Vérifier</dt><dd>Cadenas dans le navigateur ; <code>http://</code> redirige vers <code>https://</code>.</dd></dl></div>
+
+  <h3>Les protections déjà en place</h3>
+  <table>
+    <thead><tr><th>Protection</th><th>Où</th><th>Ce qu'elle bloque</th><th>Vérifiée</th></tr></thead>
+    <tbody>
+      <tr><td><strong>HSTS</strong> : le navigateur refuse ensuite le HTTP simple</td><td><code>netlify.toml</code></td><td>détournement vers une version non chiffrée</td><td>en ligne, 10/11</td></tr>
+      <tr><td><strong>CSP</strong> (<em>Content Security Policy</em>) : liste des sources que le navigateur peut charger</td><td><code>netlify.toml</code>, <code>infra/docker/securite.conf</code></td><td>script injecté, site externe inconnu</td><td>en ligne, 10/11</td></tr>
+      <tr><td><code>X-Frame-Options: DENY</code></td><td><code>netlify.toml</code></td><td>le site piégé dans la page d'un autre</td><td>en ligne, 10/11</td></tr>
+      <tr><td>RLS sur chaque table</td><td>base</td><td>lire ou modifier les données d'un autre</td><td>97 contrôles SQL</td></tr>
+      <tr><td>Admin à trois facteurs + blocage 15 min après 5 clés fausses</td><td>base</td><td>accès à l'admin</td><td>tests navigateur et SQL</td></tr>
+      <tr><td>Rôles <code>technique</code> / <code>commerce</code></td><td>base</td><td>supervision réservée au développeur</td><td>tests SQL et d'écran</td></tr>
+      <tr><td>Limitation des requêtes + 429</td><td>base</td><td>envois en masse (chapitre 12)</td><td>tests SQL</td></tr>
+      <tr><td><code>/admin</code> non indexé</td><td><code>X-Robots-Tag</code>, <code>robots.txt</code></td><td>l'admin dans Google</td><td>build</td></tr>
+    </tbody>
+  </table>
+  <h3>Vérifier en une commande</h3>
+  <pre>curl -sI https://hmodeclothes.netlify.app/ | grep -iE "strict-transport|content-security|x-frame"</pre>
+  <p>Les trois lignes doivent apparaître. Un outil en ligne donne une note globale : <a href="https://securityheaders.com">securityheaders.com</a>.</p>
+  <div class="encadre attention"><div class="titre">Accès et comptes</div><ul><li>Activez la <strong>double authentification</strong> sur GitHub, Netlify, Supabase, Brevo et le registrar : un seul de ces comptes volé suffit à prendre le site.</li><li>La clé de sécurité de l'admin ne se partage qu'en personne ; un compte <code>commerce</code> (sans supervision) pour la boutique.</li><li>Un admin qui quitte : retirer sa ligne de <code>admins</code> (effet immédiat).</li></ul></div>
+</section>
+
+<!-- ═══════════════════════════ 10 ═══════════════════════════ -->
+<section class="chapitre" id="ch10">
+  <header><div class="num">Chapitre 10 · Surveiller</div><h2>Mettre en place la surveillance</h2>
+  <p class="chapeau">Trois yeux : un service externe qui sonne en quelques minutes, un robot qui contrôle tout toutes les 30 minutes, et l'écran Supervision de l'admin qui garde l'historique.</p></header>
+  <div class="etiquettes"><span class="etiquette ok">écran Supervision en 5 onglets</span><span class="etiquette ok">robot écrit et testé (panne simulée)</span><span class="etiquette afaire">robot à activer sur GitHub</span><span class="etiquette afaire">service externe à créer</span></div>
+
+  <div class="notion"><h3>Surveillance de disponibilité</h3><dl>
+    <dt>Définition</dt><dd>L'<em class="def">uptime monitoring</em> consiste à interroger un site à intervalle régulier depuis l'extérieur et à alerter quand il ne répond plus. Un <em class="def">health check</em> (contrôle de santé) est une requête faite exprès pour ça.</dd>
+    <dt>À quoi ça sert</dt><dd>Savoir avant les clients qu'il y a une panne.</dd>
+    <dt>Chez H MODE</dt><dd>Robot GitHub (30 min, tous les services) + service externe (3 à 5 min, site et API) + écran Supervision.</dd>
+    <dt>À faire</dt><dd>Les étapes ci-dessous, puis le chapitre 11.</dd>
+    <dt>Vérifier</dt><dd>Supervision → Vue d'ensemble : « Dernier passage du robot : il y a moins de 30 min ».</dd></dl></div>
+
+  <h3>Activer le robot (une fois)</h3>
+  <ol class="etapes">
+    <li><strong>Créer un jeton</strong> et l'écrire dans <code>web/.env</code> :<pre>openssl rand -hex 24</pre>Ligne à ajouter : <code>SANTE_JETON=&lt;le jeton&gt;</code>.</li>
+    <li><strong>Poser son empreinte en base</strong> : dans <code>web/</code>, <code>npm run sante:sql</code>, puis coller le SQL affiché dans Supabase → <strong>SQL Editor</strong>. Seule l'empreinte part en base, jamais le jeton.</li>
+    <li><strong>GitHub → Settings → Secrets and variables → Actions</strong> : secret <code>SANTE_JETON</code> (même valeur) ; variables <code>SITE_URL</code>, <code>VITE_SUPABASE_URL</code>, <code>VITE_SUPABASE_PUBLISHABLE_KEY</code>.</li>
+    <li><strong>GitHub → Actions → Surveillance → Run workflow.</strong> Résultat vert, puis visible dans l'admin.</li>
+    <li><strong>Facultatif</strong> : Netlify → Build hooks → créer un hook → secret GitHub <code>NETLIFY_BUILD_HOOK</code>. Le robot republie les aperçus de partage quand une pièce change (au plus toutes les 12 h).</li>
+  </ol>
+
+  <h3>Ce que contrôle le robot</h3>
+  <table>
+    <thead><tr><th>Contrôle</th><th>Requête</th><th>Réussi si</th><th class="chiffre">Seuil lent</th></tr></thead>
+    <tbody>
+      <tr><td>site : accueil, boutique</td><td><code>GET /</code>, <code>/boutique</code></td><td>200, application présente</td><td class="chiffre">3 000 ms</td></tr>
+      <tr><td>site : version</td><td><code>GET /version.json</code></td><td>version lue (notée comme déploiement)</td><td class="chiffre">3 000 ms</td></tr>
+      <tr><td>site : vrai 404</td><td>adresse inexistante</td><td>404</td><td class="chiffre">3 000 ms</td></tr>
+      <tr><td>base : santé (GET)</td><td><code>/rest/v1/rpc/sante</code></td><td>200 et <code>ok: true</code></td><td class="chiffre">2 000 ms</td></tr>
+      <tr><td>base : API et données</td><td><code>/rest/v1/reglages</code></td><td>200</td><td class="chiffre">2 000 ms</td></tr>
+      <tr><td>base : comptes (Auth)</td><td><code>/auth/v1/health</code></td><td>200</td><td class="chiffre">2 000 ms</td></tr>
+      <tr><td>stockage : photos</td><td>une photo du catalogue</td><td>200 (sinon « non vérifié »)</td><td class="chiffre">3 000 ms</td></tr>
+      <tr><td>WhatsApp</td><td><code>https://wa.me/</code></td><td>statut &lt; 500</td><td class="chiffre">5 000 ms</td></tr>
+    </tbody>
+  </table>
+
+  <h3>L'écran Supervision (Admin → Technique)</h3>
+  <table>
+    <thead><tr><th>Onglet</th><th>Ce qu'il montre</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Vue d'ensemble</strong></td><td>état de chaque partie (site, API et base, comptes, photos, WhatsApp) ; disponibilité 24 h ; temps de réponse ; erreurs ; écritures publiques et requêtes bloquées ; dernier déploiement ; dernière sauvegarde ; tendance 48 h ; fréquentation</td></tr>
+      <tr><td><strong>Santé</strong></td><td>chaque contrôle : état, disponibilité 24 h et 7 jours, moyenne, p95, seuil ; bouton « Contrôler maintenant » ; incidents</td></tr>
+      <tr><td><strong>Journaux</strong></td><td>tous les événements, filtrés par période, type et gravité (chapitre 13)</td></tr>
+      <tr><td><strong>Sécurité</strong></td><td>limites et justification, appels acceptés et bloqués, activité anormale (chapitre 12)</td></tr>
+      <tr><td><strong>Maintenance</strong></td><td>versions et déploiements, sauvegardes, liens vers Netlify, GitHub et Supabase</td></tr>
+    </tbody>
+  </table>
+  <div class="encadre cle"><div class="titre">Les quatre états</div><p><strong>Opérationnel</strong> : le dernier contrôle a réussi, dans les temps. <strong>Dégradé</strong> : il répond mais trop lentement, ou il a échoué au moins une fois dans les 6 dernières heures. <strong>Indisponible</strong> : le dernier contrôle a échoué. <strong>Inconnu</strong> : aucun contrôle depuis 75 minutes. <strong>Jamais de vert sans contrôle réel.</strong></p></div>
+</section>
+
+<!-- ═══════════════════════════ 11 ═══════════════════════════ -->
+<section class="chapitre" id="ch11">
+  <header><div class="num">Chapitre 11 · Surveiller</div><h2>Surveiller la santé des API</h2>
+  <p class="chapeau">Si l'API tombe, vous voulez le savoir en minutes, pas en heures. Un point de santé public, interrogé par un service externe, fait ce travail.</p></header>
+  <div class="etiquettes"><span class="etiquette ok">point de santé testé en local</span><span class="etiquette afaire">en ligne après db push</span><span class="etiquette afaire">sondes à créer</span></div>
+
+  <div class="notion"><h3>Le point de santé <code>/rest/v1/rpc/sante</code></h3><dl>
+    <dt>Définition</dt><dd>Une fonction de la base, appelable en <code>GET</code>, qui répond <code>{"ok": true, "base": "ok", "heure": …}</code> après avoir lu une table.</dd>
+    <dt>À quoi ça sert</dt><dd>Prouver en une requête que l'API répond <em>et</em> que la base lit ses données. Aucune donnée de la boutique n'en sort.</dd>
+    <dt>Chez H MODE</dt><dd>Migration <code>20261110120000_sante_et_journal.sql</code>. La clé publique peut être passée dans l'adresse (<code>?apikey=</code>), ce que tous les services de surveillance savent faire.</dd>
+    <dt>À faire</dt><dd>Appliquer la migration (chapitre 8), puis créer les sondes ci-dessous.</dd>
+    <dt>Vérifier</dt><dd>L'adresse ouverte dans un navigateur affiche <code>"ok": true</code>.</dd></dl></div>
+
+  <h3>Créer les sondes externes</h3>
+  <ol class="etapes">
+    <li><strong>Choisir le service</strong> : UptimeRobot (50 sondes, toutes les 5 min) ou Better Stack (10 sondes, toutes les 3 min), tous deux gratuits. <strong>Lisez leurs conditions</strong> : les sources se contredisent sur l'usage commercial de l'offre gratuite.</li>
+    <li><strong>Sonde 1, le site</strong> : type HTTP(s), adresse <code>https://hmodeclothes.netlify.app/</code> (puis le domaine), mot-clé attendu <code>racine</code>.</li>
+    <li><strong>Sonde 2, l'API</strong> : adresse <code>https://&lt;projet&gt;.supabase.co/rest/v1/rpc/sante?apikey=&lt;clé publique&gt;</code>, mot-clé attendu <code>"ok": true</code>, délai d'expiration 15 s.</li>
+    <li><strong>Alerte</strong> : votre e-mail ; si possible l'application mobile du service (notification).</li>
+    <li><strong>Tester l'alerte</strong> : mettez une fausse adresse dans la sonde 2 pendant 10 minutes ; l'e-mail doit arriver ; remettez la bonne.</li>
+  </ol>
+
+  <h3>Ce qui a été testé (Supabase local, 10/11)</h3>
+  <table>
+    <thead><tr><th>Scénario</th><th>Résultat observé</th></tr></thead>
+    <tbody>
+      <tr><td>Tout marche</td><td>point de santé 200 en 17 ms ; robot : tous les contrôles de la base réussis</td></tr>
+      <tr><td><strong>Base figée</strong> (conteneur suspendu)</td><td>point de santé sans réponse après 20 s ; robot : « base : santé » et « base : API » en échec (délai dépassé), résultats non enregistrés, <strong>code de sortie 1 → e-mail de GitHub</strong></td></tr>
+      <tr><td>Base relancée</td><td>contrôles réussis au passage suivant ; l'API reste « Dégradé » 6 h (échec récent), puis « Opérationnel »</td></tr>
+      <tr><td>À savoir</td><td><code>/auth/v1/health</code> répondait encore 200 base figée : il ne prouve pas que la base marche. D'où le point de santé dédié.</td></tr>
+    </tbody>
+  </table>
+  <div class="encadre astuce"><div class="titre">Bonus contre la mise en pause</div><p>Sur Supabase Free, le projet se met en pause après une semaine sans activité. Une sonde toutes les quelques minutes crée de l'activité régulière. Ce n'est pas garanti par Supabase : le vrai remède reste l'offre Pro.</p></div>
+</section>
+
+<!-- ═══════════════════════════ 12 ═══════════════════════════ -->
+<section class="chapitre" id="ch12">
+  <header><div class="num">Chapitre 12 · Protéger</div><h2>Limiter les requêtes et protéger les points d'entrée</h2>
+  <p class="chapeau">La limitation des requêtes arrête les abus : fausses commandes en masse, spam d'erreurs, robots. Elle ne garantit pas à elle seule que l'API reste disponible.</p></header>
+  <div class="etiquettes"><span class="etiquette ok">limites en ligne depuis le 09/11</span><span class="etiquette ok">réponse 429 testée en local</span><span class="etiquette afaire">429 en ligne après db push</span></div>
+
+  <div class="notion"><h3>Rate limiting</h3><dl>
+    <dt>Définition</dt><dd>Compter les appels d'un même visiteur sur une fenêtre de temps et refuser au-delà d'un seuil. La réponse standard est <em class="def">HTTP 429</em> « Trop de requêtes », avec l'en-tête <code>Retry-After</code> (secondes à attendre).</dd>
+    <dt>À quoi ça sert</dt><dd>Empêcher qu'un script remplisse la base de fausses commandes ou masque les vraies erreurs.</dd>
+    <dt>Chez H MODE</dt><dd>Dans la base, fonction <code>passer_limite</code>, appelée par chaque écriture publique. Visiteur = empreinte hachée et salée de son adresse réseau (jamais l'adresse en clair), <strong>plus</strong> un plafond global, car l'adresse transmise peut être falsifiée.</dd>
+    <dt>À faire</dt><dd>Rien au quotidien ; ajuster une limite si de vrais clients sont bloqués.</dd>
+    <dt>Vérifier</dt><dd>Supervision → Sécurité : appels acceptés et bloqués sur 24 h.</dd></dl></div>
+
+  <h3>Les limites configurées</h3>
+  <table>
+    <thead><tr><th>Point d'entrée</th><th class="chiffre">Par visiteur</th><th class="chiffre">Tous visiteurs</th><th>Pourquoi cette valeur</th></tr></thead>
+    <tbody>
+      <tr><td><code>passer_commande</code></td><td class="chiffre">5 / 60 min</td><td class="chiffre">100 / 60 min</td><td>un client passe une ou deux commandes ; le plafond arrête un envoi en masse</td></tr>
+      <tr><td><code>signaler_erreur</code></td><td class="chiffre">30 / 10 min</td><td class="chiffre">2 000 / 10 min</td><td>une page qui plante en boucle ne remplit pas la base</td></tr>
+      <tr><td><code>noter_demande_whatsapp</code></td><td class="chiffre">30 / 10 min</td><td class="chiffre">3 000 / 10 min</td><td>quelques conversations par visiteur</td></tr>
+      <tr><td><code>compter_visite</code></td><td class="chiffre">120 / 10 min</td><td class="chiffre">50 000 / 10 min</td><td>au-delà de quelques pages par minute, c'est un robot</td></tr>
+      <tr><td>robot, scripts</td><td class="chiffre">20 / 10 min</td><td class="chiffre">60 / 10 min</td><td>un passage toutes les 30 min, plus les relances</td></tr>
+      <tr><td>clé de l'admin</td><td class="chiffre">5 erreurs</td><td class="chiffre">—</td><td>blocage 15 min, chaque erreur journalisée</td></tr>
+      <tr><td>comptes (Auth)</td><td colspan="2">limites de Supabase</td><td>Authentication → Rate Limits</td></tr>
+    </tbody>
+  </table>
+  <h3>Ce qui se passe quand une limite est atteinte</h3>
+  <pre data-titre="Réponse de l'API (testée le 10/11 sur Supabase local)">HTTP/1.1 429 Too Many Requests
+Retry-After: 600</pre>
+  <ul>
+    <li>Rien n'est enregistré ; le <strong>blocage</strong>, lui, est gardé (journal, onglet Sécurité).</li>
+    <li>Le site affiche : « Trop de commandes envoyées depuis cet appareil en peu de temps. Réessayez dans une heure, ou écrivez-nous sur WhatsApp. »</li>
+    <li>10 blocages ou plus en 30 min : le robot alerte.</li>
+  </ul>
+  <h4>Modifier une limite</h4>
+  <pre data-titre="SQL Editor de Supabase">update public.limites set maximum = 8 where action = 'commande';</pre>
+  <div class="encadre attention"><div class="titre">Ce que la limitation ne fait pas</div><p>Elle ne protège pas contre une surcharge massive : chaque requête refusée arrive quand même jusqu'à la base. Contre ça : le CDN de Netlify (les pages ne touchent pas la base), l'infrastructure de Supabase, le plafond global, les délais d'expiration (le robot coupe à 15 s, le site retombe sur le catalogue des fichiers et sur WhatsApp), et la surveillance pour réagir. En cas d'attaque réelle : support de Supabase, et baisse temporaire des plafonds.</p></div>
+</section>
+
+<!-- ═══════════════════════════ 13 ═══════════════════════════ -->
+<section class="chapitre" id="ch13">
+  <header><div class="num">Chapitre 13 · Surveiller</div><h2>Journaux et alertes</h2>
+  <p class="chapeau">Un journal dit ce qui s'est passé ; une alerte vous prévient sans que vous regardiez. Les deux sont en place ; il reste à régler la réception des e-mails.</p></header>
+
+  <div class="notion"><h3>Journal (log)</h3><dl>
+    <dt>Définition</dt><dd>La liste horodatée des événements, avec leur gravité : <strong>info</strong>, <strong>avertissement</strong>, <strong>erreur</strong>, <strong>critique</strong>.</dd>
+    <dt>À quoi ça sert</dt><dd>Comprendre une panne après coup : quoi, quand, où, combien de fois.</dd>
+    <dt>Chez H MODE</dt><dd>Supervision → <strong>Journaux</strong> : un seul fil, filtrable par période (24 h à 90 jours), type et gravité.</dd>
+    <dt>À faire</dt><dd>Le lire chaque semaine (chapitre 18).</dd>
+    <dt>Vérifier</dt><dd>Une erreur provoquée en local apparaît dans le fil.</dd></dl></div>
+
+  <table>
+    <thead><tr><th>Type</th><th>Origine</th><th>Gravité</th></tr></thead>
+    <tbody>
+      <tr><td>Site</td><td>erreurs vues par les navigateurs des visiteurs (script, affichage, chargement)</td><td>erreur, avertissement</td></tr>
+      <tr><td>API</td><td>appels à la base refusés vus par le site</td><td>erreur, avertissement</td></tr>
+      <tr><td>Santé</td><td>contrôles en échec ou lents</td><td>critique (base), erreur, avertissement (lent)</td></tr>
+      <tr><td>Sécurité</td><td>requêtes bloquées ; clé admin erronée ; accès admin bloqué</td><td>avertissement ; critique (blocage)</td></tr>
+      <tr><td>Déploiement</td><td>nouvelle version vue en ligne</td><td>info</td></tr>
+      <tr><td>Sauvegarde</td><td>sauvegarde, restauration testée, échec</td><td>info, erreur</td></tr>
+    </tbody>
+  </table>
+  <div class="encadre"><div class="titre">Données personnelles</div><p>Avant l'écriture, la base retire e-mails, numéros de téléphone, jetons et paramètres d'adresse. Un visiteur n'est qu'une empreinte tronquée. Conservation : 30 jours (90 pour les événements techniques). Les journaux internes de Supabase (SQL, Auth) restent dans son tableau de bord.</p></div>
+
+  <h3>Qui vous alerte, et quand</h3>
+  <table>
+    <thead><tr><th>Situation</th><th>Alerte</th><th class="chiffre">Délai</th></tr></thead>
+    <tbody>
+      <tr><td>Site ou API injoignable</td><td>service externe → e-mail</td><td class="chiffre">3 à 5 min</td></tr>
+      <tr><td>Base, comptes, photos, WhatsApp en échec</td><td>robot → e-mail GitHub</td><td class="chiffre">≤ 30 min</td></tr>
+      <tr><td>Lenteur trois passages de suite</td><td>robot</td><td class="chiffre">≤ 1 h 30</td></tr>
+      <tr><td>≥ 50 erreurs ou ≥ 10 blocages en 30 min</td><td>robot</td><td class="chiffre">≤ 30 min</td></tr>
+      <tr><td>Accès admin bloqué (5 clés fausses)</td><td>robot</td><td class="chiffre">≤ 30 min</td></tr>
+      <tr><td>Sauvegarde &gt; 8 jours ; restauration non testée &gt; 35 jours</td><td>robot, passage de 9 h</td><td class="chiffre">1 fois / jour</td></tr>
+      <tr><td>Quotas, mise en pause</td><td>e-mails de Netlify et Supabase</td><td class="chiffre">selon eux</td></tr>
+    </tbody>
+  </table>
+  <ol class="etapes">
+    <li><strong>github.com → Settings → Notifications → Actions</strong> : cocher <em>Only notify for failed workflows</em>, par e-mail.</li>
+    <li><strong>Vérifier l'adresse</strong> de vos comptes GitHub, Netlify, Supabase : c'est là qu'arrivent les alertes.</li>
+    <li><strong>Une fois tous les deux mois au moins, faire un commit</strong> : GitHub suspend les tâches planifiées d'un dépôt public après 60 jours sans activité. Sinon, relancez « Surveillance » à la main.</li>
+  </ol>
+  <div class="encadre attention"><div class="titre">Limite connue</div><p>GitHub peut retarder les tâches planifiées quand il est chargé (le robot passe à :07 et :37 pour l'éviter). Le robot est un filet ; l'alerte rapide vient du service externe.</p></div>
+</section>
+
+<!-- ═══════════════════════════ 14 ═══════════════════════════ -->
+<section class="chapitre" id="ch14">
+  <header><div class="num">Chapitre 14 · Protéger</div><h2>Sauvegardes et restauration</h2>
+  <p class="chapeau">Une sauvegarde n'est fiable qu'une fois sa restauration testée. Les deux sont scriptées, et ont été faites pour de vrai le 10/11.</p></header>
+  <div class="etiquettes"><span class="etiquette ok">sauvegarde de la base en ligne faite le 10/11</span><span class="etiquette ok">restauration testée : 26 tables identiques</span><span class="etiquette ok">copie abîmée détectée</span></div>
+
+  <div class="notion"><h3>Sauvegarde et restauration</h3><dl>
+    <dt>Définition</dt><dd>Une <em class="def">sauvegarde</em> est une copie des données, rangée ailleurs. La <em class="def">restauration</em> la remet en place. Une <em class="def">empreinte SHA-256</em> est une signature du fichier : un seul octet changé, et elle change.</dd>
+    <dt>À quoi ça sert</dt><dd>Revenir en arrière après une erreur (suppression, migration ratée) ou une perte chez le fournisseur.</dd>
+    <dt>Chez H MODE</dt><dd>Supabase Free n'en fait aucune de restaurable : c'est vous. Sur Pro, Supabase en fait une par jour, et vos sauvegardes restent utiles (hors de chez Supabase).</dd></dl></div>
+
+  <h3>Sauvegarder (chaque semaine, et avant chaque migration)</h3>
+  <pre data-titre="dans web/ — prérequis : npx supabase login et link, une fois">npm run sauvegarde</pre>
+  <ul>
+    <li>Écrit <code>~/Documents/HMODE-sauvegardes/&lt;date&gt;/</code> : <code>roles.sql</code>, <code>schema.sql</code>, <code>donnees.sql</code>, <code>photos/</code> (si des photos ont été téléversées), <code>manifeste.json</code> (empreintes et nombre de lignes de chaque table).</li>
+    <li>Dossier réservé à votre compte (droits 700), <strong>hors du dépôt public</strong> : il contient les coordonnées des clients.</li>
+    <li>Note la sauvegarde dans l'admin si <code>SANTE_JETON</code> est dans <code>web/.env</code> (sinon : Supervision → Maintenance → Noter).</li>
+  </ul>
+  <h3>Tester la restauration (chaque mois)</h3>
+  <pre data-titre="dans web/ — Docker doit tourner">npm run sauvegarde:tester</pre>
+  <ol class="etapes">
+    <li><strong>Vérifie les empreintes</strong> : un fichier modifié ou manquant est refusé.</li>
+    <li><strong>Démarre un Supabase jetable</strong> (ports 553xx), sans toucher au projet en ligne ni au Supabase local habituel.</li>
+    <li><strong>Restaure</strong> rôles, structure et données en une seule transaction (méthode de la documentation Supabase).</li>
+    <li><strong>Compare</strong> le nombre de lignes de chaque table au manifeste ; vérifie les fonctions et une lecture à travers la RLS.</li>
+    <li><strong>Arrête et efface</strong> le Supabase jetable, puis note le résultat dans l'admin.</li>
+  </ol>
+  <pre data-titre="Sortie réelle du 10/11/2026">✓ 3 fichiers intacts (empreintes identiques au manifeste)
+✓ Restauration sans erreur (une seule transaction)
+✓ 26 tables : mêmes nombres de lignes qu'à la sauvegarde (62 produits, 0 commandes, 1 comptes)
+✓ Fonctions de la boutique présentes ; un visiteur lit 62 pièce(s) publiée(s) à travers les droits (RLS)
+Supabase jetable arrêté et effacé.</pre>
+  <table>
+    <thead><tr><th>Règle</th><th>Valeur</th></tr></thead>
+    <tbody>
+      <tr><td>Fréquence</td><td>chaque semaine ; avant chaque <code>db push</code> ; avant une grosse modification du catalogue</td></tr>
+      <tr><td>Conservation</td><td>les 8 dernières semaines, puis une par mois sur 12 mois (rotation à la main)</td></tr>
+      <tr><td>Emplacement</td><td>votre ordinateur + un second support : disque externe ou cloud <strong>chiffré</strong></td></tr>
+      <tr><td>Test de restauration</td><td>chaque mois ; le robot le rappelle après 35 jours</td></tr>
+    </tbody>
+  </table>
+  <h3>Restaurer pour de vrai (perte de données)</h3>
+  <ol class="etapes">
+    <li><strong>Ne restaurez jamais directement sur la production.</strong> Créez un projet Supabase de test, restaurez-y la sauvegarde, vérifiez.</li>
+    <li><strong>Seulement si la perte est réelle</strong> : restaurez sur la production les tables touchées, ou faites pointer le site vers le projet restauré (variables <code>VITE_SUPABASE_*</code> dans Netlify, puis Trigger deploy).</li>
+    <li><strong>Notez l'incident</strong> dans le journal de l'admin, avec la cause.</li>
+  </ol>
+</section>
+
+<!-- ═══════════════════════════ 15 ═══════════════════════════ -->
+<section class="chapitre" id="ch15">
+  <header><div class="num">Chapitre 15 · Durer</div><h2>Maintenance préventive et corrective</h2>
+  <p class="chapeau">Préventive : ce qu'on fait pour que ça ne casse pas. Corrective : ce qu'on fait quand ça a cassé. Seul sur le projet, la préventive est votre meilleure assurance.</p></header>
+  <div class="colonnes">
+    <div><h3>Préventive</h3><ul>
+      <li><strong>Sauvegarde</strong> chaque semaine ; restauration testée chaque mois.</li>
+      <li><strong>Jauge Netlify</strong> (Usage) chaque semaine : au-delà de 70 %, réagir avant la pause.</li>
+      <li><strong>Dépendances</strong> : <code>npm outdated</code> dans <code>web/</code> chaque mois ; mises à jour par petits groupes, CI verte.</li>
+      <li><strong>Sécurité</strong> : <code>npm audit</code> chaque mois ; alertes Dependabot de GitHub.</li>
+      <li><strong>Performances</strong> : <code>npm run qualite:lighthouse</code> ou PageSpeed Insights chaque mois ; LCP médian dans Supervision sous 2,5 s.</li>
+      <li><strong>Domaine</strong> : date d'expiration et renouvellement automatique, chaque trimestre.</li>
+      <li><strong>Accès</strong> : liste des admins et double authentification, chaque trimestre.</li>
+    </ul></div>
+    <div><h3>Corrective</h3><ol class="etapes">
+      <li><strong>Constater</strong> : alerte, ou client qui signale.</li>
+      <li><strong>Mesurer</strong> : Supervision → Contrôler maintenant ; Journaux sur 24 h.</li>
+      <li><strong>Limiter les dégâts</strong> : retour arrière Netlify si un déploiement est en cause ; prévenir la boutique (commandes par WhatsApp).</li>
+      <li><strong>Corriger</strong> : branche, correction, CI verte, déploiement.</li>
+      <li><strong>Vérifier</strong> : robot vert, état « Opérationnel ».</li>
+      <li><strong>Noter</strong> : cause et correction dans le journal ; une ligne dans <code>docs/projet/TODO.md</code> si une action reste.</li>
+    </ol></div>
+  </div>
+  <h3>Mettre à jour sans casser</h3>
+  <table>
+    <thead><tr><th>Quoi</th><th>Comment</th></tr></thead>
+    <tbody>
+      <tr><td>Contenu (prix, photos, textes, livraison)</td><td>dans l'admin, sans déploiement</td></tr>
+      <tr><td>Code</td><td>branche → pull request → CI verte → fusion : Netlify déploie</td></tr>
+      <tr><td>Base</td><td><code>npx supabase migration new &lt;nom&gt;</code> → test en local → sauvegarde → <code>db push</code></td></tr>
+      <tr><td>Dépendances</td><td>par petits groupes ; jamais toutes d'un coup avant un week-end</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════ 16 ═══════════════════════════ -->
+<section class="chapitre" id="ch16">
+  <header><div class="num">Chapitre 16 · Durer</div><h2>Diagnostiquer les pannes courantes</h2>
+  <p class="chapeau">Partir du symptôme, faire la première vérification, aller à la cause probable. Dans le doute : Supervision, puis les tableaux de bord des fournisseurs.</p></header>
+  <table class="long">
+    <thead><tr><th style="width:26%">Symptôme</th><th style="width:34%">Première vérification</th><th>Cause probable et remède</th></tr></thead>
+    <tbody>
+      <tr><td>Le site ne s'affiche plus du tout</td><td>Netlify → Deploys et Usage ; <a href="https://www.netlifystatus.com">netlifystatus.com</a></td><td>crédits épuisés (site en pause) : packs ou offre supérieure ; déploiement raté : retour arrière</td></tr>
+      <tr><td>Le site s'affiche, catalogue figé, commandes impossibles</td><td>Supervision → Santé ; Supabase → état du projet ; <a href="https://status.supabase.com">status.supabase.com</a></td><td>base en pause (Free) : la relancer dans Supabase ; panne Supabase : attendre, commandes par WhatsApp</td></tr>
+      <tr><td>« Administration indisponible »</td><td><code>/version.json</code> récent ? variables Netlify</td><td>site construit sans <code>VITE_SUPABASE_*</code> : les poser, puis <em>Clear cache and deploy</em></td></tr>
+      <tr><td>Commandes refusées « trop de commandes »</td><td>Supervision → Sécurité</td><td>limite atteinte : vrai abus, ou limite trop basse pour un vrai client (chapitre 12)</td></tr>
+      <tr><td>Commande refusée sans message clair</td><td>Journaux, type API</td><td>pièce sans prix, coloris ou taille non listés, ville non livrée</td></tr>
+      <tr><td>Pas d'e-mail de confirmation</td><td>Supabase → Logs → Auth ; Brevo → statistiques</td><td>SMTP non branché, quota Brevo atteint, URL de redirection manquante</td></tr>
+      <tr><td>Robot rouge toutes les 30 min</td><td>GitHub → Actions → Surveillance : la ligne <code>✗</code></td><td>elle nomme le service en panne ; « Jeton refusé » : <code>SANTE_JETON</code> différent entre GitHub et la base</td></tr>
+      <tr><td>Robot muet (« inconnu » partout)</td><td>GitHub → Actions</td><td>suspendu après 60 jours sans commit : <em>Enable workflow</em>, puis <em>Run workflow</em></td></tr>
+      <tr><td>Aperçu de partage ancien</td><td><a href="https://developers.facebook.com/tools/debug/">outil de débogage de Meta</a> → Récupérer à nouveau</td><td>cache de Facebook ou WhatsApp ; build pas encore relancé (hook, 12 h au plus)</td></tr>
+      <tr><td>Site lent</td><td>Supervision → Vue d'ensemble, tendance 48 h ; LCP médian</td><td>image trop lourde, nouvelle bibliothèque ; Supabase lent : statut et rapports</td></tr>
+      <tr><td>Erreurs « chargement » après une mise en ligne</td><td>Journaux, type Site</td><td>normal quelques minutes : un visiteur avait l'ancienne page ouverte ; le site se recharge seul</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════ 17 ═══════════════════════════ -->
+<section class="chapitre" id="ch17">
+  <header><div class="num">Chapitre 17 · Durer</div><h2>Checklist de mise en production</h2>
+  <p class="chapeau">À cocher dans l'ordre. Les cases pleines sont faites et vérifiées au 10/11/2026. Version à jour : <code>DEPLOIEMENT_ET_SUPERVISION/CHECKLIST_MISE_EN_PRODUCTION.md</code>.</p></header>
+  <h4>Déjà fait</h4>
+  <ul class="check">
+    <li class="fait">Base en ligne reliée, 8 migrations appliquées, sauvegarde d'avant gardée<span class="ref">ch. 8</span></li>
+    <li class="fait">Supabase URL Configuration : adresse Netlify et <code>/**</code>, démo locale<span class="ref">ch. 8</span></li>
+    <li class="fait">Netlify : trois variables posées ; site reconstruit avec l'adresse de la base<span class="ref">ch. 7</span></li>
+    <li class="fait">En ligne : pages 200, vraie 404, sitemap, CSP, HSTS, X-Frame-Options<span class="ref">ch. 9</span></li>
+    <li class="fait">Première sauvegarde par script et restauration testée<span class="ref">ch. 14</span></li>
+  </ul>
+  <h4>Avant d'ouvrir au public</h4>
+  <ul class="check">
+    <li>Commits poussés ; CI verte sur GitHub<span class="ref">ch. 7</span></li>
+    <li>Netlify publie bien chaque commit de <code>main</code><span class="ref">ch. 7</span></li>
+    <li>GitHub Pages désactivé<span class="ref">ch. 7</span></li>
+    <li><code>npm run sauvegarde</code>, puis migration <code>20261110120000</code> poussée ; point de santé « ok »<span class="ref">ch. 8</span></li>
+    <li>SMTP Brevo branché ; inscription et mot de passe oublié testés<span class="ref">ch. 8</span></li>
+    <li>Robot : jeton, variables, premier passage vert ; notifications GitHub « échecs seulement »<span class="ref">ch. 10, 13</span></li>
+    <li>Sondes externes site et API ; alerte testée<span class="ref">ch. 11</span></li>
+    <li>Double authentification sur tous les comptes<span class="ref">ch. 9</span></li>
+    <li>Prix, tailles, coloris, livraison et textes juridiques saisis par la boutique</li>
+    <li>Une commande réelle de bout en bout (puis annulée et supprimée) ; une demande WhatsApp visible dans Ventes → Demandes</li>
+    <li>Une fiche partagée testée dans l'outil de débogage de Meta</li>
+  </ul>
+  <h4>Domaine</h4>
+  <ul class="check">
+    <li>Domaine acheté, renouvellement automatique actif<span class="ref">ch. 6</span></li>
+    <li>DNS recopiés ; certificat actif ; Force HTTPS<span class="ref">ch. 6, 9</span></li>
+    <li><code>SITE_URL</code>, Supabase, sondes et Brevo passés sur le domaine<span class="ref">ch. 6</span></li>
+  </ul>
+  <h4>Jour d'ouverture</h4>
+  <ul class="check">
+    <li>Sauvegarde ; Supervision tout « Opérationnel » ; jauge Netlify notée<span class="ref">ch. 14, 10</span></li>
+    <li>La boutique sait où voir commandes et demandes</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════ 18 ═══════════════════════════ -->
+<section class="chapitre" id="ch18">
+  <header><div class="num">Chapitre 18 · Durer</div><h2>Checklists quotidienne, hebdomadaire et mensuelle</h2>
+  <p class="chapeau">Cinq minutes par jour, vingt par semaine, une heure par mois. C'est ce qui sépare une boutique tenue d'une boutique qui tombe sans que personne ne le sache.</p></header>
+  <h3><span class="pastille">5 min</span>Chaque jour</h3>
+  <ul class="check">
+    <li>Pas d'e-mail d'alerte non lu (GitHub, service externe, Netlify, Supabase)</li>
+    <li>Supervision → Vue d'ensemble : aucun « Indisponible » ; dernier passage du robot récent</li>
+    <li>Commandes et demandes WhatsApp du jour traitées par la boutique</li>
+  </ul>
+  <h3><span class="pastille">20 min</span>Chaque semaine</h3>
+  <ul class="check">
+    <li><code>npm run sauvegarde</code> ; copie sur le second support</li>
+    <li>Supervision → Journaux, 7 jours, gravité « erreur » puis « critique » : une erreur répétée = un défaut à corriger</li>
+    <li>Supervision → Sécurité : blocages et activité anormale</li>
+    <li>Netlify → Usage : jauge de crédits sous 70 %</li>
+    <li>Supervision → Santé : disponibilité 7 jours de chaque contrôle</li>
+  </ul>
+  <h3><span class="pastille">1 h</span>Chaque mois</h3>
+  <ul class="check">
+    <li><code>npm run sauvegarde:tester</code> : restauration verte</li>
+    <li><code>npm outdated</code> et <code>npm audit</code> dans <code>web/</code> ; mises à jour par petits groupes</li>
+    <li>Lighthouse ou PageSpeed Insights ; LCP médian sous 2,5 s</li>
+    <li>Supabase → Reports : taille de la base, utilisateurs actifs</li>
+    <li>Rotation des sauvegardes (8 semaines + 1 par mois)</li>
+    <li>Un commit au moins (le robot reste actif)</li>
+  </ul>
+  <h3><span class="pastille">trimestre</span>Chaque trimestre</h3>
+  <ul class="check">
+    <li>Liste des admins et de leurs rôles ; double authentification partout</li>
+    <li>Domaine : date d'expiration ; moyen de paiement à jour</li>
+    <li>Relire ce guide : prix et offres ont-ils changé ?</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════ 19 ═══════════════════════════ -->
+<section class="chapitre" id="ch19">
+  <header><div class="num">Chapitre 19 · Durer</div><h2>Budget global estimé</h2>
+  <p class="chapeau">Ce que coûte la boutique pour fonctionner, au lancement puis en régime de croisière. Taux : 1 USD = 9,76 DH (10/11/2026), hors frais bancaires.</p></header>
+  <table>
+    <thead><tr><th>Poste</th><th class="chiffre">Lancement / mois</th><th class="chiffre">Croisière / mois</th><th class="chiffre">Croisière / an</th></tr></thead>
+    <tbody>
+      <tr><td>Hébergement du site (Netlify Free)</td><td class="chiffre">0</td><td class="chiffre">0</td><td class="chiffre">0</td></tr>
+      <tr><td>Base, comptes, photos (Supabase)</td><td class="chiffre">0 (Free)</td><td class="chiffre">≈ 244 DH (Pro)</td><td class="chiffre">≈ 2 928 DH</td></tr>
+      <tr><td>Domaine <code>.ma</code></td><td class="chiffre">≈ 8 à 17 DH</td><td class="chiffre">≈ 8 à 17 DH</td><td class="chiffre">100 à 200 DH HT</td></tr>
+      <tr><td>E-mails (Brevo, offre gratuite)</td><td class="chiffre">0</td><td class="chiffre">0</td><td class="chiffre">0</td></tr>
+      <tr><td>Surveillance (robot GitHub + service externe gratuit)</td><td class="chiffre">0</td><td class="chiffre">0</td><td class="chiffre">0</td></tr>
+      <tr><td>Code, CI (GitHub, dépôt public)</td><td class="chiffre">0</td><td class="chiffre">0</td><td class="chiffre">0</td></tr>
+      <tr class="total"><td>Total</td><td class="chiffre">≈ 8 à 17 DH</td><td class="chiffre">≈ 252 à 261 DH</td><td class="chiffre">≈ 3 030 à 3 130 DH</td></tr>
+    </tbody>
+  </table>
+  <h3>Coûts possibles, à surveiller</h3>
+  <table>
+    <thead><tr><th>Déclencheur</th><th>Coût</th><th>Comment l'éviter ou le prévoir</th></tr></thead>
+    <tbody>
+      <tr><td>Trafic au-delà des crédits Netlify</td><td>packs de crédits, ou Personal ≈ 88 DH/mois</td><td>jauge chaque semaine ; plan B Cloudflare Pages (gratuit)</td></tr>
+      <tr><td>Dépassement des quotas Supabase Pro</td><td>facturé à l'usage</td><td>Supabase → Reports chaque mois</td></tr>
+      <tr><td>Retour à une minute précise (PITR)</td><td>option payante Supabase</td><td>inutile au départ : sauvegardes quotidiennes du Pro</td></tr>
+      <tr><td>Volume d'e-mails au-delà du quota Brevo</td><td>offre payante Brevo</td><td>quota visible dans Brevo</td></tr>
+      <tr><td>Surveillance plus fréquente (1 min), SMS</td><td>offres payantes des services</td><td>3 à 5 min suffisent pour une boutique de cette taille</td></tr>
+      <tr><td>Frais de change bancaires</td><td>selon votre banque</td><td>les demander à l'agence ; regrouper les paiements</td></tr>
+    </tbody>
+  </table>
+  <div class="encadre cle"><div class="titre">En une phrase</div><p>Au lancement, seul le domaine est payant. En croisière, prévoir <strong>≈ 250 DH par mois</strong>, presque entièrement pour Supabase Pro : c'est le prix de la tranquillité sur les données des clients.</p></div>
+</section>
+
+<!-- ═══════════════════════════ 20 ═══════════════════════════ -->
+<section class="chapitre" id="ch20">
+  <header><div class="num">Chapitre 20 · Références</div><h2>Sources officielles et liens utiles</h2>
+  <p class="chapeau">Lues le 10/11/2026. Les comparatifs tiers sont signalés : ils servent quand la page officielle n'était pas lisible.</p></header>
+  <div class="colonnes sources">
+    <div>
+      <h4>Hébergement</h4><ul>
+        <li><a href="https://www.netlify.com/pricing/">Netlify — tarifs</a></li>
+        <li><a href="https://docs.netlify.com/domains-https/custom-domains/">Netlify — domaines personnalisés</a></li>
+        <li><a href="https://developers.cloudflare.com/pages/platform/limits/">Cloudflare Pages — limites</a></li>
+        <li><a href="https://vercel.com/docs/plans/hobby">Vercel — offre Hobby (usage non commercial)</a></li>
+        <li><a href="https://vercel.com/pricing">Vercel — tarifs</a></li>
+        <li>Tiers : <a href="https://www.stork.ai/blog/netlify-pricing-2026">Stork</a>, <a href="https://dupple.com/pricing/netlify">Dupple</a>, <a href="https://hostfleet.pages.dev/cf-pages-vs-vercel-vs-netlify-2026/">Hostfleet</a>, <a href="https://livemy.app/blog/vercel-pricing">Livemy</a></li>
+      </ul>
+      <h4>Base et backend</h4><ul>
+        <li><a href="https://supabase.com/pricing">Supabase — tarifs</a></li>
+        <li><a href="https://supabase.com/docs/guides/platform/free-plan-pausing">Supabase — mise en pause</a></li>
+        <li><a href="https://supabase.com/docs/guides/platform/migrating-within-supabase/backup-restore">Supabase — sauvegarde et restauration par la CLI</a></li>
+        <li><a href="https://supabase.com/docs/guides/auth/auth-smtp">Supabase — SMTP</a></li>
+        <li><a href="https://supabase.com/docs/guides/auth/rate-limits">Supabase — limites d'Auth</a></li>
+        <li><a href="https://docs.postgrest.org/en/v12/references/errors.html">PostgREST — erreurs et statuts HTTP</a></li>
+        <li><a href="https://developers.brevo.com/docs/supabase-smtp-integration">Brevo — SMTP pour Supabase</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Surveillance</h4><ul>
+        <li><a href="https://betterstack.com/docs/uptime/check-frequency/">Better Stack — fréquence des contrôles</a></li>
+        <li>Tiers : <a href="https://notifier.so/guides/uptimerobot-pricing-2026/">Notifier (UptimeRobot)</a>, <a href="https://hyperping.com/blog/uptimerobot-pricing">Hyperping</a></li>
+        <li><a href="https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule">GitHub — tâches planifiées (retards, 60 jours)</a></li>
+        <li><a href="https://www.netlifystatus.com">Statut Netlify</a> · <a href="https://status.supabase.com">Statut Supabase</a></li>
+      </ul>
+      <h4>Domaine et sécurité</h4><ul>
+        <li><a href="https://www.registre.ma">registre.ma (ANRT)</a></li>
+        <li>Tiers : <a href="https://www.hebergeurmarocain.com/blog/prix-officiel-nom-domaine-ma-maroc/">HébergeurMarocain</a>, <a href="https://www.heberfacile.com/nom-de-domaine/domaine-ma/">Heberfacile</a>, <a href="https://costgoat.com/pricing/cloudflare-domains">Costgoat (.com)</a></li>
+        <li><a href="https://letsencrypt.org/docs/">Let's Encrypt</a> · <a href="https://securityheaders.com">securityheaders.com</a> · <a href="https://dnschecker.org">dnschecker.org</a></li>
+        <li><a href="https://www.xe.com/en-us/currencyconverter/convert/?Amount=1&amp;From=USD&amp;To=MAD">XE — taux USD/MAD</a></li>
+      </ul>
+      <h4>Dans le dépôt</h4><ul>
+        <li><code>DEPLOIEMENT_ET_SUPERVISION/</code> : étude, architecture, checklist</li>
+        <li><code>docs/architecture.md</code> · <code>docs/decisions/</code> (ADR 0007 à 0009)</li>
+        <li><code>supabase/README.md</code> · <code>marketing/INDEX.md</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FIN ═══════════════════════════ -->
+<section class="fin">
+  <div class="contenu">
+    <svg class="monogramme" viewBox="0 0 120 100" aria-hidden="true">
+      <text x="60" y="84" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="104" font-weight="500" fill="url(#bronze)">H</text>
+      <path d="M14 66 C 40 58, 62 40, 106 34 C 76 42, 52 58, 22 70 Z" fill="url(#bronze)"/>
+    </svg>
+    <p>Ce guide décrit H MODE tel qu'il est au 10 novembre 2026. Quand l'architecture, une offre ou un prix change, mettez-le à jour dans <code>docs/guide-pdf/guide.html</code>, puis régénérez le PDF : <code>npm run guide:pdf</code> dans <code>web/</code>.</p>
+    <p class="sig">H MODE · Casablanca</p>
+  </div>
+</section>
+
+</body>
+</html>

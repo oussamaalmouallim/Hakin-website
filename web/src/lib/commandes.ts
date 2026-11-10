@@ -15,11 +15,14 @@ export type ResultatEnregistrement =
 export async function enregistrerCommande(reference: string, client: CoordonneesClient, lignes: LigneACommander[]): Promise<ResultatEnregistrement> {
   const sb = await obtenirSupabase()
   if (!sb) return { statut: 'sans_serveur' }
-  const { data, error } = await sb.rpc('passer_commande', { commande: {
+  const { data, error, status } = await sb.rpc('passer_commande', { commande: {
     reference,
     client: { nom: client.nom.trim(), telephone: client.telephone.trim(), email: client.email.trim(), ville: client.ville, adresse: client.adresse.trim(), instructions: client.instructions.trim() },
     lignes: lignes.map(l => ({ slug: l.slug, nom: l.nom, coloris: l.coloris, taille: l.taille, quantite: l.quantite, prix_dh: l.prixDH })),
   } })
+  // 429 = limite de commandes atteinte pour ce visiteur (la base répond « trop de requêtes ») : rien n'est enregistré.
+  // null sans erreur = même cas, ancienne réponse de la base (avant la migration du 10/11).
+  if (status === 429 || (!error && data === null)) return { statut: 'erreur', message: 'Trop de commandes envoyées depuis cet appareil en peu de temps. Réessayez dans une heure, ou écrivez-nous sur WhatsApp.' }
   if (error) {
     console.warn('[commande] enregistrement refusé :', error.message)
     signalerErreur('api', `Commande refusée : ${error.code ?? ''} ${error.message}`)
@@ -27,7 +30,5 @@ export async function enregistrerCommande(reference: string, client: Coordonnees
       ? 'Connexion au serveur impossible. Vérifiez votre réseau, puis réessayez.'
       : 'Votre commande n\'a pas pu être enregistrée. Réessayez, ou envoyez-la directement sur WhatsApp.' }
   }
-  // null = limite de commandes atteinte pour ce visiteur (passer_commande v3) : rien n'est enregistré.
-  if (data === null) return { statut: 'erreur', message: 'Trop de commandes envoyées depuis cet appareil en peu de temps. Réessayez dans une heure, ou écrivez-nous sur WhatsApp.' }
   return { statut: 'enregistree', reference: String(data) }
 }

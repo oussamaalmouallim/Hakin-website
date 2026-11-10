@@ -169,8 +169,8 @@ const traceLim = psql(`select count(*) filter (where bloque) || '/' || count(*) 
 const lim2Base = psql(`select count(*) from public.commandes where reference = 'HM-LIM2-${suffixe}'`)
 psql(`update public.limites set maximum = ${Number(maxAvant) || 5} where action = 'commande'`)
 psql(`delete from public.limites_evenements where action = 'commande'`)
-verdict(lim1.data === `HM-LIM1-${suffixe}` && lim2.data === null && !lim2.error && lim2Base === '0' && traceLim === '1/2',
-  'limite : 2ᵉ commande refusée (null), rien enregistré, blocage noté', `${lim1.data} / ${lim2.data} / ${traceLim}`)
+verdict(lim1.data === `HM-LIM1-${suffixe}` && lim2.data === null && lim2.status === 429 && lim2Base === '0' && traceLim === '1/2',
+  'limite : 2ᵉ commande refusée (HTTP 429), rien enregistré, blocage noté', `${lim1.data} / ${lim2.status} / ${traceLim}`)
 // Plafond global (tous visiteurs) : l'en-tête d'adresse peut être falsifié, ce plafond tient quand même
 const globalAvant = psql(`select coalesce(maximum_global::text, 'null') from public.limites where action = 'commande'`)
 psql(`update public.limites set maximum_global = 1 where action = 'commande'`)
@@ -178,7 +178,7 @@ const glo1 = await A.sb.rpc('passer_commande', commande(`HM-GLO1-${suffixe}`))
 const glo2 = await visiteur.rpc('passer_commande', commande(`HM-GLO2-${suffixe}`))
 psql(`update public.limites set maximum_global = ${globalAvant} where action = 'commande'`)
 psql(`delete from public.limites_evenements where action = 'commande'`)
-verdict(glo1.data === `HM-GLO1-${suffixe}` && glo2.data === null, 'limite : plafond global atteint, la commande suivante est refusée', `${glo1.data} / ${glo2.data}`)
+verdict(glo1.data === `HM-GLO1-${suffixe}` && glo2.data === null && glo2.status === 429, 'limite : plafond global atteint, la commande suivante est refusée (429)', `${glo1.data} / ${glo2.status}`)
 const evtV = await visiteur.from('limites_evenements').select('id')
 const evtA = await A.sb.from('limites_evenements').select('id')
 verdict((Boolean(evtV.error) || evtV.data?.length === 0) && evtA.data?.length === 0, 'limite : événements invisibles d\'un visiteur et d\'un client')
@@ -354,6 +354,61 @@ const repRecent = await visiteur.rpc('republication_necessaire', { jeton: JETON,
 psql(`delete from public.republications where id > ${republiAvant}`)
 verdict(rep1.data === true && rep2.data === false && repFaux.data === false && repRecent.data === false,
   'robot : rebuild demandé une fois si le catalogue a changé depuis le build ; pas deux fois en 12 h ; jamais sans jeton', `${rep1.data}/${rep2.data}/${repFaux.data}/${repRecent.data}`)
+// ── Santé, 429, déploiements, sauvegardes par script, état et journal (lots 33 à 35) ─────────────────
+const santeGet = await fetch(`${url}/rest/v1/rpc/sante?apikey=${cle}`)
+const santeCorps = await santeGet.json().catch(() => null)
+verdict(santeGet.status === 200 && santeCorps?.ok === true && Object.keys(santeCorps).every(k => ['ok', 'base', 'reglages_lisibles', 'heure'].includes(k)),
+  'santé : GET public (clé dans l\'adresse) → 200, aucune donnée de la boutique', `${santeGet.status} ${JSON.stringify(santeCorps)}`)
+const maxErr = psql(`select maximum from public.limites where action = 'erreur_client'`)
+psql(`delete from public.limites_evenements where action = 'erreur_client'`)
+psql(`update public.limites set maximum = 1 where action = 'erreur_client'`)
+const envoiErreur = () => fetch(`${url}/rest/v1/rpc/signaler_erreur`, { method: 'POST', headers: { apikey: cle, 'Content-Type': 'application/json' }, body: JSON.stringify({ erreur: { type: 'script', message: `Rafale ${suffixe}` } }) })
+const e1 = await envoiErreur(), e2 = await envoiErreur()
+const traceErr = psql(`select count(*) filter (where bloque) from public.limites_evenements where action = 'erreur_client'`)
+psql(`update public.limites set maximum = ${Number(maxErr) || 30} where action = 'erreur_client'`)
+psql(`delete from public.limites_evenements where action = 'erreur_client'; delete from public.erreurs_site where message = 'Rafale ${suffixe}'`)
+verdict(e1.status === 204 && e2.status === 429 && e2.headers.get('retry-after') === '600' && traceErr === '1',
+  'limite : réponse HTTP 429 avec Retry-After, et le blocage reste noté', `${e1.status}/${e2.status} retry-after=${e2.headers.get('retry-after')} trace=${traceErr}`)
+psql(`delete from public.limites_evenements where action = 'controle_robot'`)
+const V = `essai-${suffixe}`
+const dep1 = await visiteur.rpc('enregistrer_controles', { jeton: JETON, resultats: [{ cible: 'site : version', ok: true, statut_http: 200, duree_ms: 30, detail: '', version: V, construit_le: '2026-11-10T08:00:00Z' }] })
+const dep2 = await visiteur.rpc('enregistrer_controles', { jeton: JETON, resultats: [{ cible: 'site : version', ok: true, statut_http: 200, duree_ms: 30, detail: '', version: V, construit_le: '2026-11-10T08:00:00Z' }] })
+verdict(dep1.data?.ok && dep2.data?.ok && psql(`select count(*) from public.deploiements where version = '${V}'`) === '1'
+  && psql(`select count(*) from public.evenements_techniques where categorie = 'deploiement' and message like '%${V}%'`) === '1',
+  'déploiements : nouvelle version notée une seule fois, avec son événement', JSON.stringify(dep1.data))
+const lent = `site : lent ${suffixe}`
+for (let i = 0; i < 2; i++) await visiteur.rpc('enregistrer_controles', { jeton: JETON, resultats: [{ cible: lent, ok: true, statut_http: 200, duree_ms: 4000, detail: '' }] })
+const lent3 = await visiteur.rpc('enregistrer_controles', { jeton: JETON, resultats: [{ cible: lent, ok: true, statut_http: 200, duree_ms: 4000, detail: '' }] })
+verdict((lent3.data?.alertes ?? []).some(a => a.includes('lent')), 'robot : lenteur trois fois de suite remontée en alerte (service dégradé)', JSON.stringify(lent3.data?.alertes))
+psql(`delete from public.limites_evenements where action = 'controle_robot'`)
+const sauvFaux = await visiteur.rpc('noter_sauvegarde_script', { jeton: 'mauvais', p_type: 'manuelle', p_note: 'x' })
+const sauvScript = await visiteur.rpc('noter_sauvegarde_script', { jeton: JETON, p_type: 'restauration_testee', p_note: `script ${suffixe}` })
+verdict(sauvFaux.data?.ok === false && sauvScript.data?.ok === true
+  && psql(`select count(*) from public.sauvegardes where type = 'restauration_testee' and note = '[script] script ${suffixe}'`) === '1',
+  'sauvegardes : notées par le script avec le jeton du robot, refusées sans', JSON.stringify(sauvFaux.data))
+psql(`insert into public.controles_sante (source, cible, ok, statut_http, duree_ms, cree_le) values
+  ('robot', 'etat ok ${suffixe}', true, 200, 100, now()), ('robot', 'base : etat lent ${suffixe}', true, 200, 2500, now()),
+  ('robot', 'etat panne ${suffixe}', false, 503, 50, now()), ('robot', 'etat vieux ${suffixe}', true, 200, 100, now() - interval '2 hours'),
+  ('robot', 'etat rechute ${suffixe}', false, 0, 50, now() - interval '1 hour'), ('robot', 'etat rechute ${suffixe}', true, 200, 100, now())`)
+const etatT = await B.sb.rpc('etat_supervision')
+const st = c => etatT.data?.services?.find(s => s.cible === `${c} ${suffixe}`)?.statut
+const etatA = await A.sb.rpc('etat_supervision')
+verdict(!etatT.error && st('etat ok') === 'operationnel' && st('base : etat lent') === 'degrade' && st('etat panne') === 'indisponible' && st('etat vieux') === 'inconnu' && st('etat rechute') === 'degrade'
+  && etatT.data?.services?.find(s => s.cible === `etat rechute ${suffixe}`)?.disponibilite_24h === 50 && etatA.error?.code === '42501',
+  'état : opérationnel, dégradé (lent ou échec récent), indisponible, inconnu (trop ancien) ; refusé à un client',
+  `${st('etat ok')}/${st('base : etat lent')}/${st('etat panne')}/${st('etat vieux')}/${st('etat rechute')} ${etatA.error?.code ?? etatT.error?.message}`)
+const jSante = await B.sb.rpc('journal_technique', { p_heures: 24, p_categorie: 'sante', p_gravite: null })
+const jErreur = await B.sb.rpc('journal_technique', { p_heures: 24, p_categorie: 'sante', p_gravite: 'erreur' })
+const jSecu = await B.sb.rpc('journal_technique', { p_heures: 24, p_categorie: 'securite', p_gravite: null })
+const jA = await A.sb.rpc('journal_technique', { p_heures: 24 })
+const msgs = l => (l.data ?? []).map(x => x.message)
+verdict(!jSante.error && msgs(jSante).includes(`etat panne ${suffixe} en échec`) && msgs(jSante).includes(`base : etat lent ${suffixe} lent`) && !msgs(jSante).includes(`etat ok ${suffixe} lent`)
+  && (jErreur.data ?? []).every(x => x.gravite === 'erreur' && x.categorie === 'sante') && jA.error?.code === '42501',
+  'journal : filtres par type et gravité ; échecs et lenteurs présents, contrôles normaux absents ; refusé à un client', jSante.error?.message ?? jA.error?.code)
+verdict(msgs(jSecu).some(m => m.startsWith('Clé de sécurité admin erronée')) && msgs(jSecu).includes('Accès admin bloqué 15 min après 5 clés erronées'),
+  'journal : clés admin erronées et blocage visibles dans la sécurité', msgs(jSecu).slice(0, 3).join(' | '))
+psql(`delete from public.controles_sante where cible like '%${suffixe}'; delete from public.deploiements where version = '${V}'; delete from public.sauvegardes where note = '[script] script ${suffixe}';
+  delete from public.evenements_techniques where message like '%${V}%' or detail = 'script ${suffixe}'; delete from public.limites_evenements where action = 'controle_robot'`)
 psql(jetonAvant ? `update public.robot_jeton set hash = '${jetonAvant}' where id = 1` : 'delete from public.robot_jeton')
 const sauv = await B.sb.from('sauvegardes').insert({ type: 'manuelle', note: `essai ${suffixe}` })
 const sauvA = await A.sb.from('sauvegardes').insert({ type: 'manuelle', note: 'pirate' })

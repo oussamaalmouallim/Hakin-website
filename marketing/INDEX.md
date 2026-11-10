@@ -42,7 +42,7 @@ Casablanca, paiement à la livraison, retour sous 24 h).
 
 ## Autres documents utiles
 
-- [`../GUIDE_HEBERGEMENT.md`](../GUIDE_HEBERGEMENT.md) : mettre le site en ligne, le surveiller, le maintenir.
+- [`../DEPLOIEMENT_ET_SUPERVISION/`](../DEPLOIEMENT_ET_SUPERVISION/) : mettre le site en ligne, le surveiller, le maintenir (guide PDF).
 - [`../docs/architecture.md`](../docs/architecture.md) : comment le site est construit.
 - [`../docs/design/logo-prompt-gemini.md`](../docs/design/logo-prompt-gemini.md) : ancien prompt du logo (remplacé par
   le monogramme du héros, gardé pour l'historique).

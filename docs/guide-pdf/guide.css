@@ -1,0 +1,165 @@
+/* Guide PDF H MODE — charte du site (web/src/styles/tokens.css) : fond nacre, encre, touche beige, accent jaune rare.
+   Polices du site : Archivo Black (titres), Space Grotesk (texte), JetBrains Mono (code, étiquettes), Cormorant (marque).
+   Mise en page A4 par Paged.js (npm run guide:pdf). */
+
+@font-face { font-family: 'Archivo Black'; src: url('../../web/node_modules/@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Space Grotesk'; src: url('../../web/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Space Grotesk'; src: url('../../web/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2') format('woff2'); font-weight: 500; }
+@font-face { font-family: 'Space Grotesk'; src: url('../../web/node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2') format('woff2'); font-weight: 700; }
+@font-face { font-family: 'JetBrains Mono'; src: url('../../web/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2') format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Cormorant Garamond'; src: url('../../web/node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2') format('woff2'); font-weight: 500; }
+@font-face { font-family: 'Cormorant Garamond'; src: url('../../web/node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff2') format('woff2'); font-weight: 500; font-style: italic; }
+
+:root {
+  --fond: #f5f4f0; --fond-2: #efede7; --fond-3: #e8e5dc;
+  --encre: #0a0a0a; --encre-douce: #1c1c1a; --gris: #6b6b6b; --gris-clair: #b4b2ac;
+  --accent: #f5d000; --danger: #c8341b; --succes: #5b6b3a; --alerte: #a9742a;
+  --beige: #e4d0b7; --beige-clair: #ede3d5; --beige-pale: #f4ede3; --beige-fonce: #836240; --beige-tres-fonce: #5f4831; --beige-moyen: #9c8366;
+  --ligne: #0a0a0a1a; --ligne-forte: #0a0a0a38; --blanc: #ffffff;
+  --titre: 'Archivo Black', 'Arial Black', sans-serif;
+  --texte: 'Space Grotesk', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --marque: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ── Pages ─────────────────────────────────────────────────────────────────────────────────────── */
+@page {
+  size: A4;
+  margin: 22mm 18mm 22mm 18mm;
+  background: var(--fond);
+  @top-left { content: string(chapitre); font: 400 7.5pt var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--gris); }
+  @top-right { content: 'H MODE'; font: 400 8pt var(--titre); letter-spacing: .04em; color: var(--beige-fonce); }
+  @bottom-left { content: 'Guide de déploiement, d\'hébergement et de maintenance · 10/11/2026'; font: 400 7.5pt var(--mono); color: var(--gris); }
+  @bottom-right { content: counter(page) ' / ' counter(pages); font: 400 8pt var(--mono); color: var(--encre); }
+}
+@page couverture { margin: 0; background: var(--encre); @top-left { content: none } @top-right { content: none } @bottom-left { content: none } @bottom-right { content: none } }
+@page fin { margin: 0; background: var(--encre); @top-left { content: none } @top-right { content: none } @bottom-left { content: none } @bottom-right { content: none } }
+@page sommaire { @top-left { content: 'Sommaire' } }
+
+html { font-family: var(--texte); font-size: 9.6pt; line-height: 1.55; color: var(--encre); background: var(--fond); }
+body { margin: 0; }
+p { margin: 0 0 2.6mm; orphans: 3; widows: 3; }
+strong { font-weight: 700; }
+a { color: var(--beige-tres-fonce); text-decoration: underline; text-decoration-thickness: .5pt; text-underline-offset: 1.5pt; }
+code { font-family: var(--mono); font-size: 8.2pt; background: var(--fond-3); padding: .2mm 1.1mm; border-radius: 1mm; overflow-wrap: anywhere; }
+em.def { font-style: normal; font-weight: 700; color: var(--beige-tres-fonce); }
+
+/* ── Couverture ────────────────────────────────────────────────────────────────────────────────── */
+.couverture { page: couverture; height: 297mm; position: relative; color: var(--fond); overflow: hidden; break-after: page; }
+.couverture .bande { position: absolute; inset: 0 0 auto 0; height: 8mm; background: var(--beige); }
+.couverture .monogramme { position: absolute; right: -18mm; top: 34mm; width: 150mm; opacity: .95; }
+.couverture .contenu { position: absolute; left: 20mm; right: 20mm; bottom: 34mm; }
+.couverture .surtitre { font: 400 8.5pt var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--beige); margin-bottom: 7mm; }
+.couverture h1 { font: 400 31pt/1.05 var(--titre); text-transform: uppercase; margin: 0 0 7mm; letter-spacing: .01em; string-set: none; }
+.couverture h1 span { color: var(--accent); }
+.couverture .sous-titre { font: 400 12.5pt/1.45 var(--texte); color: var(--beige-clair); max-width: 140mm; margin-bottom: 14mm; }
+.couverture .meta { display: flex; gap: 12mm; border-top: .4pt solid #f5f4f040; padding-top: 5mm; font: 400 7.8pt var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gris-clair); }
+.couverture .meta b { display: block; color: var(--fond); font-weight: 400; margin-top: 1.2mm; letter-spacing: .04em; text-transform: none; font-family: var(--texte); font-size: 9pt; }
+.couverture .logotype { position: absolute; left: 20mm; top: 22mm; display: flex; align-items: center; gap: 3mm; font: 400 12pt var(--titre); }
+.couverture .logotype i { display: grid; place-items: center; width: 10mm; height: 10mm; border-radius: 50%; background: var(--fond); color: var(--encre); font: italic 500 16pt var(--marque); transform: rotate(-12deg); }
+
+/* ── Sommaire ──────────────────────────────────────────────────────────────────────────────────── */
+.sommaire { page: sommaire; break-after: page; }
+.sommaire h2 { font: 400 20pt var(--titre); text-transform: uppercase; margin: 0 0 2mm; }
+.sommaire .filet { width: 30mm; height: 1.4mm; background: var(--beige-fonce); margin-bottom: 4mm; }
+.sommaire .partie { font: 400 7.5pt var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--beige-fonce); margin: 3.4mm 0 .6mm; }
+.sommaire ol { list-style: none; margin: 0; padding: 0; }
+.sommaire li { break-inside: avoid; }
+.sommaire a { display: flex; align-items: baseline; gap: 3mm; padding: 1.05mm 0; color: var(--encre); text-decoration: none; border-bottom: .4pt solid var(--ligne); font-size: 9.6pt; }
+.sommaire a .n { font: 400 8.5pt var(--mono); color: var(--beige-fonce); min-width: 7mm; }
+.sommaire a .t { flex: 1; }
+.sommaire a::after { content: target-counter(attr(href), page); font: 400 8.5pt var(--mono); color: var(--gris); }
+
+/* ── Chapitres ─────────────────────────────────────────────────────────────────────────────────── */
+section.chapitre { break-before: page; }
+section.chapitre > header { margin-bottom: 7mm; padding-bottom: 5mm; border-bottom: 1.2pt solid var(--encre); }
+section.chapitre > header .num { font: 400 8pt var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--beige-fonce); }
+section.chapitre > header h2 { font: 400 20pt/1.1 var(--titre); text-transform: uppercase; margin: 2mm 0 2.5mm; string-set: chapitre content(text); }
+section.chapitre > header .chapeau { font-size: 10.5pt; color: var(--encre-douce); margin: 0; max-width: 150mm; }
+h3 { font: 700 12pt/1.25 var(--texte); margin: 6mm 0 2.4mm; break-after: avoid; }
+h3 .pastille { display: inline-block; font: 400 7.5pt var(--mono); background: var(--encre); color: var(--fond); border-radius: 10mm; padding: .6mm 2.2mm; margin-right: 2mm; vertical-align: 1.2pt; letter-spacing: .08em; }
+h4 { font: 400 7.8pt var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--beige-tres-fonce); margin: 4mm 0 1.6mm; break-after: avoid; }
+ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
+li { margin-bottom: 1mm; }
+li::marker { color: var(--beige-fonce); }
+
+/* ── Tableaux ──────────────────────────────────────────────────────────────────────────────────── */
+table { width: 100%; border-collapse: collapse; margin: 1mm 0 4mm; font-size: 8.4pt; break-inside: avoid; background: var(--blanc); border-radius: 2mm; overflow: hidden; }
+table.long { break-inside: auto; overflow: visible; border-radius: 0; }
+thead { display: table-header-group; }
+th { font: 400 6.9pt var(--mono); letter-spacing: .12em; text-transform: uppercase; text-align: left; color: var(--fond); background: var(--encre); padding: 2mm 2.4mm; vertical-align: bottom; }
+td { padding: 1.8mm 2.4mm; border-bottom: .4pt solid var(--ligne); vertical-align: top; }
+tr { break-inside: avoid; }
+tbody tr:nth-child(even) td { background: #faf9f6; }
+td.chiffre, th.chiffre { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.total td { font-weight: 700; background: var(--beige-pale) !important; }
+tr.reco td { background: var(--beige-pale) !important; }
+
+/* ── Encadrés ──────────────────────────────────────────────────────────────────────────────────── */
+.encadre { break-inside: avoid; border-radius: 2.5mm; padding: 3.4mm 4mm 1.4mm; margin: 2mm 0 4mm; background: var(--blanc); border-left: 1.4mm solid var(--beige-fonce); }
+.encadre .titre { font: 400 7.3pt var(--mono); letter-spacing: .18em; text-transform: uppercase; margin-bottom: 1.4mm; color: var(--beige-tres-fonce); }
+.encadre.attention { border-left-color: var(--danger); background: #fbf1ee; }
+.encadre.attention .titre { color: var(--danger); }
+.encadre.astuce { border-left-color: var(--succes); background: #f2f3ec; }
+.encadre.astuce .titre { color: var(--succes); }
+.encadre.cle { border-left-color: var(--accent); background: var(--encre); color: var(--fond); }
+.encadre.cle .titre { color: var(--accent); }
+.encadre.cle code { background: #ffffff1a; color: var(--fond); }
+.encadre.cle a { color: var(--beige); }
+
+/* Notion expliquée : définition, à quoi ça sert, chez H MODE, à faire, vérifier */
+.notion { break-inside: avoid; background: var(--blanc); border: .4pt solid var(--ligne-forte); border-radius: 2.5mm; padding: 3.5mm 4mm 1.5mm; margin: 0 0 4mm; }
+.notion h3 { margin: 0 0 2mm; font-size: 11pt; }
+.notion dl { display: grid; grid-template-columns: 27mm 1fr; gap: 1.4mm 3mm; margin: 0 0 2mm; }
+.notion dt { font: 400 6.9pt var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--beige-fonce); padding-top: .9mm; }
+.notion dd { margin: 0; }
+
+/* ── Étapes numérotées ─────────────────────────────────────────────────────────────────────────── */
+ol.etapes { list-style: none; padding: 0; counter-reset: etape; margin: 1mm 0 4mm; }
+ol.etapes > li { counter-increment: etape; position: relative; padding: 0 0 2.6mm 10mm; break-inside: avoid; }
+ol.etapes > li::before { content: counter(etape); position: absolute; left: 0; top: -.2mm; width: 6.4mm; height: 6.4mm; border-radius: 50%; background: var(--encre); color: var(--fond); font: 400 8pt/6.4mm var(--mono); text-align: center; }
+
+
+/* Fiche d'étape : quoi, où, pourquoi, vérifier, erreurs */
+.fiche { break-inside: avoid; background: var(--blanc); border-radius: 2.5mm; margin: 0 0 4mm; overflow: hidden; border: .4pt solid var(--ligne-forte); }
+.fiche > h3 { margin: 0; padding: 2.6mm 4mm; background: var(--beige-pale); font-size: 10.5pt; border-bottom: .4pt solid var(--ligne-forte); }
+.fiche > dl { display: grid; grid-template-columns: 24mm 1fr; gap: 1.6mm 3mm; margin: 0; padding: 3mm 4mm 2mm; }
+.fiche dt { font: 400 6.9pt var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--beige-fonce); padding-top: .9mm; }
+.fiche dd { margin: 0; }
+.fiche dd ul, .fiche dd ol { margin-bottom: 0; }
+.fiche dd pre { margin: 1mm 0 1mm; }
+
+/* ── Code ──────────────────────────────────────────────────────────────────────────────────────── */
+pre { font: 400 7.7pt/1.5 var(--mono); background: var(--encre); color: #ece9e1; border-radius: 2mm; padding: 3mm 3.6mm; margin: 1mm 0 4mm; white-space: pre-wrap; overflow-wrap: anywhere; break-inside: avoid; }
+pre .c { color: var(--beige-moyen); }
+pre .k { color: var(--accent); }
+pre[data-titre]::before { content: attr(data-titre); display: block; font-size: 6.6pt; letter-spacing: .14em; text-transform: uppercase; color: var(--beige); margin-bottom: 1.6mm; }
+
+/* ── Checklists ────────────────────────────────────────────────────────────────────────────────── */
+ul.check { list-style: none; padding: 0; margin: 0 0 4mm; }
+ul.check li { position: relative; padding: .85mm 0 .85mm 7mm; border-bottom: .4pt solid var(--ligne); break-inside: avoid; }
+ul.check li::before { content: ''; position: absolute; left: 0; top: 1.55mm; width: 3.4mm; height: 3.4mm; border: .9pt solid var(--encre); border-radius: .7mm; background: var(--blanc); }
+ul.check li.fait::before { background: var(--encre); }
+ul.check li.fait::after { content: ''; position: absolute; left: 1.15mm; top: 2.1mm; width: 1.1mm; height: 1.9mm; border: solid var(--fond); border-width: 0 .9pt .9pt 0; transform: rotate(45deg); }
+ul.check li .ref { float: right; font: 400 7pt var(--mono); color: var(--gris); margin-left: 3mm; }
+.colonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+.colonnes > div { break-inside: avoid; }
+
+/* ── Schémas ───────────────────────────────────────────────────────────────────────────────────── */
+figure { margin: 2mm 0 5mm; break-inside: avoid; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { font: 400 7.3pt var(--mono); color: var(--gris); margin-top: 2mm; letter-spacing: .04em; }
+.etiquettes { display: flex; flex-wrap: wrap; gap: 1.6mm; margin: 0 0 3mm; }
+.etiquette { display: inline-block; white-space: nowrap; font: 400 6.9pt var(--mono); letter-spacing: .1em; text-transform: uppercase; border: .5pt solid var(--ligne-forte); border-radius: 10mm; padding: .7mm 2.4mm; }
+.etiquette.ok { border-color: var(--succes); color: var(--succes); }
+.etiquette.afaire { border-color: var(--alerte); color: var(--beige-tres-fonce); background: var(--beige-pale); }
+
+/* ── Page de fin ───────────────────────────────────────────────────────────────────────────────── */
+.fin { page: fin; break-before: page; height: 297mm; position: relative; color: var(--fond); }
+.fin .contenu { position: absolute; left: 20mm; right: 20mm; top: 50%; transform: translateY(-50%); text-align: center; }
+.fin .monogramme { width: 46mm; margin: 0 auto 8mm; display: block; }
+.fin p { color: var(--beige-clair); font-size: 10.5pt; max-width: 120mm; margin: 0 auto 3mm; }
+.fin code { background: #ffffff1f; color: var(--fond); }
+.fin .sig { font: italic 500 18pt var(--marque); color: var(--beige); margin-top: 8mm; }
+.sources li { break-inside: avoid; font-size: 8.6pt; }
+.sources a { overflow-wrap: anywhere; }

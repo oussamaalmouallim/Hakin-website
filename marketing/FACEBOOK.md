@@ -9,8 +9,8 @@ Page actuelle : « H MODE » (lien dans `web/src/data/boutique.json`).
 
 | Élément | Quoi mettre |
 |---|---|
-| Photo de profil | `web/medias/marque/logo-profil-1080.png` (voir [PROMPTS_IDENTITE.md](PROMPTS_IDENTITE.md)) |
-| Couverture | la couverture du § 3 de PROMPTS_IDENTITE.md (1640 × 624) |
+| Photo de profil | « H » sable sur noir à plan de ville (§ 3 de [PROMPTS_IDENTITE.md](PROMPTS_IDENTITE.md)) |
+| Couverture | `marketing/images/Gemini_Generated_Image_dg33pldg33pldg33.jpeg`, réduite en 1640 × 624 (§ 4 de PROMPTS_IDENTITE.md) |
 | Nom | H MODE |
 | Catégorie | Magasin de vêtements (ou « Boutique de vêtements » selon ce que Facebook propose) |
 | Présentation (courte) | « Vêtements casual de marques — sweats, sneakers, t-shirts. Livraison à Casablanca, paiement à la livraison. » |

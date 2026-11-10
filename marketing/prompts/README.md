@@ -1,5 +1,9 @@
 # Prompts H MODE — un fichier par demande à l'IA
 
+> **Commencez par [`PROMPT_MAITRE.md`](PROMPT_MAITRE.md)** : un seul prompt, installé une fois dans Gemini, ChatGPT
+> ou Claude, qui garde la charte pour toutes vos demandes. Les fichiers ci-dessous servent seulement si l'IA n'a pas
+> de mémoire (un prompt complet par visuel).
+
 Chaque fichier est **complet à lui seul** : ouvrez-le, copiez le bloc « Prompt à copier », joignez les images
 indiquées, envoyez. Rien d'autre à relire. Direction artistique : le collage urbain de la couverture Facebook
 ([`../IDENTITE_VISUELLE.md`](../IDENTITE_VISUELLE.md) § 8).

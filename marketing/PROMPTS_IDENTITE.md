@@ -4,6 +4,9 @@ Ce document sert à produire **tous** les visuels des réseaux dans une seule di
 urbain** de la couverture Facebook (10/11/2026). Les couleurs et les règles sont dans
 [`IDENTITE_VISUELLE.md`](IDENTITE_VISUELLE.md) § 8 : relisez-le d'abord.
 
+**Pour produire un visuel, ouvrez directement [`prompts/`](prompts/README.md)** : un fichier par demande, prompt
+complet à copier. Ce document-ci explique la méthode ; s'il change, mettre à jour les fichiers de `prompts/` aussi.
+
 Image de référence : [`images/Gemini_Generated_Image_dg33pldg33pldg33.jpeg`](images/Gemini_Generated_Image_dg33pldg33pldg33.jpeg)
 (3168 × 1344). **Joignez-la à chaque prompt** comme « image de style » : c'est elle qui tient la cohérence, plus que les
 mots.

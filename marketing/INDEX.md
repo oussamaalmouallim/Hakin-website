@@ -10,6 +10,7 @@ Casablanca, paiement à la livraison, retour sous 24 h).
 |---|---|---|---|
 | 1 | [IDENTITE_VISUELLE.md](IDENTITE_VISUELLE.md) | connaître les couleurs, polices, règles du logo et des photos | 15 min |
 | 2 | [PROMPTS_IDENTITE.md](PROMPTS_IDENTITE.md) | préparer photos de profil, couverture Facebook, modèles Canva | 1 à 2 h (une fois) |
+| 2 bis | [prompts/](prompts/README.md) | **un fichier par demande à l'IA**, à copier tel quel (profil, couverture, produit, story, carrousel, arrivage, offre, coloris, ambiance) | 2 min par visuel |
 | 3 | [INSTAGRAM.md](INSTAGRAM.md) | le réseau principal pour des vêtements : profil, formats, rythme | 20 min |
 | 4 | [FACEBOOK.md](FACEBOOK.md) | la page, les messages clients, les réponses types | 15 min |
 | 5 | [TIKTOK.md](TIKTOK.md) | se faire connaître avec des vidéos tournées au téléphone | 15 min |

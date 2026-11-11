@@ -28,8 +28,8 @@ H MODE n'a **pas de serveur à nous**. Le site est un ensemble de fichiers servi
 
 | Élément | État | Preuve |
 |---|---|---|
-| Point de santé `GET /rest/v1/rpc/sante` | **en place** (local) ; en ligne après `db push` de `20261110120000` | `npm run test:supabase` : 200, aucune donnée de la boutique |
-| Réponse **HTTP 429** + `Retry-After` quand une limite est atteinte | **en place** (local), message clair côté site | test SQL : 204 puis 429, `Retry-After: 600`, blocage noté ; test unitaire de la page commande |
+| Point de santé `GET /rest/v1/rpc/sante` | **en ligne** depuis le 10/11 (200, `ok: true`) | `npm run test:supabase` : 200, aucune donnée de la boutique |
+| Réponse **HTTP 429** + `Retry-After` quand une limite est atteinte | **en ligne** depuis le 10/11 (testée en local), message clair côté site | test SQL : 204 puis 429, `Retry-After: 600`, blocage noté ; test unitaire de la page commande |
 | États opérationnel / dégradé / indisponible / inconnu | **en place** | test SQL des cinq cas ; test d'écran : rien de vert sans contrôle |
 | Journal technique filtrable (période, type, gravité) | **en place** | test SQL + test d'écran |
 | Événements de sécurité (clé admin erronée, accès bloqué) | **en place** | test SQL : visibles dans le journal |
@@ -41,7 +41,7 @@ H MODE n'a **pas de serveur à nous**. Le site est un ensemble de fichiers servi
 | Panne de la base | **testée en local** : robot en échec (code 1), point de santé sans réponse ; retour à la normale vu aussitôt | conteneur de base figé puis relancé |
 | Robot GitHub en ligne | **à configurer** : variables et secret `SANTE_JETON` | guide, chapitre 10 |
 | Service externe (alerte en minutes) | **à créer** par vous | guide, chapitre 11 |
-| Migration `20261110120000_sante_et_journal.sql` en ligne | **à appliquer** (`npx supabase db push`) | guide, chapitre 8 |
+| Migration `20261110120000_sante_et_journal.sql` en ligne | **appliquée le 10/11**, après sauvegarde | `npx supabase migration list` |
 
 ## 3. Contrôles et seuils
 

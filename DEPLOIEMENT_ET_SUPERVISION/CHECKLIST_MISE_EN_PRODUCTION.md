@@ -15,8 +15,8 @@
 
 ### Code et base
 - [ ] Pousser les derniers commits sur `main` ; CI verte sur GitHub → Actions (ch. 7)
-- [ ] Appliquer la migration `20261110120000_sante_et_journal.sql` : `npx supabase db push --dry-run`, puis `npx supabase db push`, **après** `npm run sauvegarde` (ch. 8)
-- [ ] Vérifier : `https://<projet>.supabase.co/rest/v1/rpc/sante?apikey=<clé publique>` répond `{"ok": true, …}` (ch. 11)
+- [x] Migration `20261110120000_sante_et_journal.sql` appliquée le 10/11, après sauvegarde (ch. 8)
+- [x] `https://<projet>.supabase.co/rest/v1/rpc/sante?apikey=<clé publique>` répond `{"ok": true, …}` (vérifié le 10/11) (ch. 11)
 - [ ] Désactiver GitHub Pages (l'ancien site y est encore publié) (ch. 7)
 
 ### E-mails

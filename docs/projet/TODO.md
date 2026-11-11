@@ -9,7 +9,7 @@ Détail des lots : [`plan.md`](plan.md). Architecture : [`../architecture.md`](.
 - [ ] Robot de surveillance : `SANTE_JETON` dans `web/.env`, `npm run sante:sql` (coller le SQL), secret GitHub `SANTE_JETON` ; facultatif `NETLIFY_BUILD_HOOK`.
 - [x] Netlify (10/11) : variables `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SITE_URL` ; site reconstruit avec la base, vraie 404, en-têtes de sécurité vérifiés.
 - [ ] Netlify : vérifier qu'un `git push` sur `main` déclenche bien un build (le 10/11, un commit poussé n'avait pas été publié seul).
-- [ ] Base en ligne : `npm run sauvegarde`, puis `npx supabase db push` de `20261110120000_sante_et_journal.sql` (santé, 429, journal).
+- [x] Base en ligne (10/11) : sauvegarde `2026-11-10_19h50`, puis `20261110120000_sante_et_journal.sql` poussée ; `GET /rest/v1/rpc/sante` répond `ok`, état et journal refusés aux visiteurs (401).
 - [ ] Service de surveillance externe (UptimeRobot ou Better Stack, conditions d'usage commercial à lire) : sondes site + `/rest/v1/rpc/sante` (guide, ch. 11).
 - [ ] `SANTE_JETON` dans `web/.env` aussi pour que `npm run sauvegarde` note les sauvegardes dans l'admin.
 - [ ] GitHub → Actions : variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `SITE_URL`, `SUPABASE_PROJECT_REF`) et secrets (`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`).

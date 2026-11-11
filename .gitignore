@@ -19,3 +19,14 @@ Scrapping/
 *.log
 .DS_Store
 .vscode/
+
+# Hors projet (restent sur le disque, plus dans le dépôt public)
+# Assistant de code : instructions, règles, skills, réglages locaux
+.claude/
+CLAUDE.md
+# Cache de Vite créé à la racine
+.vite/
+# Marketing de la marque (réseaux sociaux, prompts d'images, images générées) : pas le code du site
+marketing/
+# Photos de référence posées en vrac à la racine
+/WhatsApp Image *.jpeg

@@ -104,7 +104,7 @@ test('administration : de la création d\'une pièce à sa commande par un clien
 
   // ── Journal : chaque étape, avec son auteur ───────────────────────────────────────────────────
   await page.getByRole('navigation', { name: 'Administration' }).getByRole('link', { name: 'Journal' }).click()
-  const entreesPiece = page.locator('li', { has: page.getByRole('link', { name: slug, exact: true }) })
+  const entreesPiece = page.locator('tr', { has: page.getByRole('link', { name: slug, exact: true }) })
   await expect(entreesPiece.filter({ hasText: 'prix : 450 → 400 · ancien prix : vide → 500' })).toHaveCount(1)
   await expect(entreesPiece.filter({ hasText: 'produit créé' })).toHaveCount(1)
   await expect(page.getByText('Nouvelle → Confirmée').first()).toBeVisible()
@@ -118,14 +118,38 @@ test('administration : de la création d\'une pièce à sa commande par un clien
   await expect(page.getByRole('heading', { level: 1, name: nom })).toHaveCount(0)
 })
 
+const ECRANS = ['/admin', '/admin/produits', '/admin/produits/nouveau', '/admin/produits/t-shirt-prada-graffiti', '/admin/commandes', '/admin/demandes', '/admin/reglages',
+  '/admin/textes', '/admin/journal', '/admin/supervision', '/admin/supervision/sante', '/admin/supervision/journaux', '/admin/supervision/securite', '/admin/supervision/maintenance']
+
 test('accessibilité WCAG 2.2 AA de chaque écran de l\'administration (axe)', async ({ page }) => {
   await seConnecter(page, true)
-  for (const ecran of ['/admin', '/admin/produits', '/admin/produits/nouveau', '/admin/produits/t-shirt-prada-graffiti', '/admin/commandes', '/admin/demandes', '/admin/reglages', '/admin/textes', '/admin/journal', '/admin/supervision', '/admin/supervision?onglet=sante', '/admin/supervision?onglet=journal', '/admin/supervision?onglet=securite', '/admin/supervision?onglet=maintenance']) {
+  for (const ecran of ECRANS) {
     await page.goto(ecran)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await page.waitForLoadState('networkidle')
     expect(await graves(page, ecran)).toEqual([])
   }
+})
+
+test('mobile 375 px : chaque écran sans défilement horizontal, menu en tiroir, recherche Ctrl+K', async ({ page }) => {
+  await seConnecter(page)
+  await page.setViewportSize({ width: 375, height: 812 })
+  for (const ecran of ECRANS) {
+    await page.goto(ecran)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await page.waitForLoadState('networkidle')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth), ecran).toBeLessThanOrEqual(375)
+  }
+  // Menu replié dans un tiroir : ouvert par le bouton, fermé en choisissant une page.
+  await page.getByRole('button', { name: 'Ouvrir le menu' }).click()
+  await page.getByRole('navigation', { name: 'Administration' }).getByRole('link', { name: 'Sécurité et API' }).click()
+  await expect(page.getByRole('heading', { level: 1, name: 'Sécurité et API' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Administration' })).toBeHidden()
+  // Recherche : Ctrl+K, saisie, Entrée.
+  await page.keyboard.press('Control+k')
+  await page.getByRole('combobox', { name: 'Rechercher une page ou une action' }).fill('sauvegardes')
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('heading', { level: 1, name: 'Maintenance et sauvegardes' })).toBeVisible()
 })
 
 test('visiteur : connexion admin sans inscription ; clé fausse puis mot de passe faux refusés', async ({ page }) => {

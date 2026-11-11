@@ -36,6 +36,9 @@ export default {
         erreur: v('danger'),
         alerte: v('alerte'),
         whatsapp: v('whatsapp'),
+        // Administration seulement (classe theme-admin)
+        admin: { barre: v('admin-barre'), 'barre-2': v('admin-barre-2'), 'barre-ligne': v('admin-barre-ligne'), 'barre-texte': v('admin-barre-texte'),
+          accent: v('admin-accent'), 'accent-fonce': v('admin-accent-fonce'), info: v('admin-info') },
       },
       letterSpacing: { label: '0.18em', large: '0.2em', titre: '0.02em' },
       borderRadius: { fin: '2px', doux: '4px', carte: 'var(--rayon-carte)', bloc: 'var(--rayon-bloc)' },
@@ -48,10 +51,12 @@ export default {
       transitionTimingFunction: { maison: 'var(--courbe-maison)', standard: 'var(--courbe-standard)' },
       maxWidth: { site: '1440px' },
       keyframes: {
+        lueur: { '0%,100%': { opacity: '0.35', transform: 'scale(1)' }, '50%': { opacity: '0', transform: 'scale(2.2)' } },
+        miroiter: { from: { backgroundPosition: '200% 0' }, to: { backgroundPosition: '-200% 0' } },
         defiler: { from: { transform: 'translateX(0)' }, to: { transform: 'translateX(-50%)' } },
         descendre: { '0%,100%': { transform: 'translateY(0)', opacity: '0.4' }, '50%': { transform: 'translateY(8px)', opacity: '1' } },
       },
-      animation: { defiler: 'defiler 40s linear infinite', descendre: 'descendre 2.4s ease-in-out infinite' },
+      animation: { lueur: 'lueur 2.4s ease-out infinite', miroiter: 'miroiter 1.6s linear infinite', defiler: 'defiler 40s linear infinite', descendre: 'descendre 2.4s ease-in-out infinite' },
     },
   },
   plugins: [],

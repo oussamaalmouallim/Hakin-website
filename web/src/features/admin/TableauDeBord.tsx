@@ -1,21 +1,14 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ClipboardList, EyeOff, ImageOff, MessageCircle, Plus, Shirt, Tag } from 'lucide-react'
+import { BoutonLien } from '@/design-system'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/lightswind/table'
 import { formatDH } from '@/lib/format'
 import { libelleStatut } from '@/lib/admin'
 import { listerCommandes, listerDemandes, listerProduits } from './api'
 import { CarteImport } from './ImportCatalogue'
-import { CarteAdmin, Chargement, EnTeteAdmin, ErreurAdmin, Pastille, formatDate, useChargement } from './commun'
+import { CarteAdmin, EnTeteAdmin, ErreurAdmin, EtatVide, GrilleKpi, KpiCarte, Pastille, SqueletteAdmin, formatDate, useChargement } from './commun'
 
-function Chiffre({ valeur, libelle, vers, alerte }: { valeur: number; libelle: string; vers: string; alerte?: boolean }) {
-  return (
-    <Link to={vers} className="group flex flex-col justify-between gap-6 rounded-carte bg-fond-2 p-5 transition-colors hover:bg-fond-3">
-      <span className={alerte && valeur > 0 ? 'font-display text-[34px] leading-none text-danger' : 'font-display text-[34px] leading-none'}>{valeur}</span>
-      <span className="flex items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-gris group-hover:text-encre">
-        {libelle}<ArrowRight className="h-3.5 w-3.5" aria-hidden />
-      </span>
-    </Link>
-  )
-}
+const lienCarte = 'inline-flex items-center gap-1 text-[12.5px] font-medium text-admin-info hover:underline'
 
 export function TableauDeBord() {
   const donnees = useChargement(async () => {
@@ -24,44 +17,67 @@ export function TableauDeBord() {
   })
   return (
     <>
-      <EnTeteAdmin surtitre="Administration" titre="Tableau de bord" texte="L'état de la boutique en un coup d'œil. Chaque chiffre mène à la liste correspondante." />
+      <EnTeteAdmin surtitre="Pilotage" titre="Tableau de bord" texte="L'état de la boutique en un coup d'œil. Chaque indicateur mène à la liste correspondante."
+        actions={<BoutonLien to="/admin/produits/nouveau" variante="accent" icone={<Plus className="h-4 w-4" aria-hidden />}>Nouvelle pièce</BoutonLien>} />
       {donnees.erreur && <ErreurAdmin message={donnees.erreur} onReessayer={donnees.recharger} />}
-      {donnees.enCours && !donnees.donnees && <Chargement />}
+      {donnees.enCours && !donnees.donnees && <SqueletteAdmin kpi={4} />}
       {donnees.donnees && (() => {
         const { produits, commandes, demandes } = donnees.donnees
         const sansPrix = produits.filter(p => p.prixDH === null).length
         const masques = produits.filter(p => !p.publie).length
+        const sansPhoto = produits.filter(p => p.images.length === 0).length
         const nouvelles = commandes.filter(c => c.statut === 'nouvelle').length
+        const aTraiter = demandes.filter(d => d.statut === 'a_traiter').length
+        const visibles = produits.length - masques
         return (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-5">
             {produits.length === 0 && <CarteImport onImporte={donnees.recharger} />}
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
-              <Chiffre valeur={produits.length - masques} libelle="Pièces visibles" vers="/admin/produits" />
-              <Chiffre valeur={sansPrix} libelle="Sans prix" vers="/admin/produits?filtre=sans-prix" alerte />
-              <Chiffre valeur={masques} libelle="Masquées" vers="/admin/produits?filtre=masques" />
-              <Chiffre valeur={nouvelles} libelle="Commandes nouvelles" vers="/admin/commandes?statut=nouvelle" alerte />
-              <Chiffre valeur={demandes.filter(d => d.statut === 'a_traiter').length} libelle="Demandes WhatsApp à traiter" vers="/admin/demandes" alerte />
-            </div>
-            <CarteAdmin titre="Dernières commandes" actions={<Link to="/admin/commandes" className="label text-encre underline underline-offset-4">Toutes les commandes</Link>}>
-              {commandes.length === 0 ? <p className="text-[14px] text-gris">Aucune commande pour le moment.</p> : (
-                <ul className="divide-y divide-ligne">
-                  {commandes.slice(0, 5).map(c => (
-                    <li key={c.reference}>
-                      <Link to={`/admin/commandes?ref=${encodeURIComponent(c.reference)}`} className="flex flex-wrap items-center justify-between gap-3 py-3 hover:text-encre">
-                        <span className="min-w-0">
-                          <span className="block font-mono text-[12px] uppercase tracking-[0.1em]">{c.reference}</span>
-                          <span className="text-[13px] text-gris">{c.nom} · {formatDate(c.cree_le)}</span>
-                        </span>
-                        <span className="flex items-center gap-3">
-                          <span className="font-display text-[15px] tabular-nums">{formatDH(c.sous_total_dh)}</span>
-                          <Pastille ton={c.statut === 'nouvelle' ? 'accent' : c.statut === 'annulee' ? 'danger' : 'neutre'}>{libelleStatut(c.statut)}</Pastille>
-                        </span>
+            <GrilleKpi colonnes={5}>
+              <KpiCarte Icone={Shirt} libelle="Pièces visibles" valeur={visibles} vers="/admin/produits"
+                part={produits.length ? { valeur: visibles, max: produits.length, ton: 'encre' } : undefined} aide={`sur ${produits.length} au catalogue`} />
+              <KpiCarte Icone={Tag} libelle="Sans prix" valeur={sansPrix} vers="/admin/produits?filtre=sans-prix" ton={sansPrix > 0 ? 'danger' : 'normal'} aide="affichées « Prix sur demande »" />
+              <KpiCarte Icone={EyeOff} libelle="Masquées" valeur={masques} vers="/admin/produits?filtre=masques" />
+              <KpiCarte Icone={ClipboardList} libelle="Commandes nouvelles" valeur={nouvelles} vers="/admin/commandes?statut=nouvelle" ton={nouvelles > 0 ? 'danger' : 'normal'} aide={`${commandes.length} au total`} />
+              <KpiCarte Icone={MessageCircle} libelle="Demandes WhatsApp à traiter" valeur={aTraiter} vers="/admin/demandes" ton={aTraiter > 0 ? 'danger' : 'normal'} />
+            </GrilleKpi>
+            <div className="grid gap-5 xl:grid-cols-[1.6fr_1fr]">
+              <CarteAdmin titre="Dernières commandes" actions={<Link to="/admin/commandes" className={lienCarte}>Toutes les commandes<ArrowRight className="h-3.5 w-3.5" aria-hidden /></Link>}>
+                {commandes.length === 0 ? <EtatVide Icone={ClipboardList} titre="Aucune commande pour le moment." texte="Les commandes passées sur le site arrivent ici, avec leur statut." /> : (
+                  <Table minWidth={560}>
+                    <TableHeader><TableRow className="hover:bg-transparent"><TableHead>Référence</TableHead><TableHead>Client</TableHead><TableHead>Date</TableHead><TableHead className="text-right">Montant</TableHead><TableHead>Statut</TableHead></TableRow></TableHeader>
+                    <TableBody>
+                      {commandes.slice(0, 6).map(c => (
+                        <TableRow key={c.reference}>
+                          <TableCell><Link to={`/admin/commandes?ref=${encodeURIComponent(c.reference)}`} className="font-mono text-[12px] font-medium hover:underline">{c.reference}</Link></TableCell>
+                          <TableCell>{c.nom}<span className="block text-[12px] text-gris">{c.ville}</span></TableCell>
+                          <TableCell className="whitespace-nowrap text-gris">{formatDate(c.cree_le)}</TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">{formatDH(c.sous_total_dh)}</TableCell>
+                          <TableCell><Pastille point ton={c.statut === 'nouvelle' ? 'accent' : c.statut === 'annulee' ? 'danger' : c.statut === 'livree' ? 'succes' : 'neutre'}>{libelleStatut(c.statut)}</Pastille></TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+              </CarteAdmin>
+              <CarteAdmin titre="À compléter dans le catalogue" texte="Ce qui manque aux fiches, lu dans la base.">
+                <ul className="flex flex-col divide-y divide-ligne">
+                  {[
+                    { Icone: Tag, l: 'Pièces sans prix', n: sansPrix, vers: '/admin/produits?filtre=sans-prix' },
+                    { Icone: ImageOff, l: 'Pièces sans photo', n: sansPhoto, vers: '/admin/produits' },
+                    { Icone: EyeOff, l: 'Pièces masquées', n: masques, vers: '/admin/produits?filtre=masques' },
+                  ].map(x => (
+                    <li key={x.l}>
+                      <Link to={x.vers} className="group flex items-center gap-3 py-3 first:pt-0">
+                        <span className="grid h-8 w-8 place-items-center rounded-[9px] border border-ligne bg-fond text-gris"><x.Icone className="h-4 w-4" aria-hidden /></span>
+                        <span className="flex-1 text-[13px]">{x.l}</span>
+                        <Pastille ton={x.n > 0 ? 'alerte' : 'succes'}>{x.n}</Pastille>
+                        <ArrowRight className="h-4 w-4 text-gris-clair group-hover:text-encre" aria-hidden />
                       </Link>
                     </li>
                   ))}
                 </ul>
-              )}
-            </CarteAdmin>
+              </CarteAdmin>
+            </div>
           </div>
         )
       })()}

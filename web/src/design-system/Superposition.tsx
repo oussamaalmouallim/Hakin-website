@@ -52,10 +52,10 @@ export function Modale({ ouvert, onFermer, titre, children, large }: { ouvert: b
           <motion.div className="absolute inset-0 bg-encre/40 backdrop-blur-[2px]" onClick={onFermer}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }} />
           <motion.div ref={ref} role="dialog" aria-modal="true" aria-label={titre}
-            className={cn('relative max-h-[90vh] w-full overflow-y-auto overscroll-contain bg-nacre p-6 shadow-flottant sm:p-10', large ? 'sm:max-w-3xl' : 'sm:max-w-lg')}
+            className={cn('ds-modale relative max-h-[90vh] w-full overflow-y-auto overscroll-contain bg-nacre p-6 shadow-flottant sm:p-10', large ? 'sm:max-w-3xl' : 'sm:max-w-lg')}
             initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 30 }} transition={{ duration: 0.6, ease: EASE_MAISON }}>
             <div className="mb-6 flex items-start justify-between gap-6">
-              <h2 className="titre-3">{titre}</h2>
+              <h2 className="ds-modale-titre titre-3">{titre}</h2>
               <BoutonFermer onClick={onFermer} className="-mr-2 -mt-2" />
             </div>
             {children}

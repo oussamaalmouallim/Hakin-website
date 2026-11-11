@@ -129,12 +129,15 @@ GitHub suspend les tâches planifiées d'un dépôt public après **60 jours san
 | Restauration réelle | guide, chapitre 14 : d'abord dans un projet de test, puis seulement en cas de perte réelle |
 | Test périodique | **une fois par mois** (le robot le rappelle après 35 jours) |
 
-## 8. Écrans (Admin → Technique → Supervision)
+## 8. Écrans (Admin → Supervision)
 
-Une seule page, cinq onglets (adresse `?onglet=`) : **Vue d'ensemble** (état par partie, 8 indicateurs, tendance 48 h,
-fréquentation), **Santé** (tableau des contrôles : disponibilité 24 h / 7 j, moyenne, p95, seuil ; incidents ; qui
-alerte), **Journaux** (filtres), **Sécurité** (limites, justification, appels acceptés et bloqués, activité anormale,
-protections), **Maintenance** (version, déploiements, republications, sauvegardes, liens vers les tableaux de bord).
+Cinq pages indépendantes dans la barre latérale (ADR 0010) : **Vue d'ensemble** `/admin/supervision` (état par partie,
+8 indicateurs, graphiques performance 48 h et activité 30 j, limites 24 h, derniers incidents, fréquentation),
+**Santé et disponibilité** `/sante` (contrôles : disponibilité 24 h / 7 j, moyenne, p95, seuil ; historique filtrable ;
+« Contrôler maintenant » ; qui alerte), **Journaux et incidents** `/journaux` (filtres période, type, gravité, recherche,
+détail d'un événement), **Sécurité et API** `/securite` (endpoints `POST /rpc/…` limités, acceptés et bloqués, activité
+anormale, événements de sécurité, protections), **Maintenance et sauvegardes** `/maintenance` (tâches à jour ou non,
+version, déploiements, republications, historique des sauvegardes, liens). Les anciennes adresses `?onglet=` y renvoient.
 
 Ce qui n'est **pas** affiché, faute de mesure possible sans clé secrète : nombre total de requêtes à l'API, journaux
-internes de Supabase. L'onglet Maintenance renvoie vers leurs tableaux de bord.
+internes de Supabase. La page Maintenance renvoie vers leurs tableaux de bord.

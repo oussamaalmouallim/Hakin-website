@@ -81,3 +81,35 @@ Changer une valeur ici, puis demander « applique palette.md » : le code suit.
 | `--voile-entete` | `#f5f4f0b8` | Relevé `.nav-scrolled` | fond de l'en-tête après 50 px de défilement (+ flou 18 px) |
 | `--ligne-entete` | `#0a0a0a14` | Relevé `.nav-scrolled`, `.cart-drawer` | filet bas de l'en-tête, bord des panneaux |
 | `--ombre-tiroir` | `-30px 0 60px -20px #0a0a0a2e` | Relevé `.cart-drawer` | panier latéral |
+
+## Administration (`/admin`, classe `theme-admin` sur `<html>`)
+
+Identité d'application technique (lot 39, 11/11) : fond gris chaud, surfaces blanches, texte encre, police de texte pour
+les titres, beige en accent discret. `theme-admin › x` = la variable `--x` redéfinie sous `.theme-admin` (la valeur globale reste celle de la boutique). Choix H MODE (Approximé), inspiré de Lightswind. Ne s'applique jamais aux pages publiques.
+
+| Variable | Valeur | Origine | Usage |
+|---|---|---|---|
+| `theme-admin › fond` | `#f6f5f2` | Approximé | fond des pages d'admin |
+| `theme-admin › fond-2` | `#ffffff` | Approximé | cartes, tableaux, barre du haut |
+| `theme-admin › fond-3` | `#f0eeea` | Approximé | survols, en-têtes de tableau |
+| `theme-admin › encre` | `#17171a` | Approximé | texte, boutons principaux |
+| `theme-admin › encre-douce` | `#26262b` | Approximé | survol des boutons principaux |
+| `theme-admin › gris` | `#5d5d66` | Approximé, 6,3:1 sur blanc | textes secondaires |
+| `theme-admin › gris-clair` | `#a3a3ab` | Approximé | placeholders, désactivés |
+| `theme-admin › ligne` | `#17171a14` | Approximé | bordures des cartes, séparateurs |
+| `theme-admin › ligne-forte` | `#17171a2b` | Approximé | bordures des champs |
+| `theme-admin › succes` | `#2e7349` | Approximé, 5,6:1 sur blanc | « Opérationnel », réussites |
+| `theme-admin › danger` | `#b4321c` | Approximé, 5,9:1 sur blanc | échecs, « Indisponible » |
+| `theme-admin › alerte` | `#a8661a` | Approximé | « Dégradé » (texte en `bronze-fonce`) |
+| `theme-admin › police-titre` | `var(--police-texte)` | Approximé | titres en Space Grotesk, sans capitales |
+| `theme-admin › rayon-carte` / `theme-admin › rayon-bloc` | `14px` / `10px` | Approximé | cartes / champs et boutons |
+| `--admin-barre` | `#121214` | Approximé | barre latérale |
+| `--admin-barre-2` | `#1d1d21` | Approximé | survol et élément actif de la barre |
+| `--admin-barre-ligne` | `#ffffff14` | Approximé | séparateurs de la barre |
+| `--admin-barre-texte` | `#a6a6ae` | Approximé, 7,4:1 sur la barre | liens de la barre |
+| `--admin-accent` | `#c6a57c` | H MODE (beige) | repère de l'élément actif, accents |
+| `--admin-accent-fonce` | `#7a5a36` | H MODE (bronze) | accent en texte sur fond clair |
+| `--admin-info` | `#35618c` | Approximé | informations, liens d'action |
+| `--admin-serie-1` | `#8a6a45` | Approximé | graphiques : série « site », visiteurs |
+| `--admin-serie-2` | `#35618c` | Approximé | graphiques : série « API », pages vues, appels acceptés |
+| `--admin-serie-3` | `#b4321c` | Approximé | graphiques : échecs, appels bloqués |

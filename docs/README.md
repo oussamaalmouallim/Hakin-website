@@ -25,7 +25,8 @@
 | [0006](decisions/0006-administration.md) | Administration `/admin` à trois champs, droits vérifiés par la base | en vigueur |
 | [0007](decisions/0007-architecture-et-deploiement.md) | Un seul site statique + Supabase, dépôt rangé, CI/CD | en vigueur |
 | [0008](decisions/0008-supervision-et-commerce.md) | Supervision sans serveur, rôles admin, limites, demandes WhatsApp, aperçus de partage | en vigueur ; complétée par 0009 |
-| [0009](decisions/0009-sante-429-journal.md) | Point de santé public, réponses 429, journal unifié, sauvegardes testées par script, guide PDF | en vigueur |
+| [0009](decisions/0009-sante-429-journal.md) | Point de santé public, réponses 429, journal unifié, sauvegardes testées par script, guide PDF | en vigueur ; écrans revus par 0010 |
+| [0010](decisions/0010-admin-application-technique.md) | Administration en application technique : thème propre, composants Lightswind, supervision en 5 pages | en vigueur |
 
 Nouvelle décision : copier [`decisions/0000-modele.md`](decisions/0000-modele.md) avec le numéro suivant.
 

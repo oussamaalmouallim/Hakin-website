@@ -449,7 +449,7 @@ dig www.hmode.ma +short</pre>Les valeurs saisies reviennent. La <em class="def">
 <section class="chapitre" id="ch10">
   <header><div class="num">Chapitre 10 · Surveiller</div><h2>Mettre en place la surveillance</h2>
   <p class="chapeau">Trois yeux : un service externe qui sonne en quelques minutes, un robot qui contrôle tout toutes les 30 minutes, et l'écran Supervision de l'admin qui garde l'historique.</p></header>
-  <div class="etiquettes"><span class="etiquette ok">écran Supervision en 5 onglets</span><span class="etiquette ok">robot écrit et testé (panne simulée)</span><span class="etiquette afaire">robot à activer sur GitHub</span><span class="etiquette afaire">service externe à créer</span></div>
+  <div class="etiquettes"><span class="etiquette ok">Supervision en 5 pages</span><span class="etiquette ok">robot écrit et testé (panne simulée)</span><span class="etiquette afaire">robot à activer sur GitHub</span><span class="etiquette afaire">service externe à créer</span></div>
 
   <div class="notion"><h3>Surveillance de disponibilité</h3><dl>
     <dt>Définition</dt><dd>L'<em class="def">uptime monitoring</em> consiste à interroger un site à intervalle régulier depuis l'extérieur et à alerter quand il ne répond plus. Un <em class="def">health check</em> (contrôle de santé) est une requête faite exprès pour ça.</dd>
@@ -561,7 +561,7 @@ dig www.hmode.ma +short</pre>Les valeurs saisies reviennent. La <em class="def">
   <pre data-titre="Réponse de l'API (testée le 10/11 sur Supabase local)">HTTP/1.1 429 Too Many Requests
 Retry-After: 600</pre>
   <ul>
-    <li>Rien n'est enregistré ; le <strong>blocage</strong>, lui, est gardé (journal, onglet Sécurité).</li>
+    <li>Rien n'est enregistré ; le <strong>blocage</strong>, lui, est gardé (journal, page Sécurité et API).</li>
     <li>Le site affiche : « Trop de commandes envoyées depuis cet appareil en peu de temps. Réessayez dans une heure, ou écrivez-nous sur WhatsApp. »</li>
     <li>10 blocages ou plus en 30 min : le robot alerte.</li>
   </ul>

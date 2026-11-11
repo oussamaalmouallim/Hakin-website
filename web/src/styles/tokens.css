@@ -53,3 +53,36 @@
   --ligne-entete: #0a0a0a14;
   --ombre-tiroir: -30px 0 60px -20px #0a0a0a2e;
 }
+
+/* Administration (/admin) : identité d'application technique, posée sur <html class="theme-admin"> seulement
+   pendant que l'admin est affichée. Les pages publiques ne voient jamais ces valeurs. Miroir : palette.md § Administration. */
+.theme-admin {
+  --fond: #f6f5f2;
+  --fond-2: #ffffff;
+  --fond-3: #f0eeea;
+  --encre: #17171a;
+  --encre-douce: #26262b;
+  --gris: #5d5d66;
+  --gris-clair: #a3a3ab;
+  --ligne: #17171a14;
+  --ligne-forte: #17171a2b;
+  --succes: #2e7349;
+  --danger: #b4321c;
+  --alerte: #a8661a;
+  --police-titre: var(--police-texte);
+  --rayon-carte: 14px;
+  --rayon-bloc: 10px;
+  --ombre-carte-survol: 0 1px 2px rgba(23, 23, 26, 0.04), 0 8px 24px -12px rgba(23, 23, 26, 0.12);
+  --ombre-flottant: 0 24px 60px -24px rgba(23, 23, 26, 0.35);
+
+  --admin-barre: #121214;
+  --admin-barre-2: #1d1d21;
+  --admin-barre-ligne: #ffffff14;
+  --admin-barre-texte: #a6a6ae;
+  --admin-accent: #c6a57c;
+  --admin-accent-fonce: #7a5a36;
+  --admin-info: #35618c;
+  --admin-serie-1: #8a6a45;
+  --admin-serie-2: #35618c;
+  --admin-serie-3: #b4321c;
+}

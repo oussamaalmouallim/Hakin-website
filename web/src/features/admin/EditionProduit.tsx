@@ -20,7 +20,7 @@ const VUES: { cle: ImageProduit['vue']; libelle: string }[] = [
 ]
 /** Prix en dirhams entiers : on ne garde que les chiffres ; vide = pas de prix. */
 const nombreOuNull = (v: string) => { const c = v.replace(/\D/g, ''); return c ? Number(c) : null }
-const petitBouton = 'grid h-9 w-9 shrink-0 place-items-center rounded-full border border-ligne-forte text-encre transition-colors hover:bg-encre hover:text-fond disabled:pointer-events-none disabled:opacity-30'
+const petitBouton = 'grid h-8 w-8 shrink-0 place-items-center rounded-[8px] border border-ligne text-encre transition-colors hover:bg-encre hover:text-fond-2 disabled:pointer-events-none disabled:opacity-30'
 
 export function EditionProduit() {
   const { slug: slugUrl } = useParams()
@@ -127,12 +127,12 @@ export function EditionProduit() {
 
   return (
     <>
-      <Link to="/admin/produits" className="mb-6 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-gris hover:text-encre"><ArrowLeft className="h-3.5 w-3.5" aria-hidden />Tous les produits</Link>
+      <Link to="/admin/produits" className="mb-4 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-gris hover:text-encre"><ArrowLeft className="h-3.5 w-3.5" aria-hidden />Tous les produits</Link>
       <EnTeteAdmin surtitre={creation ? 'Nouvelle pièce' : 'Modifier la pièce'} titre={p.nom || 'Sans nom'}
-        actions={!creation && initial?.publie ? <a href={`/produit/${p.slug}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-encre underline underline-offset-4">Voir sur le site<ExternalLink className="h-3.5 w-3.5" aria-hidden /></a> : undefined} />
+        actions={!creation && initial?.publie ? <a href={`/produit/${p.slug}`} target="_blank" rel="noopener noreferrer" className="inline-flex h-9 items-center gap-2 rounded-bloc border border-ligne-forte bg-fond-2 px-3.5 text-[13px] font-medium text-encre hover:bg-fond-3">Voir sur le site<ExternalLink className="h-3.5 w-3.5" aria-hidden /></a> : undefined} />
 
-      <form noValidate onSubmit={e => { e.preventDefault(); void enregistrer() }} aria-label="Fiche de la pièce" className="grid gap-6 pb-28 xl:grid-cols-[1fr_360px]">
-        <div className="flex min-w-0 flex-col gap-6">
+      <form noValidate onSubmit={e => { e.preventDefault(); void enregistrer() }} aria-label="Fiche de la pièce" className="grid gap-5 xl:grid-cols-[1fr_360px]">
+        <div className="flex min-w-0 flex-col gap-5">
           <CarteAdmin titre="Identité">
             <div className="grid gap-5 md:grid-cols-2">
               <Champ label="Nom" value={p.nom} erreur={erreurs.nom} required
@@ -155,13 +155,13 @@ export function EditionProduit() {
             </div>
             {collections.length > 0 && (
               <fieldset className="mt-6">
-                <legend className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-gris">Collections</legend>
+                <legend className="mb-3 text-[12.5px] font-medium text-encre">Collections</legend>
                 <div className="flex flex-wrap gap-2">
                   {collections.map(c => {
                     const actif = p.collections.includes(c.slug)
                     return (
                       <button key={c.slug} type="button" aria-pressed={actif} onClick={() => maj('collections', actif ? p.collections.filter(x => x !== c.slug) : [...p.collections, c.slug])}
-                        className={cn('rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors', actif ? 'border-encre bg-encre text-fond' : 'border-ligne-forte text-gris hover:border-encre hover:text-encre')}>
+                        className={cn('rounded-[8px] border px-3 py-1.5 text-[12.5px] font-medium transition-colors', actif ? 'border-encre bg-encre text-fond-2' : 'border-ligne-forte text-gris hover:border-encre hover:text-encre')}>
                         {c.nom}
                       </button>
                     )
@@ -186,12 +186,12 @@ export function EditionProduit() {
               {p.tailles.length > 0 && (
                 <ul className="mb-5 flex flex-wrap gap-2">
                   {p.tailles.map((t, i) => (
-                    <li key={`${t.taille}-${i}`} className="flex items-center gap-3 rounded-full border border-ligne-forte bg-blanc py-1.5 pl-4 pr-1.5">
-                      <span className="font-mono text-[12px] uppercase">{t.taille}</span>
+                    <li key={`${t.taille}-${i}`} className="flex items-center gap-3 rounded-[9px] border border-ligne bg-fond py-1 pl-3 pr-1">
+                      <span className="text-[12.5px] font-medium">{t.taille}</span>
                       <Interrupteur actif={t.disponible} libelle={`Taille ${t.taille} disponible`}
                         onChange={v => maj('tailles', p.tailles.map((x, j) => (j === i ? { ...x, disponible: v } : x)))} />
                       <button type="button" aria-label={`Retirer la taille ${t.taille}`} onClick={() => maj('tailles', p.tailles.filter((_, j) => j !== i))}
-                        className="grid h-7 w-7 place-items-center rounded-full text-gris hover:bg-encre hover:text-fond"><X className="h-3.5 w-3.5" aria-hidden /></button>
+                        className="grid h-7 w-7 place-items-center rounded-full text-gris hover:bg-encre hover:text-fond-2"><X className="h-3.5 w-3.5" aria-hidden /></button>
                     </li>
                   ))}
                 </ul>
@@ -203,7 +203,7 @@ export function EditionProduit() {
                 <Bouton variante="texte" className="mb-2" onClick={() => ajouterTailles(TAILLES_VETEMENTS)}>XS à XXL</Bouton>
                 <Bouton variante="texte" className="mb-2" onClick={() => ajouterTailles(TAILLES_CHAUSSURES)}>39 à 45</Bouton>
               </div>
-              {erreurs.tailles && <p role="alert" className="mt-3 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreurs.tailles}</p>}
+              {erreurs.tailles && <p role="alert" className="mt-3 text-[12px] text-danger">{erreurs.tailles}</p>}
             </div>
           </CarteAdmin>
 
@@ -217,7 +217,7 @@ export function EditionProduit() {
                       <label className="mb-1 shrink-0">
                         <span className="sr-only">Teinte du coloris {c.nom || i + 1}</span>
                         <input type="color" value={c.hex} onChange={e => maj('coloris', p.coloris.map((x, j) => (j === i ? { ...x, hex: e.target.value } : x)))}
-                          className="h-11 w-11 cursor-pointer rounded-full border border-ligne-forte bg-blanc p-1" />
+                          className="h-11 w-11 cursor-pointer rounded-[9px] border border-ligne-forte bg-fond-2 p-1" />
                       </label>
                       <div className="min-w-0 flex-1"><Champ label={`Coloris ${i + 1}`} value={c.nom} placeholder="noir, beige, bleu marine…"
                         onChange={e => maj('coloris', p.coloris.map((x, j) => (j === i ? { ...x, nom: e.target.value } : x)))} /></div>
@@ -227,7 +227,7 @@ export function EditionProduit() {
                   ))}
                 </ul>
               )}
-              {erreurs.coloris && <p role="alert" className="mt-3 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreurs.coloris}</p>}
+              {erreurs.coloris && <p role="alert" className="mt-3 text-[12px] text-danger">{erreurs.coloris}</p>}
             </div>
           </CarteAdmin>
 
@@ -242,10 +242,10 @@ export function EditionProduit() {
               {p.images.length === 0 ? <p className="text-[14px] text-gris">Aucune photo.</p> : (
                 <ul className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
                   {p.images.map((img, i) => (
-                    <li key={img.src} className="flex flex-col gap-3 rounded-[14px] bg-blanc p-3">
+                    <li key={img.src} className="flex flex-col gap-3 rounded-bloc border border-ligne bg-fond p-3">
                       <div className="relative aspect-square overflow-hidden rounded-[10px] bg-fond-2">
                         <img src={srcImage(img.src, 480)} alt="" className="h-full w-full object-cover" />
-                        {i === 0 && <span className="absolute left-2 top-2 rounded-full bg-encre px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-fond">Principale</span>}
+                        {i === 0 && <span className="absolute left-2 top-2 rounded-[6px] bg-encre px-2 py-0.5 text-[11px] font-medium text-fond-2">Principale</span>}
                       </div>
                       <Champ label="Description de la photo" value={img.alt} onChange={e => maj('images', p.images.map((x, j) => (j === i ? { ...x, alt: e.target.value } : x)))} />
                       <div className="flex items-end gap-2">
@@ -261,7 +261,7 @@ export function EditionProduit() {
                   ))}
                 </ul>
               )}
-              {erreurs.images && <p role="alert" className="mt-3 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreurs.images}</p>}
+              {erreurs.images && <p role="alert" className="mt-3 text-[12px] text-danger">{erreurs.images}</p>}
             </div>
           </CarteAdmin>
 
@@ -305,9 +305,9 @@ export function EditionProduit() {
           )}
         </div>
 
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-ligne bg-[var(--voile-entete)] px-5 py-4 backdrop-blur-[18px] lg:left-[260px] md:px-10 lg:px-14">
+        <div className="sticky bottom-0 z-20 -mx-4 border-t border-ligne bg-fond-2/90 px-4 py-3 backdrop-blur-md md:-mx-8 md:px-8 xl:col-span-2">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-gris" aria-live="polite">{modifie ? 'Modifications non enregistrées' : creation ? 'Nouvelle pièce' : 'À jour'}</p>
+            <p className="text-[12.5px] text-gris" aria-live="polite">{modifie ? 'Modifications non enregistrées' : creation ? 'Nouvelle pièce' : 'À jour'}</p>
             <div className="flex gap-3">
               <Bouton variante="contour" disabled={!modifie || envoi} onClick={() => { setP(structuredClone(initial!)); setErreurs({}); setARetirer([]) }}>Annuler</Bouton>
               <Bouton type="submit" variante="accent" chargement={envoi} disabled={photosEnCours > 0 || (!modifie && !creation)}>{creation ? 'Créer la pièce' : 'Enregistrer'}</Bouton>

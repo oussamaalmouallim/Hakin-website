@@ -145,3 +145,31 @@ html[data-animations='off'] *::after {
 /* cloneme: A-13 — point « en direct » de la pastille de galerie (Relevé .animate-livepulse : 1,6 s, halo rouge de 8 px) */
 .anim-pouls { animation: pouls 1.6s ease-in-out infinite; }
 @keyframes pouls { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--danger) 60%, transparent); } 50% { box-shadow: 0 0 0 8px transparent; } }
+
+/* ── Administration (/admin) ─────────────────────────────────────────────────────────────────────────────
+   Habillage d'application technique des composants du design-system, seulement sous <html class="theme-admin">
+   (posée par PageAdmin, retirée en quittant l'admin). Deux classes de spécificité : passe devant les utilitaires.
+   Les pages publiques ne sont jamais touchées. Valeurs : tokens.css § .theme-admin. */
+.theme-admin body { background: var(--fond); color: var(--encre); }
+.theme-admin .ds-bouton {
+  font-family: var(--police-texte); text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 500;
+  border-radius: var(--rayon-bloc); gap: 0.5rem;
+}
+.theme-admin .ds-bouton.ds-md { height: 2.25rem; padding-inline: 0.875rem; }
+.theme-admin .ds-bouton.ds-sm { height: 2rem; padding-inline: 0.75rem; font-size: 12.5px; }
+.theme-admin .ds-bouton.ds-lg { height: 2.75rem; padding-inline: 1.25rem; font-size: 14px; }
+.theme-admin .ds-bouton.ds-icone { height: 2.25rem; width: 2.25rem; }
+.theme-admin .ds-bouton.ds-texte { height: auto; padding-inline: 0; }
+.theme-admin .ds-bouton.ds-accent { background: var(--encre); color: var(--fond-2); box-shadow: inset 0 -2px 0 var(--admin-accent); }
+.theme-admin .ds-bouton.ds-accent:hover { background: var(--encre-douce); }
+.theme-admin .ds-bouton svg { width: 1rem; height: 1rem; }
+.theme-admin .ds-champ { background: var(--fond-2); border-radius: var(--rayon-bloc); padding: 0.5rem 0.75rem; font-size: 14px; }
+.theme-admin .ds-champ:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 35%, transparent); }
+.theme-admin select.ds-champ { padding-right: 2.25rem; }
+.theme-admin .ds-libelle { font-family: var(--police-texte); text-transform: none; letter-spacing: 0; font-size: 12.5px; font-weight: 500; color: var(--encre); }
+.theme-admin .ds-erreur { font-family: var(--police-texte); text-transform: none; letter-spacing: 0; font-size: 12px; }
+.theme-admin .ds-modale { background: var(--fond-2); border-radius: var(--rayon-carte); border: 1px solid var(--ligne); }
+.theme-admin .ds-modale-titre { font-family: var(--police-texte); text-transform: none; font-weight: 600; letter-spacing: -0.01em; }
+.theme-admin .label { font-family: var(--police-texte); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 500; }
+.theme-admin :focus-visible { outline-color: var(--admin-accent); }
+.theme-admin :is(h1, h2, h3, h4) { text-transform: none; font-family: var(--police-texte); letter-spacing: -0.01em; }

@@ -126,6 +126,7 @@ const { produitVersLigne } = await import('@/lib/produitsBase')
 window.scrollTo = vi.fn() as never
 class IO { observe() {} unobserve() {} disconnect() {} }
 ;(window as unknown as { IntersectionObserver: typeof IO }).IntersectionObserver = IO
+;(window as unknown as { ResizeObserver: typeof IO }).ResizeObserver = IO // graphiques (recharts)
 window.matchMedia = vi.fn().mockReturnValue({ matches: true, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }) as never
 
 const monter = (url: string) => render(
@@ -439,52 +440,89 @@ describe('administration : espaces séparés selon le rôle', () => {
   it('rôle technique : la supervision est proposée ; rôle commerce : ni lien, ni écran', async () => {
     remplirCatalogue(); connecter()
     const { unmount } = monter('/admin')
-    expect(await screen.findByRole('link', { name: /Supervision/ })).toBeInTheDocument()
+    const menu = await screen.findByRole('navigation', { name: 'Administration' })
+    for (const page of ['Vue d\'ensemble', 'Santé et disponibilité', 'Journaux et incidents', 'Sécurité et API', 'Maintenance et sauvegardes'])
+      expect(within(menu).getByRole('link', { name: page })).toBeInTheDocument()
     unmount()
+    appels.rpc.length = 0
     role = 'commerce'
-    monter('/admin/supervision')
+    monter('/admin/supervision/securite')
     expect(await screen.findByRole('link', { name: /Commandes/ })).toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: /Supervision/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /Vue d'ensemble|Santé et disponibilité|Sécurité et API/ })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Tableau de bord' })).toBeInTheDocument()
     expect(appels.rpc.map(r => r[0])).not.toContain('statistiques_supervision')
+    expect(appels.rpc.map(r => r[0])).not.toContain('etat_supervision')
   })
 })
 
-describe('administration : supervision technique en onglets', () => {
-  it('sans aucun contrôle : tout est « Inconnu », jamais « Opérationnel »', async () => {
+describe('administration : supervision technique en cinq pages', () => {
+  const maintenant = () => new Date().toISOString()
+  const service = (cible: string, statut: string, ok = true) => ({ cible, dernier: maintenant(), source: 'robot', ok, duree_ms: 300, statut_http: ok ? 200 : 503, detail: ok ? '' : 'HTTP 503', seuil_ms: 2000,
+    controles_24h: 48, disponibilite_24h: ok ? 100 : 97.9, controles_7j: 336, disponibilite_7j: 99.7, moyenne_ms_24h: 310, p95_ms_24h: 520, statut })
+
+  it('Vue d\'ensemble, sans aucun contrôle : tout est « Inconnu », jamais « Opérationnel »', async () => {
     remplirCatalogue(); connecter()
     monter('/admin/supervision')
-    expect(await screen.findByRole('tab', { name: 'Vue d\'ensemble', selected: true })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Vue d\'ensemble' })).toBeInTheDocument()
     expect((await screen.findAllByText('Inconnu')).length).toBeGreaterThanOrEqual(6) // état global + 5 parties
     expect(screen.queryByText('Opérationnel')).not.toBeInTheDocument()
     expect(screen.getByText(/Le robot n'a encore rien envoyé/)).toBeInTheDocument()
+    expect(screen.getByText('Pas encore de tendance')).toBeInTheDocument() // aucune courbe inventée
+    expect(screen.getByText('Aucune page vue enregistrée')).toBeInTheDocument()
   })
 
-  it('un service en échec rend sa partie « Indisponible » ; Santé détaille disponibilité et seuil', async () => {
+  it('un service en échec rend sa partie « Indisponible » ; la page Santé détaille disponibilité et seuil', async () => {
     const u = userEvent.setup()
     remplirCatalogue(); connecter()
-    const maintenant = new Date().toISOString()
-    const service = (cible: string, statut: string, ok = true) => ({ cible, dernier: maintenant, source: 'robot', ok, duree_ms: 300, statut_http: ok ? 200 : 503, detail: ok ? '' : 'HTTP 503', seuil_ms: 2000,
-      controles_24h: 48, disponibilite_24h: ok ? 100 : 97.9, controles_7j: 336, disponibilite_7j: 99.7, moyenne_ms_24h: 310, p95_ms_24h: 520, statut })
-    etatSupervisionTest.services = [service('site : accueil', 'operationnel'), service('base : API et données', 'indisponible', false)]
-    etatSupervisionTest.dernier_robot = maintenant as never
+    etatSupervisionTest.services = [service('site : accueil', 'operationnel'), service('base : API et données', 'indisponible', false)] as never
+    etatSupervisionTest.dernier_robot = maintenant() as never
     monter('/admin/supervision')
     expect(await screen.findAllByText('Indisponible')).not.toHaveLength(0)
     expect(screen.getAllByText('Opérationnel')).toHaveLength(1) // seulement la partie « Site »
-    await u.click(screen.getByRole('tab', { name: 'Santé' }))
+    await u.click(within(screen.getByRole('navigation', { name: 'Administration' })).getByRole('link', { name: 'Santé et disponibilité' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Santé et disponibilité' })).toBeInTheDocument()
     expect(await screen.findByText('97,9 %')).toBeInTheDocument()
     expect(screen.getAllByText('HTTP 503').length).toBeGreaterThan(0)
+    expect(screen.getByRole('progressbar', { name: 'Disponibilité 24 h : base : API et données' })).toHaveAttribute('aria-valuenow', '97.9')
   })
 
-  it('Journaux : lecture filtrée par la base (période, type, gravité)', async () => {
+  it('Journaux et incidents : lecture filtrée par la base (période, type, gravité), détail d\'un événement', async () => {
     const u = userEvent.setup()
     remplirCatalogue(); connecter()
     journalTest = [{ quand: '2026-11-10T08:00:00Z', categorie: 'securite', gravite: 'avertissement', origine: 'limites', message: 'Requête bloquée : commande', detail: 'visiteur abc…' }]
-    monter('/admin/supervision?onglet=journal')
+    monter('/admin/supervision?onglet=journal') // ancienne adresse : renvoyée vers la page
+    expect(await screen.findByRole('heading', { level: 1, name: 'Journaux et incidents' })).toBeInTheDocument()
     expect(await screen.findByText('Requête bloquée : commande')).toBeInTheDocument()
     expect(appels.rpc).toContainEqual(['journal_technique', { p_heures: 168, p_categorie: null, p_gravite: null }])
+    await u.click(screen.getByRole('button', { name: 'Requête bloquée : commande' }))
+    const detail = await screen.findByRole('dialog', { name: 'Détail de l\'événement' })
+    expect(within(detail).getByText('visiteur abc…')).toBeInTheDocument()
+    await u.keyboard('{Escape}')
     await u.click(within(screen.getByRole('group', { name: 'Type' })).getByRole('button', { name: 'Sécurité' }))
     await u.click(within(screen.getByRole('group', { name: 'Gravité' })).getByRole('button', { name: 'Critique' }))
     await waitFor(() => expect(appels.rpc).toContainEqual(['journal_technique', { p_heures: 168, p_categorie: 'securite', p_gravite: 'critique' }]))
+  })
+
+  it('Sécurité et API : limites lues en base, endpoint, appels acceptés et bloqués', async () => {
+    remplirCatalogue(); connecter()
+    etatSupervisionTest.appels_par_action_24h = [{ action: 'commande', acceptes: 3, bloques: 2 }] as never
+    monter('/admin/supervision/securite')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Sécurité et API' })).toBeInTheDocument()
+    expect(await screen.findByText('Commandes enregistrées')).toBeInTheDocument()
+    expect(screen.getByText('POST /rpc/passer_commande')).toBeInTheDocument()
+    expect(screen.getByText('5 / 60 min')).toBeInTheDocument()
+    expect(screen.getByText('Rien à signaler.')).toBeInTheDocument()
+    expect(appels.rpc).toContainEqual(['journal_technique', { p_heures: 168, p_categorie: 'securite', p_gravite: null }])
+  })
+
+  it('Maintenance et sauvegardes : aucune sauvegarde = tâches à faire, jamais « à jour » par défaut', async () => {
+    remplirCatalogue(); connecter()
+    monter('/admin/supervision/maintenance')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Maintenance et sauvegardes' })).toBeInTheDocument()
+    expect(await screen.findByText('jamais faite')).toBeInTheDocument()
+    expect(screen.getByText('jamais testée')).toBeInTheDocument()
+    expect(screen.getByText((_, el) => el?.tagName === 'P' && el.textContent === 'Sauvegarde de la base : à faire')).toBeInTheDocument()
+    expect(screen.getByText('Aucune sauvegarde notée.')).toBeInTheDocument()
   })
 })
 

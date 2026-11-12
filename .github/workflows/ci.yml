@@ -3,10 +3,12 @@
 # Sans aucun secret : le build de contrôle se fait sans Supabase (le site retombe sur le parcours WhatsApp seul).
 name: CI
 
+# Flux : on travaille sur dev ; une demande de fusion dev → main n'est fusionnée que si ce contrôle est vert.
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
+    branches: [main]
 
 concurrency:
   group: ci-${{ github.ref }}

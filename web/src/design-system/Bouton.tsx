@@ -5,9 +5,10 @@ import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 /** cloneme: C-08 — boutons pilule de la référence : mono 11 px capitales, interlettrage .18em, rayon plein ;
- *  `accent` = gros bouton jaune Archivo Black (« Acheter » de l'appel final). */
+ *  `accent` = gros bouton jaune Archivo Black (« Acheter » de l'appel final).
+ *  Classes `ds-*` : crochets de l'habillage de l'administration (index.css, sous `.theme-admin`), sans effet ailleurs. */
 export const styleBouton = cva(
-  'group/bouton relative inline-flex select-none items-center justify-center gap-2.5 overflow-hidden rounded-full font-mono text-[11px] font-normal uppercase tracking-[0.18em] transition-[color,background-color,border-color,transform,opacity] duration-200 ease-standard active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40',
+  'ds-bouton group/bouton relative inline-flex select-none items-center justify-center gap-2.5 overflow-hidden rounded-full font-mono text-[11px] font-normal uppercase tracking-[0.18em] transition-[color,background-color,border-color,transform,opacity] duration-200 ease-standard active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40',
   {
     variants: {
       variante: {
@@ -15,11 +16,11 @@ export const styleBouton = cva(
         contour: 'border border-encre text-encre hover:bg-encre hover:text-fond',
         clair: 'bg-fond text-encre hover:bg-blanc',
         'contour-clair': 'border border-fond/40 text-fond hover:bg-fond hover:text-encre',
-        accent: 'bg-accent font-display text-[13px] tracking-[0.08em] text-encre hover:bg-accent-doux',
-        texte: 'px-0 text-encre underline-offset-[6px] hover:underline',
+        accent: 'ds-accent bg-accent font-display text-[13px] tracking-[0.08em] text-encre hover:bg-accent-doux',
+        texte: 'ds-texte px-0 text-encre underline-offset-[6px] hover:underline',
         whatsapp: 'border border-ligne-forte bg-blanc text-encre hover:border-encre',
       },
-      taille: { sm: 'h-9 px-4', md: 'h-11 px-6', lg: 'h-14 px-9', icone: 'h-11 w-11 p-0' },
+      taille: { sm: 'ds-sm h-9 px-4', md: 'ds-md h-11 px-6', lg: 'ds-lg h-14 px-9', icone: 'ds-icone h-11 w-11 p-0' },
       plein_largeur: { true: 'w-full' },
     },
     compoundVariants: [{ variante: 'texte', className: 'h-auto px-0' }],

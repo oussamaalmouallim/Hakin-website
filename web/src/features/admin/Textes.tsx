@@ -45,7 +45,7 @@ export function Textes() {
         texte="Pages juridiques et d'aide. Ces textes doivent être fournis ou validés par la boutique ; une section vide s'affiche « À confirmer »." />
       <form noValidate aria-label="Textes des pages" onSubmit={e => { e.preventDefault(); void enregistrer() }} className="flex flex-col gap-6 pb-10">
         {PAGES.map(page => (
-          <CarteAdmin key={page.cle} titre={page.titre} actions={<a href={page.lien} target="_blank" rel="noopener noreferrer" className="label text-encre underline underline-offset-4">Voir la page</a>}>
+          <CarteAdmin key={page.cle} titre={page.titre} actions={<a href={page.lien} target="_blank" rel="noopener noreferrer" className="text-[12.5px] font-medium text-admin-info hover:underline">Voir la page</a>}>
             <div className="grid gap-5">
               {SECTIONS_TEXTES[page.cle].map(section => (
                 <ZoneTexte key={section} label={section} rows={3} facultatif value={t[page.cle][section] ?? ''}
@@ -54,18 +54,18 @@ export function Textes() {
             </div>
           </CarteAdmin>
         ))}
-        <CarteAdmin titre="Confidentialité" actions={<a href="/confidentialite" target="_blank" rel="noopener noreferrer" className="label text-encre underline underline-offset-4">Voir la page</a>}>
+        <CarteAdmin titre="Confidentialité" actions={<a href="/confidentialite" target="_blank" rel="noopener noreferrer" className="text-[12.5px] font-medium text-admin-info hover:underline">Voir la page</a>}>
           <ZoneTexte label="Responsable du traitement et contact" rows={3} facultatif value={t.confidentialiteResponsable}
             onChange={e => setT(x => (x ? { ...x, confidentialiteResponsable: e.target.value } : x))} />
         </CarteAdmin>
-        <CarteAdmin titre="Guide des tailles" actions={<a href="/guide-des-tailles" target="_blank" rel="noopener noreferrer" className="label text-encre underline underline-offset-4">Voir la page</a>}>
+        <CarteAdmin titre="Guide des tailles" actions={<a href="/guide-des-tailles" target="_blank" rel="noopener noreferrer" className="text-[12.5px] font-medium text-admin-info hover:underline">Voir la page</a>}>
           <ZoneTexte label="Conseils et correspondances de tailles" rows={5} facultatif value={t.guideDesTailles}
             aide="Vide : la page invite à demander conseil sur WhatsApp." onChange={e => setT(x => (x ? { ...x, guideDesTailles: e.target.value } : x))} />
         </CarteAdmin>
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="sticky bottom-0 z-20 -mx-4 flex flex-wrap items-center gap-3 border-t border-ligne bg-fond-2/90 px-4 py-3 backdrop-blur-md md:-mx-8 md:px-8">
           <Bouton type="submit" variante="accent" chargement={envoi} disabled={!modifie}>Enregistrer les textes</Bouton>
           <Bouton variante="contour" disabled={!modifie || envoi} onClick={() => setT(structuredClone(chargement.donnees!))}>Annuler</Bouton>
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-gris" aria-live="polite">{modifie ? 'Modifications non enregistrées' : 'À jour'}</p>
+          <p className="text-[12.5px] text-gris" aria-live="polite">{modifie ? 'Modifications non enregistrées' : 'À jour'}</p>
         </div>
       </form>
     </>

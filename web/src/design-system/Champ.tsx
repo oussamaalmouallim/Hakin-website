@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 
 /** cloneme: C-23 — champs de la référence (`/auth`) : bordure 1 px `--ligne-forte`, rayon 10 px, `px-4 py-3`, 15 px, encre au focus ;
  *  libellé mono 10 px .2em gris ; erreur mono 10 px rouge. */
-const base = 'peer w-full rounded-[10px] border bg-transparent px-4 py-3 font-sans text-[15px] text-encre outline-none placeholder:text-gris-clair transition-colors disabled:opacity-50'
+const base = 'ds-champ peer w-full rounded-[10px] border bg-transparent px-4 py-3 font-sans text-[15px] text-encre outline-none placeholder:text-gris-clair transition-colors disabled:opacity-50'
 const bordure = (erreur?: string) => (erreur ? 'border-danger focus:border-danger' : 'border-ligne-forte focus:border-encre')
 
 interface Commun { label: string; erreur?: string; aide?: ReactNode; facultatif?: boolean }
@@ -12,11 +12,11 @@ interface Commun { label: string; erreur?: string; aide?: ReactNode; facultatif?
 function Cadre({ id, label, erreur, aide, facultatif, children }: Commun & { id: string; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="block font-mono text-[10px] uppercase tracking-[0.2em] text-gris">
+      <label htmlFor={id} className="ds-libelle block font-mono text-[10px] uppercase tracking-[0.2em] text-gris">
         {label}{facultatif && <span className="ml-2 normal-case tracking-normal text-gris">(facultatif)</span>}
       </label>
       {children}
-      {erreur ? <p id={`${id}-erreur`} role="alert" className="ml-1 mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreur}</p>
+      {erreur ? <p id={`${id}-erreur`} role="alert" className="ds-erreur ml-1 mt-1 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreur}</p>
         : aide ? <p id={`${id}-aide`} className="text-[13px] text-gris">{aide}</p> : null}
     </div>
   )
@@ -70,7 +70,7 @@ export function CaseACocher({ label, erreur, ...rest }: { label: ReactNode; erre
           {...rest} />
         <span className="flex-1 leading-snug">{label}</span>
       </label>
-      {erreur && <p role="alert" className="pl-7 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreur}</p>}
+      {erreur && <p role="alert" className="ds-erreur pl-7 font-mono text-[10px] uppercase tracking-[0.15em] text-danger">{erreur}</p>}
     </div>
   )
 }

@@ -92,12 +92,21 @@ Dans `web/` :
 
 Modèle : `web/.env.example`.
 
+## Branches : on travaille sur `dev`, `main` = production
+
+1. Chaque modification va sur `dev` (`git switch dev`, commit, push) : la CI tourne sur chaque push.
+2. Validé (CI verte, tests à la main) : demande de fusion `dev` → `main` (`gh pr create --base main --head dev`).
+3. La demande n'est fusionnée que si la CI est verte ; la fusion dans `main` publie le site (Netlify).
+4. Après la fusion, `dev` reste alignée : `git switch dev; git pull; git merge origin/main`.
+
+Même règle pour les deux dépôts (`oussamaalmouallim/Hakin-website` et `StackLLM`).
+
 ## CI/CD
 
 | Workflow | Quand | Ce qu'il fait |
 |---|---|---|
-| `ci.yml` | chaque push et pull request | types, tests, build, Playwright, image Docker de contrôle (santé, 200/404, en-têtes) |
-| `supabase.yml` | push sur `main`, à la demande | Supabase local dans la CI : comptes, RLS, admin, Playwright admin |
+| `ci.yml` | push sur `dev` ou `main`, demande de fusion vers `main` | types, tests, build, Playwright, image Docker de contrôle (santé, 200/404, en-têtes) |
+| `supabase.yml` | push sur `dev` ou `main`, demande de fusion vers `main`, à la demande | Supabase local dans la CI : comptes, RLS, admin, Playwright admin |
 | `image.yml` | push sur `main`, tag `v*` | image publiée sur `ghcr.io/<compte>/hmode-web` |
 | `base.yml` | à la demande seulement | migrations sur le Supabase en ligne (essai à blanc par défaut) |
 | `sante.yml` | toutes les 30 min (actif dès que `SITE_URL` existe) | robot de surveillance : site, base, comptes, photos, WhatsApp → admin « Supervision » ; échec = e-mail de GitHub |

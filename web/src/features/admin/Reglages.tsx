@@ -92,10 +92,10 @@ export function Reglages() {
           <div className="mt-5"><ZoneTexte label="Échanges et retours" facultatif rows={4} value={b.retours ?? ''} onChange={e => maj(x => ({ ...x, retours: vide(e.target.value) }))} /></div>
         </CarteAdmin>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="sticky bottom-0 z-20 -mx-4 flex flex-wrap items-center gap-3 border-t border-ligne bg-fond-2/90 px-4 py-3 backdrop-blur-md md:-mx-8 md:px-8">
           <Bouton type="submit" variante="accent" chargement={envoi} disabled={!modifie}>Enregistrer les réglages</Bouton>
           <Bouton variante="contour" disabled={!modifie || envoi} onClick={() => { setB(structuredClone(chargement.donnees!)); setErreurs({}) }}>Annuler</Bouton>
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-gris" aria-live="polite">{modifie ? 'Modifications non enregistrées' : 'À jour'}</p>
+          <p className="text-[12.5px] text-gris" aria-live="polite">{modifie ? 'Modifications non enregistrées' : 'À jour'}</p>
         </div>
       </form>
     </>

@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Download, RefreshCw, Search, Trash2 } from 'lucide-react'
+import { ClipboardList, Download, Inbox, PackageCheck, RefreshCw, Search, Trash2, Truck } from 'lucide-react'
 import { Bouton, IconeWhatsApp, Modale, Selection, useNotifier } from '@/design-system'
 import { STATUTS, csvCommandes, filtrerCommandes, libelleStatut, numeroWhatsAppClient, type CommandeAdmin, type Statut } from '@/lib/admin'
 import { formatDH } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { changerStatut, listerCommandes, supprimerCommande } from './api'
-import { Chargement, Confirmation, EnTeteAdmin, ErreurAdmin, Pastille, formatDate, useChargement } from './commun'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/lightswind/table'
+import { ToggleGroup } from '@/components/lightswind/toggle-group'
+import { CarteAdmin, Confirmation, EnTeteAdmin, ErreurAdmin, EtatVide, GrilleKpi, KpiCarte, Pastille, SqueletteAdmin, formatDate, useChargement } from './commun'
 
 const tonStatut = (s: Statut): 'accent' | 'danger' | 'succes' | 'neutre' => (s === 'nouvelle' ? 'accent' : s === 'annulee' ? 'danger' : s === 'livree' ? 'succes' : 'neutre')
 
@@ -42,50 +44,57 @@ export function Commandes() {
             onClick={() => telecharger(`commandes-hmode-${new Date().toISOString().slice(0, 10)}.csv`, csvCommandes(visibles))}>Exporter ({visibles.length})</Bouton>
         </>} />
 
-      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <label className="relative block md:w-80">
-          <span className="sr-only">Rechercher une commande</span>
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gris" aria-hidden />
-          <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Référence, client, téléphone…"
-            className="w-full rounded-full border border-ligne-forte bg-blanc py-2.5 pl-11 pr-4 text-[14px] outline-none focus:border-encre" />
-        </label>
-        <div role="group" aria-label="Filtrer par statut" className="flex flex-wrap gap-2">
-          {[{ cle: 'toutes', libelle: 'Toutes' }, ...STATUTS].map(s => (
-            <button key={s.cle} type="button" aria-pressed={statut === s.cle}
-              onClick={() => setSp(x => { if (s.cle === 'toutes') x.delete('statut'); else x.set('statut', s.cle); return x }, { replace: true })}
-              className={cn('rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors',
-                statut === s.cle ? 'border-encre bg-encre text-fond' : 'border-ligne-forte text-gris hover:border-encre hover:text-encre')}>
-              {s.libelle}
-            </button>
+      {liste.donnees && (
+        <div className="mb-5">
+          <GrilleKpi>
+            <KpiCarte Icone={ClipboardList} libelle="Commandes" valeur={liste.donnees.length} />
+            <KpiCarte Icone={Inbox} libelle="Nouvelles, à confirmer" valeur={liste.donnees.filter(c => c.statut === 'nouvelle').length} ton={liste.donnees.some(c => c.statut === 'nouvelle') ? 'danger' : 'normal'} />
+            <KpiCarte Icone={Truck} libelle="Confirmées ou expédiées" valeur={liste.donnees.filter(c => c.statut === 'confirmee' || c.statut === 'expediee').length} />
+            <KpiCarte Icone={PackageCheck} libelle="Montant des commandes livrées" valeur={formatDH(liste.donnees.filter(c => c.statut === 'livree').reduce((n, c) => n + c.sous_total_dh, 0))}
+              aide={`${liste.donnees.filter(c => c.statut === 'livree').length} livrée(s)`} />
+          </GrilleKpi>
+        </div>
+      )}
+
+      <CarteAdmin sansMarge titre="Liste des commandes" actions={<ToggleGroup libelle="Filtrer par statut" masquerLibelle valeur={statut}
+          options={[{ v: 'toutes' as Statut | 'toutes', l: 'Toutes' }, ...STATUTS.map(s => ({ v: s.cle as Statut | 'toutes', l: s.libelle }))]}
+          onChange={v => setSp(x => { if (v === 'toutes') x.delete('statut'); else x.set('statut', v); return x }, { replace: true })} />}>
+        <div className="px-5 pb-4">
+          <label className="relative block md:w-80">
+            <span className="sr-only">Rechercher une commande</span>
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gris" aria-hidden />
+            <input type="search" value={q} onChange={e => setQ(e.target.value)} placeholder="Référence, client, téléphone…"
+              className="h-9 w-full rounded-bloc border border-ligne-forte bg-fond-2 pl-9 pr-3 text-[13px] outline-none focus:border-encre" />
+          </label>
+        </div>
+        <div className="px-5 pb-5">
+          {liste.erreur && <ErreurAdmin message={liste.erreur} onReessayer={liste.recharger} />}
+          {liste.enCours && !liste.donnees && <SqueletteAdmin kpi={0} />}
+          {liste.donnees && (visibles.length === 0 ? (
+            <EtatVide Icone={ClipboardList} titre={liste.donnees.length ? 'Aucune commande ne correspond.' : 'Aucune commande pour le moment.'} />
+          ) : (
+            <Table minWidth={720}>
+              <TableHeader><TableRow className="hover:bg-transparent">
+                <TableHead>Référence</TableHead><TableHead>Client</TableHead><TableHead>Articles</TableHead><TableHead className="text-right">Montant</TableHead><TableHead>Statut</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>
+                {visibles.map(c => (
+                  <TableRow key={c.reference} className="cursor-pointer" onClick={() => ouvrir(c.reference)}>
+                    <TableCell>
+                      <button type="button" onClick={e => { e.stopPropagation(); ouvrir(c.reference) }} aria-haspopup="dialog" aria-label={`${c.reference} — ${c.nom}, ${formatDH(c.sous_total_dh)}`} className="font-mono text-[12px] font-medium hover:underline">{c.reference}</button>
+                      <span className="block text-[12px] text-gris">{formatDate(c.cree_le)}</span>
+                    </TableCell>
+                    <TableCell>{c.nom}<span className="block text-[12px] text-gris">{c.ville}</span></TableCell>
+                    <TableCell className="tabular-nums text-gris">{c.lignes_commande.reduce((n, l) => n + l.quantite, 0)}</TableCell>
+                    <TableCell className="text-right font-medium tabular-nums">{formatDH(c.sous_total_dh)}</TableCell>
+                    <TableCell><Pastille ton={tonStatut(c.statut)} point>{libelleStatut(c.statut)}</Pastille></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           ))}
         </div>
-      </div>
-
-      {liste.erreur && <ErreurAdmin message={liste.erreur} onReessayer={liste.recharger} />}
-      {liste.enCours && !liste.donnees && <Chargement />}
-      {liste.donnees && (visibles.length === 0 ? (
-        <p className="rounded-carte bg-fond-2 p-8 text-center text-[14px] text-gris">{liste.donnees.length ? 'Aucune commande ne correspond.' : 'Aucune commande pour le moment.'}</p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {visibles.map(c => (
-            <li key={c.reference}>
-              <button type="button" onClick={() => ouvrir(c.reference)} aria-haspopup="dialog"
-                className="grid w-full grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 rounded-carte bg-fond-2 p-4 text-left transition-colors hover:bg-fond-3 md:grid-cols-[180px_1fr_140px_120px]">
-                <span className="min-w-0">
-                  <span className="block truncate font-mono text-[12px] uppercase tracking-[0.1em]">{c.reference}</span>
-                  <span className="text-[12px] text-gris">{formatDate(c.cree_le)}</span>
-                </span>
-                <span className="hidden min-w-0 md:block">
-                  <span className="block truncate text-[14px]">{c.nom}</span>
-                  <span className="block truncate text-[12px] text-gris">{c.ville} · {c.lignes_commande.reduce((n, l) => n + l.quantite, 0)} article(s)</span>
-                </span>
-                <span className="font-display text-[15px] tabular-nums md:text-right">{formatDH(c.sous_total_dh)}</span>
-                <span className="col-span-2 md:col-span-1 md:justify-self-end"><Pastille ton={tonStatut(c.statut)}>{libelleStatut(c.statut)}</Pastille></span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      ))}
+      </CarteAdmin>
 
       {commande && <DetailCommande key={commande.reference} commande={commande} onFermer={() => ouvrir(null)}
         onStatut={async s => { await changerStatut(commande.reference, s); majLocale(commande.reference, { statut: s }); notifier({ ton: 'succes', message: `Statut : ${libelleStatut(s)}.` }) }}
@@ -117,7 +126,7 @@ function DetailCommande({ commande: c, onFermer, onStatut, onSupprimer }: {
             {c.instructions && <p className="mt-2 text-[13px] text-gris">« {c.instructions} »</p>}
             {numero && (
               <a href={`https://wa.me/${numero}?text=${encodeURIComponent(message)}`} target="_blank" rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center gap-2 rounded-full border border-ligne-forte bg-blanc px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.14em] text-encre hover:border-encre">
+                className="mt-5 inline-flex h-9 items-center gap-2 rounded-bloc border border-ligne-forte bg-fond-2 px-3.5 text-[13px] font-medium text-encre hover:border-encre">
                 <IconeWhatsApp className="h-4 w-4 text-whatsapp" />Écrire au client
               </a>
             )}
@@ -133,7 +142,7 @@ function DetailCommande({ commande: c, onFermer, onStatut, onSupprimer }: {
                 </li>
               ))}
             </ul>
-            <p className={cn(ligne, 'mt-2 border-t border-encre pt-3 font-display uppercase')}><span>Total</span><span className="tabular-nums">{formatDH(c.sous_total_dh)}</span></p>
+            <p className={cn(ligne, 'mt-2 border-t border-ligne-forte pt-3 font-semibold')}><span>Total</span><span className="tabular-nums">{formatDH(c.sous_total_dh)}</span></p>
           </section>
         </div>
         <div className="mt-8 flex flex-col gap-4 border-t border-ligne pt-6 md:flex-row md:items-end md:justify-between">

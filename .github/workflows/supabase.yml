@@ -5,6 +5,9 @@ name: Supabase local
 
 on:
   push:
+    branches: [main, dev]
+    paths: ['supabase/**', 'web/src/**', 'web/scripts/**', 'web/e2e/admin/**', '.github/workflows/supabase.yml']
+  pull_request:
     branches: [main]
     paths: ['supabase/**', 'web/src/**', 'web/scripts/**', 'web/e2e/admin/**', '.github/workflows/supabase.yml']
   workflow_dispatch:

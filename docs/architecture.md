@@ -125,8 +125,10 @@ WhatsApp** (à traiter, traitée, sans suite) : ce ne sont jamais des commandes.
   `evenements_techniques` (clé admin erronée, déploiements vus, sauvegardes par script) et `deploiements`.
 - **Sauvegardes** : `web/scripts/sauvegarde.mjs` (CLI Supabase, manifeste SHA-256) et `sauvegarde-tester.mjs`
   (restauration dans un Supabase jetable, ports 553xx) ; résultat noté par `noter_sauvegarde_script` (jeton du robot).
-- Écran : `features/admin/Supervision.tsx`, une page à 5 onglets (`?onglet=vue|sante|journal|securite|maintenance`),
-  `SupervisionJournal.tsx`, `supervisionCommun.tsx` ; chiffres de `etat_supervision()` et `statistiques_supervision()`.
+- Écrans : 5 pages indépendantes (ADR 0010) — `/admin/supervision` (vue d'ensemble), `/sante`, `/journaux`, `/securite`,
+  `/maintenance` ; `features/admin/Supervision.tsx` (4 pages), `SupervisionJournal.tsx`, `SupervisionGraphiques.tsx` (recharts),
+  `supervisionCommun.tsx` ; chiffres de `etat_supervision()` et `statistiques_supervision()`. Anciennes adresses `?onglet=` redirigées.
+- Coque de l'admin : `CoqueAdmin.tsx` + `navigation.ts` (barre latérale, fil d'Ariane, Ctrl+K), thème `theme-admin`, composants `components/lightswind/`.
   Exploitation pas à pas : `DEPLOIEMENT_ET_SUPERVISION/` (guide PDF, source `docs/guide-pdf/`).
 
 ### Aperçus de partage (Open Graph)
